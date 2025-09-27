@@ -5,12 +5,35 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "init-db": "node scripts/init-all.js",
+    "test": "node scripts/test-connection.js",
+    "init-categories": "node scripts/init-categories.js",
+    "init-products": "node scripts/init-products.js",
+    "init-settings": "node scripts/init-settings.js",
+    "reset-db": "node scripts/reset-db.js"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
+    "@heroicons/react": "^2.2.0",
+    "axios": "^1.12.2",
+    "cloudinary": "^2.7.0",
+    "dotenv": "^17.2.2",
+    "framer-motion": "^12.23.22",
+    "mongoose": "^8.18.2",
+    "multer": "^2.0.2",
+    "next": "15.5.4",
+    "nodemailer": "^7.0.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.4"
+    "react-dropzone": "^14.3.8",
+    "react-hook-form": "^7.63.0",
+    "react-hot-toast": "^2.6.0",
+    "sharp": "^0.34.4",
+    "slugify": "^1.6.6",
+    "uuid": "^13.0.0",
+    "yup": "^1.7.1",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
