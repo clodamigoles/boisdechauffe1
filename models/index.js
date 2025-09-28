@@ -73,10 +73,10 @@ categorySchema.virtual("productCount", {
     match: { isActive: true },
 })
 
-// Index pour les performances
+/* Index pour les performances
 categorySchema.index({ slug: 1 })
 categorySchema.index({ featured: 1, isActive: 1 })
-categorySchema.index({ order: 1 })
+categorySchema.index({ order: 1 }) */
 
 // Schéma Produit
 const productSchema = new mongoose.Schema(
@@ -247,7 +247,7 @@ productSchema.pre("save", function (next) {
     next()
 })
 
-// Index pour les performances
+/* Index pour les performances
 productSchema.index({ slug: 1 })
 productSchema.index({ categoryId: 1, isActive: 1 })
 productSchema.index({ featured: 1, isActive: 1 })
@@ -256,7 +256,7 @@ productSchema.index({ essence: 1, isActive: 1 })
 productSchema.index({ price: 1 })
 productSchema.index({ averageRating: -1 })
 productSchema.index({ salesCount: -1 })
-productSchema.index({ name: "text", shortDescription: "text" })
+productSchema.index({ name: "text", shortDescription: "text" }) */
 
 // Schéma Newsletter
 const newsletterSchema = new mongoose.Schema(
@@ -305,10 +305,10 @@ const newsletterSchema = new mongoose.Schema(
     },
 )
 
-// Index pour les performances
+/* Index pour les performances
 newsletterSchema.index({ email: 1 })
 newsletterSchema.index({ isActive: 1 })
-newsletterSchema.index({ subscribedAt: -1 })
+newsletterSchema.index({ subscribedAt: -1 }) */
 
 // Schéma Témoignage
 const testimonialSchema = new mongoose.Schema(
@@ -369,11 +369,11 @@ const testimonialSchema = new mongoose.Schema(
     },
 )
 
-// Index pour les performances
+/* Index pour les performances
 testimonialSchema.index({ featured: 1, isActive: 1 })
 testimonialSchema.index({ verified: 1, isActive: 1 })
 testimonialSchema.index({ rating: -1 })
-testimonialSchema.index({ order: 1 })
+testimonialSchema.index({ order: 1 }) */
 
 // Schéma Commande
 const orderItemSchema = new mongoose.Schema({
@@ -596,10 +596,10 @@ const orderSchema = new mongoose.Schema(
     },
 )
 
-// Index pour les recherches
+/* Index pour les recherches
 orderSchema.index({ "customer.email": 1 })
 orderSchema.index({ status: 1 })
-orderSchema.index({ createdAt: -1 })
+orderSchema.index({ createdAt: -1 }) */
 
 // Virtuals
 orderSchema.virtual("customerFullName").get(function () {
@@ -700,10 +700,10 @@ const quoteSchema = new mongoose.Schema(
     },
 )
 
-// Index pour les performances
+/* Index pour les performances
 quoteSchema.index({ orderId: 1 })
 quoteSchema.index({ status: 1 })
-quoteSchema.index({ sentAt: -1 })
+quoteSchema.index({ sentAt: -1 }) */
 
 // Export des modèles
 export const Category = mongoose.models.Category || mongoose.model("Category", categorySchema)
