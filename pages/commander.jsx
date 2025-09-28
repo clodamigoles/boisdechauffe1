@@ -508,7 +508,7 @@ export default function CheckoutPage() {
                                         ) : (
                                             <>
                                                 <FileText className="w-5 h-5 mr-2" />
-                                                Obtenir mon devis
+                                                Placer ma commande
                                             </>
                                         )}
                                     </Button>
