@@ -269,7 +269,7 @@ export default function ProductsSection({ products = [] }) {
                     transition={{ delay: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <Link href="/produits">
+                    <Link href="/shop">
                         <Button
                             variant="primary"
                             size="lg"
