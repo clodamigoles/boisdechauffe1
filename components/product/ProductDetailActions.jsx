@@ -85,7 +85,7 @@ export default function ProductDetailActions({ product }) {
                         </div>
                         <div className="flex-1">
                             <p className="text-sm text-gray-600">
-                                Stock disponible: {product.stock} {product.unit}
+                                Stock disponible: {/*product.stock*/} __ {product.unit}
                             </p>
                         </div>
                     </div>

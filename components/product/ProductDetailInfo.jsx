@@ -24,16 +24,16 @@ export default function ProductDetailInfo({ product }) {
             title: "Qualité garantie",
             description: "Bois séché et contrôlé",
         },
-        {
-            icon: Award,
-            title: "Premium",
-            description: "Sélection rigoureuse",
-        },
-        {
-            icon: Clock,
-            title: "Stock disponible",
-            description: `${product.stock} ${product.unit} en stock`,
-        },
+        // {
+        //     icon: Award,
+        //     title: "Premium",
+        //     description: "Sélection rigoureuse",
+        // },
+        // {
+        //     icon: Clock,
+        //     title: "Stock disponible",
+        //     description: `${product.stock} ${product.unit} en stock`,
+        // },
     ]
 
     return (
@@ -98,7 +98,7 @@ export default function ProductDetailInfo({ product }) {
                 </div>
             </div>
 
-            {/* Description détaillée */}
+            {/* Description détaillée
             {product.description && (
                 <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
@@ -106,7 +106,7 @@ export default function ProductDetailInfo({ product }) {
                         <p className="text-gray-600 leading-relaxed">{product.description}</p>
                     </div>
                 </div>
-            )}
+            )} */}
 
             {/* Caractéristiques rapides */}
             <div className="grid grid-cols-2 gap-4">
