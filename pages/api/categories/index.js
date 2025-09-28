@@ -1,30 +1,87 @@
-import { connectToDatabase, Category } from '@/lib/models'
+import { DatabaseUtils } from '../../../lib/mongodb'
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
-        return res.status(405).json({ message: 'Method not allowed' })
+        res.setHeader('Allow', ['GET'])
+        return res.status(405).json({
+            success: false,
+            message: `Méthode ${req.method} non autorisée`
+        })
     }
 
     try {
-        await connectToDatabase()
+        const { featured, active = 'true' } = req.query
 
-        // Récupérer toutes les catégories actives, triées par ordre
-        const categories = await Category
-            .find({ isActive: true })
-            .sort({ order: 1, createdAt: 1 })
-            .select('name slug description image order')
+        // Construction du filtre
+        let filter = {}
 
-        res.status(200).json({
+        if (active === 'true') {
+            filter.isActive = true
+        }
+
+        if (featured === 'true') {
+            filter.featured = true
+        }
+
+        // Options de tri
+        const sortOptions = { order: 1, name: 1 }
+
+        // Récupérer les catégories
+        const categories = await DatabaseUtils.findMany(
+            'categories',
+            filter,
+            { sort: sortOptions }
+        )
+
+        // Enrichir avec les statistiques de produits
+        const enrichedCategories = await Promise.all(
+            categories.map(async (category) => {
+                try {
+                    const productCount = await DatabaseUtils.count('products', {
+                        categoryId: category._id,
+                        isActive: true
+                    })
+
+                    return {
+                        ...category,
+                        productCount
+                    }
+                } catch (error) {
+                    console.error(`Erreur lors du comptage des produits pour la catégorie ${category._id}:`, error)
+                    return {
+                        ...category,
+                        productCount: 0
+                    }
+                }
+            })
+        )
+
+        // Cache headers
+        res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+
+        return res.status(200).json({
             success: true,
-            data: categories,
-            count: categories.length
+            data: enrichedCategories,
+            count: enrichedCategories.length,
+            message: 'Catégories récupérées avec succès'
         })
+
     } catch (error) {
-        console.error('Error fetching categories:', error)
-        res.status(500).json({
+        console.error('Erreur API categories:', error)
+
+        return res.status(500).json({
             success: false,
-            message: 'Error fetching categories',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+            message: 'Erreur interne du serveur',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         })
     }
+}
+
+// Configuration pour Next.js
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '1mb',
+        },
+    },
 }
