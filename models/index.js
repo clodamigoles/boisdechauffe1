@@ -1,5 +1,7 @@
 import mongoose from "mongoose"
 
+import { Contact } from './Contact'
+
 // Schéma Catégorie
 const categorySchema = new mongoose.Schema(
     {
@@ -95,7 +97,7 @@ const productSchema = new mongoose.Schema(
         shortDescription: {
             type: String,
             required: [true, "La description courte est requise"],
-            maxlength: [300, "La description courte ne peut dépasser 300 caractères"],
+            maxlength: [5300, "La description courte ne peut dépasser 5300 caractères"],
         },
         description: {
             type: String,
@@ -495,6 +497,44 @@ const orderSchema = new mongoose.Schema(
             min: [0, "Le total ne peut pas être négatif"],
         },
 
+        // Informations de paiement
+        paymentMethod: {
+            type: String,
+            enum: {
+                values: ["bank_transfer"],
+                message: "Méthode de paiement invalide",
+            },
+            default: "bank_transfer",
+        },
+
+        paymentReceipts: [
+            {
+                url: {
+                    type: String,
+                    required: true,
+                },
+                filename: {
+                    type: String,
+                    required: true,
+                },
+                uploadedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                publicId: {
+                    type: String,
+                    required: true,
+                },
+            },
+        ],
+
+        // Notes et commentaires
+        notes: {
+            type: String,
+            trim: true,
+            maxlength: [500, "Les notes ne peuvent pas dépasser 500 caractères"],
+        },
+
         // Statut et suivi
         status: {
             type: String,
@@ -608,12 +648,70 @@ orderSchema.methods.addStatusHistory = function (status, note = "") {
     this.status = status
 }
 
+// Schéma Devis
+const quoteSchema = new mongoose.Schema(
+    {
+        orderId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Order",
+            required: [true, "L'ID de commande est requis"],
+        },
+        amount: {
+            type: Number,
+            required: [true, "Le montant est requis"],
+            min: [0, "Le montant ne peut pas être négatif"],
+        },
+        iban: {
+            type: String,
+            required: [true, "L'IBAN est requis"],
+            trim: true,
+            match: [/^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$/, "IBAN invalide"],
+        },
+        bic: {
+            type: String,
+            required: [true, "Le BIC est requis"],
+            trim: true,
+            match: [/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/, "BIC invalide"],
+        },
+        notes: {
+            type: String,
+            trim: true,
+            maxlength: [1000, "Les notes ne peuvent pas dépasser 1000 caractères"],
+        },
+        sentAt: {
+            type: Date,
+            default: Date.now,
+        },
+        emailMessageId: {
+            type: String,
+            trim: true,
+        },
+        status: {
+            type: String,
+            enum: {
+                values: ["sent", "viewed", "paid"],
+                message: "Statut de devis invalide",
+            },
+            default: "sent",
+        },
+    },
+    {
+        timestamps: true,
+    },
+)
+
+// Index pour les performances
+quoteSchema.index({ orderId: 1 })
+quoteSchema.index({ status: 1 })
+quoteSchema.index({ sentAt: -1 })
+
 // Export des modèles
 export const Category = mongoose.models.Category || mongoose.model("Category", categorySchema)
 export const Product = mongoose.models.Product || mongoose.model("Product", productSchema)
 export const Newsletter = mongoose.models.Newsletter || mongoose.model("Newsletter", newsletterSchema)
 export const Testimonial = mongoose.models.Testimonial || mongoose.model("Testimonial", testimonialSchema)
 export const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)
+export const Quote = mongoose.models.Quote || mongoose.model("Quote", quoteSchema)
 
 // Export par défaut pour faciliter l'import
 export default {
@@ -622,4 +720,6 @@ export default {
     Newsletter,
     Testimonial,
     Order,
+    Quote,
+    Contact
 }

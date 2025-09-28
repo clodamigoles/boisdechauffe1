@@ -253,7 +253,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
                     ))}
                 </motion.div>
 
-                {/* Statistiques Sociales */}
+                {/* Statistiques Sociales
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -306,7 +306,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
                             </motion.button>
                         </motion.div>
                     </div>
-                </motion.div>
+                </motion.div> */}
             </div>
         </section>
     )

@@ -150,6 +150,28 @@ const orderSchema = new mongoose.Schema(
             default: "bank_transfer",
         },
 
+        // Ajout du champ paymentReceipts
+        paymentReceipts: [
+            {
+                url: {
+                    type: String,
+                    required: true,
+                },
+                filename: {
+                    type: String,
+                    required: true,
+                },
+                uploadedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                publicId: {
+                    type: String,
+                    required: true,
+                },
+            },
+        ],
+
         // Notes et commentaires
         notes: {
             type: String,

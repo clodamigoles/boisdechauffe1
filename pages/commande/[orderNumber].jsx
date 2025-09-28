@@ -8,6 +8,7 @@ import { CheckCircle, Clock, MapPin, Mail, Phone, FileText, Download, ArrowLeft 
 import Header from "../../components/layout/Header"
 import Footer from "../../components/layout/Footer"
 import Button from "../../components/ui/Button"
+import PaymentReceiptUpload from "../../components/ui/PaymentReceiptUpload"
 
 const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -124,7 +125,7 @@ export default function OrderTrackingPage() {
             },
             {
                 status: "shipped",
-                title: "Expédiée",
+                title: "Exp��diée",
                 description: "Votre commande est en route",
                 date: statusHistory.find((h) => h.status === "shipped")?.date || null,
                 completed: ["shipped", "delivered"].includes(status),
@@ -330,6 +331,14 @@ export default function OrderTrackingPage() {
                                             <li>• Votre commande sera traitée dès réception du paiement (1-2 jours ouvrés)</li>
                                         </ul>
                                     </div>
+
+                                    <PaymentReceiptUpload
+                                        orderNumber={orderData.orderNumber}
+                                        onUploadSuccess={(receiptData) => {
+                                            // Optionally refresh order data or show success message
+                                            console.log("Receipt uploaded:", receiptData)
+                                        }}
+                                    />
                                 </motion.div>
                             )}
 
@@ -377,6 +386,15 @@ export default function OrderTrackingPage() {
                                         </div>
                                     </div>
                                 </div>
+
+                                {orderData.paymentStatus === "pending" && (
+                                    <PaymentReceiptUpload
+                                        orderNumber={orderData.orderNumber}
+                                        onUploadSuccess={(receiptData) => {
+                                            console.log("Receipt uploaded after summary:", receiptData)
+                                        }}
+                                    />
+                                )}
                             </motion.div>
                         </div>
 
@@ -426,7 +444,7 @@ export default function OrderTrackingPage() {
                                 </div>
                             </motion.div>
 
-                            {/* Actions */}
+                            {/* Actions
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -446,7 +464,7 @@ export default function OrderTrackingPage() {
                                 </div>
                             </motion.div>
 
-                            {/* Besoin d'aide */}
+                            {/* Besoin d'aide 
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -465,7 +483,7 @@ export default function OrderTrackingPage() {
                                         <span>support@boisdecharbon.fr</span>
                                     </div>
                                 </div>
-                            </motion.div>
+                            </motion.div> */}
                         </div>
                     </div>
                 </div>

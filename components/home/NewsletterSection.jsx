@@ -258,7 +258,7 @@ export default function NewsletterSection() {
                         )}
                     </motion.div>
 
-                    {/* Avantages Newsletter */}
+                    {/* Avantages Newsletter
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -303,7 +303,7 @@ export default function NewsletterSection() {
                         ))}
                     </motion.div>
 
-                    {/* Statistiques Newsletter */}
+                    {/* Statistiques Newsletter
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -323,7 +323,7 @@ export default function NewsletterSection() {
                             <span className="text-2xl">🔒</span>
                             <span>0 spam garanti</span>
                         </div>
-                    </motion.div>
+                    </motion.div> */}
                 </div>
             </div>
         </section>

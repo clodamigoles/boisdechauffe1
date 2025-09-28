@@ -8,11 +8,10 @@ async function handler(req, res) {
         // Récupérer les catégories featured avec le nombre de produits
         const categories = await Category
             .find({
-                featured: true,
                 isActive: true
             })
             .populate('productCount') // Utilise le virtual défini dans le modèle
-            .sort({ order: 1, createdAt: -1 })
+            .sort({ order: 1, createdAt: 1 })
             .limit(parseInt(limit))
             .lean()
 

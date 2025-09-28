@@ -183,7 +183,7 @@ export default function CategoriesSection({ categories = [] }) {
                                     </motion.button>
                                 </Link>
 
-                                <Link href="/categories">
+                                <Link href="/shop">
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}

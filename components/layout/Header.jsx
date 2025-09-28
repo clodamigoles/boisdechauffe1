@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
-import { Menu, X, Search, ShoppingCart, Phone, ChevronDown, ShoppingBag } from 'lucide-react'
+import { Menu, X, Search, ShoppingCart, Phone, ChevronDown, ShoppingBag, ShoppingBagIcon } from 'lucide-react'
 import { useCartStore } from '../../store/cartStore'
 import Button from '../ui/Button'
 
@@ -156,14 +156,16 @@ export default function Header() {
 
                             {/* CTA Button */}
                             <div className="hidden md:block">
-                                <Button
-                                    variant={!isScrolled && router.pathname === '/' ? 'secondary' : 'primary'}
-                                    size="sm"
-                                    className="flex items-center space-x-2"
-                                >
-                                    <Phone className="w-4 h-4" />
-                                    <span>Devis Gratuit</span>
-                                </Button>
+                                <Link href="/shop">
+                                    <Button
+                                        variant={!isScrolled && router.pathname === '/' ? 'secondary' : 'primary'}
+                                        size="sm"
+                                        className="flex items-center space-x-2"
+                                    >
+                                        <ShoppingBagIcon className="w-4 h-4" />
+                                        <span>Boutique</span>
+                                    </Button>
+                                </Link>
                             </div>
 
                             {/* Menu Mobile */}
@@ -232,10 +234,12 @@ export default function Header() {
                                     ))}
 
                                     <div className="pt-4 border-t border-gray-200">
-                                        <Button variant="primary" className="w-full flex items-center justify-center space-x-2">
-                                            <ShoppingBag className="w-4 h-4" />
-                                            <span>Boutique</span>
-                                        </Button>
+                                        <Link href="/shop">
+                                            <Button variant="primary" className="w-full flex items-center justify-center space-x-2">
+                                                <ShoppingBag className="w-4 h-4" />
+                                                <span>Boutique</span>
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </nav>
                             </div>

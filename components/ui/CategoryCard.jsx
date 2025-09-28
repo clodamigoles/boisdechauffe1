@@ -15,7 +15,7 @@ export default function CategoryCard({ category }) {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="group"
         >
-            <Link href={`/categories/${category.slug}`}>
+            <Link href={`/shop?category=${category.slug}`}>
                 <div className="relative h-64 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-white border border-gray-100">
                     {/* Image de fond */}
                     <div className="absolute inset-0">
