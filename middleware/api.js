@@ -5,8 +5,8 @@ import cors from 'cors'
 // Configuration CORS
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://boischauffagepro.fr', 'https://www.boischauffagepro.fr']
-        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+        ? ['https://boisdechauffe1.vercel.app']
+        : ['http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],
     credentials: true
@@ -25,10 +25,11 @@ const createRateLimiter = (windowMs = 15 * 60 * 1000, max = 100) =>
         standardHeaders: true,
         legacyHeaders: false,
         skip: (req) => {
-            // Skip rate limiting en développement
-            if (process.env.NODE_ENV === 'development') return true
-            // Skip pour certaines routes d'administration
-            return req.headers['x-api-key'] === process.env.ADMIN_API_KEY
+            // // Skip rate limiting en développement
+            // if (process.env.NODE_ENV === 'development') return true
+            // // Skip pour certaines routes d'administration
+            // return req.headers['x-api-key'] === process.env.ADMIN_API_KEY
+            return true
         }
     })
 
