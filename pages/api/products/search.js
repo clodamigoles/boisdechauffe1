@@ -1,5 +1,5 @@
-import { DatabaseUtils } from '../../../lib/mongodb'
-import { ObjectId } from 'mongodb'
+import connectDB, { handleDBErrors } from '@/lib/mongoose'
+import { Product, Category } from '@/models'
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
@@ -11,6 +11,9 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Connexion à la base de données
+        await connectDB()
+
         const {
             search = '',
             category = '',
@@ -34,13 +37,9 @@ export default async function handler(req, res) {
 
         // Filtre de catégorie
         if (category) {
-            try {
-                const categoryDoc = await DatabaseUtils.findOne('categories', { slug: category })
-                if (categoryDoc) {
-                    filter.categoryId = categoryDoc._id
-                }
-            } catch (error) {
-                console.error('Erreur lors de la recherche de catégorie:', error)
+            const categoryDoc = await Category.findOne({ slug: category }).lean()
+            if (categoryDoc) {
+                filter.categoryId = categoryDoc._id
             }
         }
 
@@ -71,14 +70,9 @@ export default async function handler(req, res) {
             filter.compareAtPrice = { $exists: true, $ne: null }
         }
 
-        // Recherche textuelle
+        // Recherche textuelle avec Mongoose
         if (search) {
-            filter.$or = [
-                { name: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } },
-                { shortDescription: { $regex: search, $options: 'i' } },
-                { essence: { $regex: search, $options: 'i' } }
-            ]
+            filter.$text = { $search: search }
         }
 
         // Options de tri
@@ -112,69 +106,43 @@ export default async function handler(req, res) {
                 sortOptions = { name: 1 }
         }
 
+        // Si recherche textuelle, ajouter le score de pertinence au tri
+        if (search) {
+            sortOptions = { score: { $meta: 'textScore' }, ...sortOptions }
+        }
+
         // Pagination
         const pageNum = Math.max(1, parseInt(page))
         const limitNum = Math.min(50, Math.max(1, parseInt(limit)))
         const skip = (pageNum - 1) * limitNum
 
-        // Requête avec agrégation pour joindre les catégories
-        const aggregationPipeline = [
-            { $match: filter },
-            {
-                $lookup: {
-                    from: 'categories',
-                    localField: 'categoryId',
-                    foreignField: '_id',
-                    as: 'category'
-                }
-            },
-            {
-                $addFields: {
-                    category: { $arrayElemAt: ['$category', 0] },
-                    discountPercentage: {
-                        $cond: {
-                            if: { $and: ['$compareAtPrice', { $gt: ['$compareAtPrice', 0] }] },
-                            then: {
-                                $round: [
-                                    {
-                                        $multiply: [
-                                            {
-                                                $divide: [
-                                                    { $subtract: ['$compareAtPrice', '$price'] },
-                                                    '$compareAtPrice'
-                                                ]
-                                            },
-                                            100
-                                        ]
-                                    },
-                                    0
-                                ]
-                            },
-                            else: 0
-                        }
-                    }
-                }
-            },
-            { $sort: sortOptions },
-            { $skip: skip },
-            { $limit: limitNum }
-        ]
+        // Exécution des requêtes en parallèle pour optimiser les performances
+        const [products, totalCount] = await Promise.all([
+            Product
+                .find(filter)
+                .populate('categoryId', 'name slug') // Populate la catégorie
+                .sort(sortOptions)
+                .skip(skip)
+                .limit(limitNum)
+                .lean(),
+            Product.countDocuments(filter)
+        ])
 
-        // Récupérer les produits
-        const products = await DatabaseUtils.aggregate('products', aggregationPipeline)
+        const totalPages = Math.ceil(totalCount / limitNum)
 
-        // Compter le total pour la pagination
-        const totalCountPipeline = [
-            { $match: filter },
-            { $count: 'total' }
-        ]
-        const totalCountResult = await DatabaseUtils.aggregate('products', totalCountPipeline)
-        const total = totalCountResult.length > 0 ? totalCountResult[0].total : 0
-        const totalPages = Math.ceil(total / limitNum)
+        // Transformation des données pour inclure les virtuals
+        const enrichedProducts = products.map(product => ({
+            ...product,
+            category: product.categoryId, // Renommage pour compatibilité frontend
+            discountPercentage: product.compareAtPrice && product.compareAtPrice > product.price
+                ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+                : 0,
+            inStock: product.stock > 0
+        }))
 
         // Statistiques de recherche
         const searchStats = {
-            total,
+            total: totalCount,
             page: pageNum,
             limit: limitNum,
             totalPages,
@@ -187,26 +155,30 @@ export default async function handler(req, res) {
 
         return res.status(200).json({
             success: true,
-            products,
+            products: enrichedProducts,
             stats: searchStats,
-            total,
+            total: totalCount,
             totalPages,
             currentPage: pageNum,
-            message: `${products.length} produits trouvés`
+            message: `${enrichedProducts.length} produits trouvés`
         })
 
     } catch (error) {
         console.error('Erreur API products/search:', error)
+        const dbError = handleDBErrors(error)
 
         return res.status(500).json({
             success: false,
-            message: 'Erreur interne du serveur',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            message: dbError.message,
+            type: dbError.type,
+            ...(process.env.NODE_ENV === 'development' && {
+                error: error.message,
+                stack: error.stack
+            })
         })
     }
 }
 
-// Configuration pour Next.js
 export const config = {
     api: {
         bodyParser: {

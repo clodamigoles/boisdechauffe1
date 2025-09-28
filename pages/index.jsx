@@ -10,27 +10,130 @@ import ProductsSection from '../components/home/ProductsSection'
 import TestimonialsSection from '../components/home/TestimonialsSection'
 import NewsletterSection from '../components/home/NewsletterSection'
 import { pageVariants } from '../utils/animations'
+import { cachedAPI } from '../lib/api'
 
-export default function HomePage({ categories, products, testimonials }) {
+export default function HomePage({
+    initialCategories,
+    initialProducts,
+    initialTestimonials,
+    hasErrors
+}) {
     const [isLoading, setIsLoading] = useState(true)
+    const [categories, setCategories] = useState(initialCategories || [])
+    const [products, setProducts] = useState(initialProducts || [])
+    const [testimonials, setTestimonials] = useState(initialTestimonials || [])
 
     useEffect(() => {
+        // Simuler un temps de chargement pour une meilleure UX
         const timer = setTimeout(() => setIsLoading(false), 800)
         return () => clearTimeout(timer)
     }, [])
 
+    // Recharger les données si elles sont manquantes (fallback côté client)
+    useEffect(() => {
+        const loadMissingData = async () => {
+            try {
+                const promises = []
+
+                if (!categories.length) {
+                    promises.push(cachedAPI.categories.getFeatured())
+                }
+                if (!products.length) {
+                    promises.push(cachedAPI.products.getFeatured('all', 8))
+                }
+                if (!testimonials.length) {
+                    promises.push(cachedAPI.testimonials.getFeatured(6))
+                }
+
+                if (promises.length > 0) {
+                    const results = await Promise.allSettled(promises)
+
+                    let index = 0
+                    if (!categories.length && results[index]?.status === 'fulfilled') {
+                        setCategories(results[index].value.data || [])
+                        index++
+                    }
+                    if (!products.length && results[index]?.status === 'fulfilled') {
+                        setProducts(results[index].value.data || [])
+                        index++
+                    }
+                    if (!testimonials.length && results[index]?.status === 'fulfilled') {
+                        setTestimonials(results[index].value.data || [])
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des données manquantes:', error)
+            }
+        }
+
+        if (hasErrors) {
+            loadMissingData()
+        }
+    }, [hasErrors, categories.length, products.length, testimonials.length])
+
     return (
         <>
             <Head>
-                <title>BoisChauffage Pro - Bois de Chauffage Premium | Livraison Rapide</title>
-                <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme. Qualité garantie, livraison rapide partout en France. Commandez en ligne !" />
-                <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, livraison, premium, qualité" />
-                <meta property="og:title" content="BoisChauffage Pro - Bois de Chauffage Premium" />
-                <meta property="og:description" content="Bois de chauffage premium avec livraison rapide partout en France" />
-                <meta property="og:image" content="/images/og-image.jpg" />
+                <title>BoisChauffage Pro - Bois de Chauffage Premium | Livraison Rapide France</title>
+                <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France. Devis gratuit !" />
+                <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec, france" />
+
+                {/* Open Graph / Facebook */}
                 <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://boischauffagepro.fr/" />
+                <meta property="og:title" content="BoisChauffage Pro - Bois de Chauffage Premium" />
+                <meta property="og:description" content="Bois de chauffage premium avec livraison rapide partout en France. Chêne, hêtre, charme séchés < 18% d'humidité." />
+                <meta property="og:image" content="https://boischauffagepro.fr/images/og-image.jpg" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
+
+                {/* Twitter */}
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:url" content="https://boischauffagepro.fr/" />
+                <meta property="twitter:title" content="BoisChauffage Pro - Bois de Chauffage Premium" />
+                <meta property="twitter:description" content="Bois de chauffage premium avec livraison rapide partout en France." />
+                <meta property="twitter:image" content="https://boischauffagepro.fr/images/og-image.jpg" />
+
+                {/* Autres meta tags */}
+                <meta name="robots" content="index, follow" />
+                <meta name="author" content="BoisChauffage Pro" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <link rel="canonical" href="https://boischauffagepro.fr" />
-                <link rel="preload" href="/videos/hero-background.mp4" as="video" />
+
+                {/* Preload des ressources critiques */}
+                <link rel="preload" href="/videos/hero-background.mp4" as="video" type="video/mp4" />
+
+                {/* Favicon */}
+                <link rel="icon" href="/favicon.ico" />
+                <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+                {/* JSON-LD Schema */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "Organization",
+                            "name": "BoisChauffage Pro",
+                            "url": "https://boischauffagepro.fr",
+                            "logo": "https://boischauffagepro.fr/images/logo.png",
+                            "description": "Spécialiste du bois de chauffage premium avec livraison rapide en France",
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": "123 Route Forestière",
+                                "addressLocality": "Lyon",
+                                "postalCode": "69000",
+                                "addressCountry": "FR"
+                            },
+                            "telephone": "+33123456789",
+                            "email": "contact@boischauffagepro.fr",
+                            "sameAs": [
+                                "https://facebook.com/boischauffagepro",
+                                "https://instagram.com/boischauffagepro"
+                            ]
+                        })
+                    }}
+                />
             </Head>
 
             <AnimatePresence mode="wait">
@@ -43,21 +146,42 @@ export default function HomePage({ categories, products, testimonials }) {
                         className="fixed inset-0 bg-white flex items-center justify-center z-50"
                     >
                         <div className="text-center">
-                            <Loader2 className="w-8 h-8 animate-spin text-amber-600 mx-auto mb-4" />
+                            <div className="relative mb-8">
+                                {/* Logo animé */}
+                                <motion.div
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ duration: 0.6 }}
+                                    className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                                >
+                                    <motion.span
+                                        animate={{ rotate: [0, 10, -10, 0] }}
+                                        transition={{ duration: 2, repeat: Infinity }}
+                                        className="text-2xl"
+                                    >
+                                        🔥
+                                    </motion.span>
+                                </motion.div>
+
+                                <Loader2 className="w-8 h-8 animate-spin text-amber-600 mx-auto mb-4" />
+                            </div>
+
                             <motion.h2
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
                                 className="text-xl font-semibold text-gray-900 mb-2"
                             >
                                 BoisChauffage Pro
                             </motion.h2>
+
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ delay: 0.3 }}
+                                transition={{ delay: 0.5 }}
                                 className="text-gray-600"
                             >
-                                Chargement...
+                                Chargement de votre expérience premium...
                             </motion.p>
                         </div>
                     </motion.div>
@@ -74,9 +198,22 @@ export default function HomePage({ categories, products, testimonials }) {
 
                         <main>
                             <HeroSection />
-                            <CategoriesSection categories={categories} />
-                            <ProductsSection products={products} />
-                            <TestimonialsSection testimonials={testimonials} />
+
+                            <CategoriesSection
+                                categories={categories}
+                                fallbackMessage={hasErrors ? "Chargement des catégories..." : null}
+                            />
+
+                            <ProductsSection
+                                products={products}
+                                fallbackMessage={hasErrors ? "Chargement des produits..." : null}
+                            />
+
+                            <TestimonialsSection
+                                testimonials={testimonials}
+                                fallbackMessage={hasErrors ? "Chargement des témoignages..." : null}
+                            />
+
                             <NewsletterSection />
                         </main>
 
@@ -90,36 +227,60 @@ export default function HomePage({ categories, products, testimonials }) {
 
 export async function getStaticProps() {
     try {
-        const [categoriesRes, productsRes, testimonialsRes] = await Promise.all([
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/categories/featured`),
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/products/featured`),
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/testimonials/featured`)
+        // Timeouts pour éviter les blocages
+        const TIMEOUT_DURATION = 8000 // 8 secondes
+
+        const createTimeoutPromise = (ms) => new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), ms)
+        )
+
+        // Tentative de chargement des données avec timeout
+        const loadWithTimeout = async (apiCall, fallback = []) => {
+            try {
+                const result = await Promise.race([
+                    apiCall(),
+                    createTimeoutPromise(TIMEOUT_DURATION)
+                ])
+                return result?.data || fallback
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error)
+                return fallback
+            }
+        }
+
+        // Chargement des données en parallèle
+        const [categories, products, testimonials] = await Promise.all([
+            loadWithTimeout(() => cachedAPI.categories.getFeatured(false)),
+            loadWithTimeout(() => cachedAPI.products.getFeatured('all', 8, false)),
+            loadWithTimeout(() => cachedAPI.testimonials.getFeatured(6, false))
         ])
 
-        const [categories, products, testimonials] = await Promise.all([
-            categoriesRes.ok ? categoriesRes.json() : { data: [] },
-            productsRes.ok ? productsRes.json() : { data: [] },
-            testimonialsRes.ok ? testimonialsRes.json() : { data: [] }
-        ])
+        // Vérifier si toutes les données ont été chargées
+        const hasErrors = !categories.length && !products.length && !testimonials.length
 
         return {
             props: {
-                categories: categories.data || [],
-                products: products.data || [],
-                testimonials: testimonials.data || []
+                initialCategories: categories,
+                initialProducts: products,
+                initialTestimonials: testimonials,
+                hasErrors
             },
+            // Revalidation ISR - régénérer la page toutes les heures
             revalidate: 3600
         }
     } catch (error) {
-        console.error('Erreur lors du chargement des données:', error)
+        console.error('Erreur critique lors du chargement des données:', error)
 
+        // En cas d'erreur critique, retourner des props vides
         return {
             props: {
-                categories: [],
-                products: [],
-                testimonials: []
+                initialCategories: [],
+                initialProducts: [],
+                initialTestimonials: [],
+                hasErrors: true
             },
-            revalidate: 60
+            // Revalidation plus fréquente en cas d'erreur
+            revalidate: 300 // 5 minutes
         }
     }
 }

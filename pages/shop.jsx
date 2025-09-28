@@ -1,61 +1,75 @@
-import { useState, useEffect, useCallback } from 'react'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Filter, Search, SlidersHorizontal, Grid3X3, List, ChevronDown } from 'lucide-react'
-import Header from '../components/layout/Header'
-import Footer from '../components/layout/Footer'
-import ProductCard from '../components/ui/ProductCard'
-import ProductFilters from '../components/shop/ProductFilters'
-import ProductSort from '../components/shop/ProductSort'
-import ProductSearch from '../components/shop/ProductSearch'
-import Pagination from '../components/shop/Pagination'
-import Breadcrumb from '../components/ui/Breadcrumb'
-import LoadingSpinner from '../components/ui/LoadingSpinner'
-import EmptyState from '../components/ui/EmptyState'
-import { pageVariants } from '../utils/animations'
+"use client"
+
+import { useState, useEffect, useCallback } from "react"
+import Head from "next/head"
+import { useRouter } from "next/router"
+import { motion, AnimatePresence } from "framer-motion"
+import { SlidersHorizontal, Grid3X3, List } from "lucide-react"
+import Header from "../components/layout/Header"
+import Footer from "../components/layout/Footer"
+import ProductCard from "../components/ui/ProductCard"
+import ProductFilters from "../components/shop/ProductFilters"
+import ProductSort from "../components/shop/ProductSort"
+import ProductSearch from "../components/shop/ProductSearch"
+import Pagination from "../components/shop/Pagination"
+import Breadcrumb from "../components/ui/Breadcrumb"
+import LoadingSpinner from "../components/ui/LoadingSpinner"
+import EmptyState from "../components/ui/EmptyState"
+import { pageVariants } from "../utils/animations"
 
 export default function ShopPage({ initialProducts, categories, totalProducts, totalPages }) {
     const router = useRouter()
     const [products, setProducts] = useState(initialProducts || [])
     const [loading, setLoading] = useState(false)
-    const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+    const [viewMode, setViewMode] = useState("grid") // 'grid' or 'list'
     const [showFilters, setShowFilters] = useState(false)
+    const [isInitialized, setIsInitialized] = useState(false)
 
-    // État des filtres depuis l'URL
     const [filters, setFilters] = useState({
-        category: router.query.category || '',
-        essence: router.query.essence || '',
-        priceRange: router.query.priceRange || '',
-        inStock: router.query.inStock === 'true',
-        search: router.query.search || '',
-        sort: router.query.sort || 'name-asc',
-        page: parseInt(router.query.page) || 1
+        category: "",
+        essence: "",
+        priceRange: "",
+        inStock: false,
+        search: "",
+        sort: "name-asc",
+        page: 1,
     })
 
-    // Mettre à jour l'URL quand les filtres changent
-    const updateURL = useCallback((newFilters) => {
-        const query = {}
-        Object.keys(newFilters).forEach(key => {
-            if (newFilters[key] && newFilters[key] !== '' && newFilters[key] !== false) {
-                query[key] = newFilters[key].toString()
+    useEffect(() => {
+        if (!router.isReady) return
+
+        const newFilters = {
+            category: router.query.category || "",
+            essence: router.query.essence || "",
+            priceRange: router.query.priceRange || "",
+            inStock: router.query.inStock === "true",
+            search: router.query.search || "",
+            sort: router.query.sort || "name-asc",
+            page: Number.parseInt(router.query.page) || 1,
+        }
+
+        const filtersChanged = Object.keys(newFilters).some((key) => newFilters[key] !== filters[key])
+
+        if (filtersChanged) {
+            setFilters(newFilters)
+            if (isInitialized) {
+                loadProducts(newFilters)
             }
-        })
+        }
 
-        router.push({
-            pathname: '/shop',
-            query
-        }, undefined, { shallow: true })
-    }, [router])
+        if (!isInitialized) {
+            setIsInitialized(true)
+        }
+    }, [router.isReady, router.query, isInitialized])
 
-    // Fonction pour charger les produits
-    const loadProducts = useCallback(async (newFilters) => {
+    const loadProducts = useCallback(async (filtersToUse) => {
+        console.log("[v0] Loading products with filters:", filtersToUse)
         setLoading(true)
         try {
             const searchParams = new URLSearchParams()
-            Object.keys(newFilters).forEach(key => {
-                if (newFilters[key] && newFilters[key] !== '' && newFilters[key] !== false) {
-                    searchParams.append(key, newFilters[key].toString())
+            Object.keys(filtersToUse).forEach((key) => {
+                if (filtersToUse[key] && filtersToUse[key] !== "" && filtersToUse[key] !== false) {
+                    searchParams.append(key, filtersToUse[key].toString())
                 }
             })
 
@@ -64,55 +78,74 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
 
             if (data.success) {
                 setProducts(data.products)
+                console.log("[v0] Products loaded successfully:", data.products.length)
             }
         } catch (error) {
-            console.error('Erreur lors du chargement des produits:', error)
+            console.error("Erreur lors du chargement des produits:", error)
         } finally {
             setLoading(false)
         }
     }, [])
 
-    // Gérer les changements de filtres
+    const updateURL = useCallback(
+        (newFilters) => {
+            const query = {}
+            Object.keys(newFilters).forEach((key) => {
+                if (newFilters[key] && newFilters[key] !== "" && newFilters[key] !== false) {
+                    query[key] = newFilters[key].toString()
+                }
+            })
+
+            console.log("[v0] Updating URL with query:", query)
+            router.push(
+                {
+                    pathname: "/shop",
+                    query,
+                },
+                undefined,
+                { shallow: true },
+            )
+        },
+        [router],
+    )
+
     const handleFilterChange = (key, value) => {
+        console.log("[v0] Filter change:", key, value)
         const newFilters = { ...filters, [key]: value, page: 1 }
         setFilters(newFilters)
         updateURL(newFilters)
-        loadProducts(newFilters)
     }
 
-    // Gérer le changement de page
     const handlePageChange = (page) => {
+        console.log("[v0] Page change:", page)
         const newFilters = { ...filters, page }
         setFilters(newFilters)
         updateURL(newFilters)
-        loadProducts(newFilters)
-        // Scroll vers le haut
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        window.scrollTo({ top: 0, behavior: "smooth" })
     }
 
-    // Réinitialiser les filtres
     const resetFilters = () => {
+        console.log("[v0] Resetting filters")
         const newFilters = {
-            category: '',
-            essence: '',
-            priceRange: '',
+            category: "",
+            essence: "",
+            priceRange: "",
             inStock: false,
-            search: '',
-            sort: 'name-asc',
-            page: 1
+            search: "",
+            sort: "name-asc",
+            page: 1,
         }
         setFilters(newFilters)
         updateURL(newFilters)
-        loadProducts(newFilters)
     }
 
     const breadcrumbItems = [
-        { label: 'Accueil', href: '/' },
-        { label: 'Boutique', href: '/shop' }
+        { label: "Accueil", href: "/" },
+        { label: "Boutique", href: "/shop" },
     ]
 
     if (filters.category) {
-        const category = categories?.find(c => c.slug === filters.category)
+        const category = categories?.find((c) => c.slug === filters.category)
         if (category) {
             breadcrumbItems.push({ label: category.name })
         }
@@ -122,7 +155,10 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
         <>
             <Head>
                 <title>Boutique - Tous nos Produits | BoisChauffage Pro</title>
-                <meta name="description" content="Découvrez tous nos produits de bois de chauffage premium : chêne, hêtre, charme, granulés. Filtres avancés, livraison rapide." />
+                <meta
+                    name="description"
+                    content="Découvrez tous nos produits de bois de chauffage premium : chêne, hêtre, charme, granulés. Filtres avancés, livraison rapide."
+                />
                 <meta name="keywords" content="boutique, bois chauffage, chêne, hêtre, charme, granulés, acheter" />
             </Head>
 
@@ -147,19 +183,15 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                                 <div className="mb-6 lg:mb-0">
-                                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                        Notre Boutique
-                                    </h1>
-                                    <p className="text-lg text-gray-600">
-                                        {totalProducts} produits disponibles
-                                    </p>
+                                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Notre Boutique</h1>
+                                    <p className="text-lg text-gray-600">{totalProducts} produits disponibles</p>
                                 </div>
 
                                 {/* Barre de recherche */}
                                 <div className="flex-1 max-w-md lg:ml-8">
                                     <ProductSearch
                                         value={filters.search}
-                                        onChange={(value) => handleFilterChange('search', value)}
+                                        onChange={(value) => handleFilterChange("search", value)}
                                         placeholder="Rechercher un produit..."
                                     />
                                 </div>
@@ -197,7 +229,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                             </button>
 
                                             <div className="text-sm text-gray-600">
-                                                {products.length} résultat{products.length > 1 ? 's' : ''}
+                                                {products.length} résultat{products.length > 1 ? "s" : ""}
                                             </div>
                                         </div>
 
@@ -206,19 +238,19 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                             {/* Mode d'affichage */}
                                             <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
                                                 <button
-                                                    onClick={() => setViewMode('grid')}
-                                                    className={`p-2 rounded-md transition-colors ${viewMode === 'grid'
-                                                            ? 'bg-white text-gray-900 shadow-sm'
-                                                            : 'text-gray-600 hover:text-gray-900'
+                                                    onClick={() => setViewMode("grid")}
+                                                    className={`p-2 rounded-md transition-colors ${viewMode === "grid"
+                                                            ? "bg-white text-gray-900 shadow-sm"
+                                                            : "text-gray-600 hover:text-gray-900"
                                                         }`}
                                                 >
                                                     <Grid3X3 className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => setViewMode('list')}
-                                                    className={`p-2 rounded-md transition-colors ${viewMode === 'list'
-                                                            ? 'bg-white text-gray-900 shadow-sm'
-                                                            : 'text-gray-600 hover:text-gray-900'
+                                                    onClick={() => setViewMode("list")}
+                                                    className={`p-2 rounded-md transition-colors ${viewMode === "list"
+                                                            ? "bg-white text-gray-900 shadow-sm"
+                                                            : "text-gray-600 hover:text-gray-900"
                                                         }`}
                                                 >
                                                     <List className="w-4 h-4" />
@@ -226,10 +258,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                             </div>
 
                                             {/* Tri */}
-                                            <ProductSort
-                                                value={filters.sort}
-                                                onChange={(value) => handleFilterChange('sort', value)}
-                                            />
+                                            <ProductSort value={filters.sort} onChange={(value) => handleFilterChange("sort", value)} />
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +268,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                     {showFilters && (
                                         <motion.div
                                             initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
+                                            animate={{ opacity: 1, height: "auto" }}
                                             exit={{ opacity: 0, height: 0 }}
                                             className="lg:hidden mb-6"
                                         >
@@ -281,16 +310,11 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                             />
                                         </motion.div>
                                     ) : (
-                                        <motion.div
-                                            key="products"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            exit={{ opacity: 0 }}
-                                        >
-                                            <div className={`grid gap-6 ${viewMode === 'grid'
-                                                    ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3'
-                                                    : 'grid-cols-1'
-                                                }`}>
+                                        <motion.div key="products" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                            <div
+                                                className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
+                                                    }`}
+                                            >
                                                 {products.map((product, index) => (
                                                     <motion.div
                                                         key={product._id}
@@ -298,10 +322,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                                         animate={{ opacity: 1, y: 0 }}
                                                         transition={{ delay: index * 0.1 }}
                                                     >
-                                                        <ProductCard
-                                                            product={product}
-                                                            viewMode={viewMode}
-                                                        />
+                                                        <ProductCard product={product} viewMode={viewMode} />
                                                     </motion.div>
                                                 ))}
                                             </div>
@@ -332,23 +353,23 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
 
 export async function getServerSideProps({ query }) {
     try {
-        // Construire les paramètres de recherche
         const searchParams = new URLSearchParams()
-        Object.keys(query).forEach(key => {
-            if (query[key] && query[key] !== '' && query[key] !== 'false') {
+        Object.keys(query).forEach((key) => {
+            if (query[key] && query[key] !== "" && query[key] !== "false") {
                 searchParams.append(key, query[key].toString())
             }
         })
 
-        // Récupérer les produits et catégories
         const [productsRes, categoriesRes] = await Promise.all([
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/products/search?${searchParams.toString()}`),
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/categories`)
+            fetch(
+                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/products/search?${searchParams.toString()}`,
+            ),
+            fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories`),
         ])
 
         const [productsData, categoriesData] = await Promise.all([
             productsRes.ok ? productsRes.json() : { products: [], total: 0, totalPages: 0 },
-            categoriesRes.ok ? categoriesRes.json() : { data: [] }
+            categoriesRes.ok ? categoriesRes.json() : { data: [] },
         ])
 
         return {
@@ -356,19 +377,19 @@ export async function getServerSideProps({ query }) {
                 initialProducts: productsData.products || [],
                 categories: categoriesData.data || [],
                 totalProducts: productsData.total || 0,
-                totalPages: productsData.totalPages || 0
-            }
+                totalPages: productsData.totalPages || 0,
+            },
         }
     } catch (error) {
-        console.error('Erreur lors du chargement de la boutique:', error)
+        console.error("Erreur lors du chargement de la boutique:", error)
 
         return {
             props: {
                 initialProducts: [],
                 categories: [],
                 totalProducts: 0,
-                totalPages: 0
-            }
+                totalPages: 0,
+            },
         }
     }
 }

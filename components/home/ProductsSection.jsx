@@ -163,7 +163,7 @@ export default function ProductsSection({ products = [] }) {
         }
     ]
 
-    const displayProducts = products.length > 0 ? products : defaultProducts
+    const displayProducts = products.length > 0 ? products : []
 
     const filters = [
         { id: 'all', label: 'Tous les produits', icon: Filter },

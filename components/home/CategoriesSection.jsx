@@ -12,7 +12,7 @@ export default function CategoriesSection({ categories = [] }) {
         'allume-feu-naturel': Flame
     }
 
-    const defaultCategories = [
+    const defaultCategories = [[
         {
             _id: '1',
             name: 'Bois Feuillus Premium',
@@ -49,9 +49,9 @@ export default function CategoriesSection({ categories = [] }) {
             productCount: 8,
             trending: false
         }
-    ]
+    ]]
 
-    const displayCategories = categories.length > 0 ? categories : defaultCategories
+    const displayCategories = categories.length > 0 ? categories : []
 
     return (
         <section className="py-20 bg-gray-50">

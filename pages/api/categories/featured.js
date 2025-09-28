@@ -1,74 +1,69 @@
-import { DatabaseUtils } from '../../../lib/mongodb'
+import { withPublicAPI, createResponse } from '@/middleware/api'
+import { Category } from '@/models'
 
-export default async function handler(req, res) {
-    // Autorise seulement GET
-    if (req.method !== 'GET') {
-        res.setHeader('Allow', ['GET'])
-        return res.status(405).json({
-            success: false,
-            message: `Méthode ${req.method} non autorisée`
-        })
-    }
-
+async function handler(req, res) {
     try {
-        // Récupérer les catégories featured
-        const categories = await DatabaseUtils.findMany(
-            'categories',
-            {
+        const { limit = 4 } = req.query
+
+        // Récupérer les catégories featured avec le nombre de produits
+        const categories = await Category
+            .find({
                 featured: true,
                 isActive: true
-            },
-            {
-                sort: { order: 1, createdAt: -1 },
-                limit: 4
-            }
-        )
-
-        // Si aucune catégorie featured trouvée, retourner les 4 premières actives
-        if (categories.length === 0) {
-            const fallbackCategories = await DatabaseUtils.findMany(
-                'categories',
-                { isActive: true },
-                {
-                    sort: { productCount: -1, createdAt: -1 },
-                    limit: 4
-                }
-            )
-
-            return res.status(200).json({
-                success: true,
-                data: fallbackCategories,
-                message: 'Catégories par défaut retournées (aucune featured trouvée)',
-                count: fallbackCategories.length
             })
+            .populate('productCount') // Utilise le virtual défini dans le modèle
+            .sort({ order: 1, createdAt: -1 })
+            .limit(parseInt(limit))
+            .lean()
+
+        // Si aucune catégorie featured trouvée, récupérer les 4 premières actives
+        if (categories.length === 0) {
+            const fallbackCategories = await Category
+                .find({ isActive: true })
+                .populate('productCount')
+                .sort({ productCount: -1, createdAt: -1 })
+                .limit(parseInt(limit))
+                .lean()
+
+            return res.status(200).json(
+                createResponse.success(
+                    fallbackCategories,
+                    'Catégories par défaut retournées (aucune featured trouvée)',
+                    { count: fallbackCategories.length, fallback: true }
+                )
+            )
         }
 
-        // Cache headers pour optimiser les performances
-        res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+        // Enrichir avec les statistiques si le virtual ne fonctionne pas
+        const enrichedCategories = await Promise.all(
+            categories.map(async (category) => {
+                if (typeof category.productCount !== 'number') {
+                    const { Product } = await import('../../../models')
+                    const productCount = await Product.countDocuments({
+                        categoryId: category._id,
+                        isActive: true
+                    })
+                    return { ...category, productCount }
+                }
+                return category
+            })
+        )
 
-        return res.status(200).json({
-            success: true,
-            data: categories,
-            count: categories.length,
-            message: 'Catégories featured récupérées avec succès'
-        })
+        return res.status(200).json(
+            createResponse.success(
+                enrichedCategories,
+                'Catégories featured récupérées avec succès',
+                { count: enrichedCategories.length }
+            )
+        )
 
     } catch (error) {
-        console.error('Erreur API categories/featured:', error)
-
-        return res.status(500).json({
-            success: false,
-            message: 'Erreur interne du serveur',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        })
+        throw error // Géré par le middleware withErrorHandling
     }
 }
 
-// Configuration pour Next.js
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: '1mb',
-        },
-    },
-}
+export default withPublicAPI({
+    methods: ['GET'],
+    cacheSeconds: 3600, // Cache 1 heure
+    rateLimitMax: 200   // Limite généreuse pour cette route publique
+})(handler)

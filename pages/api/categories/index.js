@@ -1,4 +1,5 @@
-import { DatabaseUtils } from '../../../lib/mongodb'
+import connectDB, { handleDBErrors } from '@/lib/mongoose'
+import { Category } from '@/models'
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
@@ -10,6 +11,9 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Connexion à la base de données
+        await connectDB()
+
         const { featured, active = 'true' } = req.query
 
         // Construction du filtre
@@ -23,36 +27,26 @@ export default async function handler(req, res) {
             filter.featured = true
         }
 
-        // Options de tri
-        const sortOptions = { order: 1, name: 1 }
+        // Récupérer les catégories avec le nombre de produits
+        const categories = await Category
+            .find(filter)
+            .populate('productCount') // Utilise le virtual
+            .sort({ order: 1, name: 1 })
+            .lean() // Pour de meilleures performances
 
-        // Récupérer les catégories
-        const categories = await DatabaseUtils.findMany(
-            'categories',
-            filter,
-            { sort: sortOptions }
-        )
-
-        // Enrichir avec les statistiques de produits
+        // Enrichir avec les statistiques de produits si le virtual ne fonctionne pas
         const enrichedCategories = await Promise.all(
             categories.map(async (category) => {
-                try {
-                    const productCount = await DatabaseUtils.count('products', {
+                if (!category.productCount) {
+                    // Fallback si le virtual ne fonctionne pas
+                    const Product = (await import('../../../models')).Product
+                    const productCount = await Product.countDocuments({
                         categoryId: category._id,
                         isActive: true
                     })
-
-                    return {
-                        ...category,
-                        productCount
-                    }
-                } catch (error) {
-                    console.error(`Erreur lors du comptage des produits pour la catégorie ${category._id}:`, error)
-                    return {
-                        ...category,
-                        productCount: 0
-                    }
+                    return { ...category, productCount }
                 }
+                return category
             })
         )
 
@@ -68,16 +62,20 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Erreur API categories:', error)
+        const dbError = handleDBErrors(error)
 
         return res.status(500).json({
             success: false,
-            message: 'Erreur interne du serveur',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            message: dbError.message,
+            type: dbError.type,
+            ...(process.env.NODE_ENV === 'development' && {
+                error: error.message,
+                stack: error.stack
+            })
         })
     }
 }
 
-// Configuration pour Next.js
 export const config = {
     api: {
         bodyParser: {

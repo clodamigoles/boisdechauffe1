@@ -1,17 +1,9 @@
-import { DatabaseUtils } from '../../../lib/mongodb'
+import { withPublicAPI, createResponse } from '@/middleware/api'
+import { Testimonial } from '@/models'
 
-export default async function handler(req, res) {
-    // Autorise seulement GET
-    if (req.method !== 'GET') {
-        res.setHeader('Allow', ['GET'])
-        return res.status(405).json({
-            success: false,
-            message: `Méthode ${req.method} non autorisée`
-        })
-    }
-
+async function handler(req, res) {
     try {
-        const { limit = 6, verified = true } = req.query
+        const { limit = 6, verified = 'true' } = req.query
 
         // Construire le filtre
         let filter = {
@@ -24,43 +16,43 @@ export default async function handler(req, res) {
             filter.verified = true
         }
 
-        // Récupérer les témoignages featured
-        const testimonials = await DatabaseUtils.findMany(
-            'testimonials',
-            filter,
-            {
-                sort: { order: 1, rating: -1, createdAt: -1 },
-                limit: parseInt(limit)
-            }
-        )
+        // Récupérer les témoignages featured avec Mongoose
+        const testimonials = await Testimonial
+            .find(filter)
+            .sort({ order: 1, rating: -1, createdAt: -1 })
+            .limit(parseInt(limit))
+            .lean()
 
         // Si aucun témoignage featured trouvé, récupérer les mieux notés
         if (testimonials.length === 0) {
-            const fallbackTestimonials = await DatabaseUtils.findMany(
-                'testimonials',
-                {
+            const fallbackTestimonials = await Testimonial
+                .find({
                     isActive: true,
                     verified: true,
                     rating: { $gte: 4 } // Minimum 4 étoiles
-                },
-                {
-                    sort: { rating: -1, createdAt: -1 },
-                    limit: parseInt(limit)
-                }
-            )
+                })
+                .sort({ rating: -1, createdAt: -1 })
+                .limit(parseInt(limit))
+                .lean()
 
-            return res.status(200).json({
-                success: true,
-                data: fallbackTestimonials,
-                message: 'Témoignages par défaut retournés (aucun featured trouvé)',
-                count: fallbackTestimonials.length
-            })
+            return res.status(200).json(
+                createResponse.success(
+                    fallbackTestimonials,
+                    'Témoignages par défaut retournés (aucun featured trouvé)',
+                    {
+                        count: fallbackTestimonials.length,
+                        fallback: true
+                    }
+                )
+            )
         }
 
         // Calculer des statistiques sur les témoignages
         const stats = {
             totalTestimonials: testimonials.length,
-            averageRating: testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length,
+            averageRating: testimonials.length > 0
+                ? Math.round((testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length) * 10) / 10
+                : 0,
             verifiedCount: testimonials.filter(t => t.verified).length,
             ratingDistribution: {
                 5: testimonials.filter(t => t.rating === 5).length,
@@ -68,36 +60,44 @@ export default async function handler(req, res) {
                 3: testimonials.filter(t => t.rating === 3).length,
                 2: testimonials.filter(t => t.rating === 2).length,
                 1: testimonials.filter(t => t.rating === 1).length
-            }
+            },
+            featuredCount: testimonials.filter(t => t.featured).length,
+            recentCount: testimonials.filter(t => {
+                const thirtyDaysAgo = new Date()
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+                return new Date(t.createdAt) >= thirtyDaysAgo
+            }).length
         }
 
-        // Cache headers pour optimiser les performances
-        res.setHeader('Cache-Control', 'public, s-maxage=7200, stale-while-revalidate=86400')
+        // Enrichir les témoignages avec des propriétés calculées
+        const enrichedTestimonials = testimonials.map(testimonial => ({
+            ...testimonial,
+            isRecent: (() => {
+                const sevenDaysAgo = new Date()
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+                return new Date(testimonial.createdAt) >= sevenDaysAgo
+            })(),
+            displayRating: '★'.repeat(testimonial.rating) + '☆'.repeat(5 - testimonial.rating)
+        }))
 
-        return res.status(200).json({
-            success: true,
-            data: testimonials,
-            count: testimonials.length,
-            stats,
-            message: 'Témoignages featured récupérés avec succès'
-        })
+        return res.status(200).json(
+            createResponse.success(
+                enrichedTestimonials,
+                'Témoignages featured récupérés avec succès',
+                {
+                    count: enrichedTestimonials.length,
+                    stats
+                }
+            )
+        )
 
     } catch (error) {
-        console.error('Erreur API testimonials/featured:', error)
-
-        return res.status(500).json({
-            success: false,
-            message: 'Erreur interne du serveur',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        })
+        throw error // Géré par le middleware withErrorHandling
     }
 }
 
-// Configuration pour Next.js
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: '1mb',
-        },
-    },
-}
+export default withPublicAPI({
+    methods: ['GET'],
+    cacheSeconds: 7200, // Cache 2 heures (contenu stable)
+    rateLimitMax: 100
+})(handler)
