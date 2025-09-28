@@ -178,7 +178,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                     </div>
                 </FilterSection>
 
-                {/* Essences */}
+                {/* Essences
                 <FilterSection
                     title="Essences"
                     isExpanded={expandedSections.essence}
@@ -196,7 +196,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                             />
                         ))}
                     </div>
-                </FilterSection>
+                </FilterSection> */}
 
                 {/* Prix */}
                 <FilterSection
