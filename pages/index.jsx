@@ -77,63 +77,6 @@ export default function HomePage({
                 <title>BoisChauffage Pro - Bois de Chauffage Premium | Livraison Rapide France</title>
                 <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France. Devis gratuit !" />
                 <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec, france" />
-
-                {/* Open Graph / Facebook */}
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://boischauffagepro.fr/" />
-                <meta property="og:title" content="BoisChauffage Pro - Bois de Chauffage Premium" />
-                <meta property="og:description" content="Bois de chauffage premium avec livraison rapide partout en France. Chêne, hêtre, charme séchés < 18% d'humidité." />
-                <meta property="og:image" content="https://boischauffagepro.fr/images/og-image.jpg" />
-                <meta property="og:image:width" content="1200" />
-                <meta property="og:image:height" content="630" />
-
-                {/* Twitter */}
-                <meta property="twitter:card" content="summary_large_image" />
-                <meta property="twitter:url" content="https://boischauffagepro.fr/" />
-                <meta property="twitter:title" content="BoisChauffage Pro - Bois de Chauffage Premium" />
-                <meta property="twitter:description" content="Bois de chauffage premium avec livraison rapide partout en France." />
-                <meta property="twitter:image" content="https://boischauffagepro.fr/images/og-image.jpg" />
-
-                {/* Autres meta tags */}
-                <meta name="robots" content="index, follow" />
-                <meta name="author" content="BoisChauffage Pro" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <link rel="canonical" href="https://boischauffagepro.fr" />
-
-                {/* Preload des ressources critiques */}
-                <link rel="preload" href="/videos/hero-background.mp4" as="video" type="video/mp4" />
-
-                {/* Favicon */}
-                <link rel="icon" href="/favicon.ico" />
-                <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-                {/* JSON-LD Schema */}
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "Organization",
-                            "name": "BoisChauffage Pro",
-                            "url": "https://boischauffagepro.fr",
-                            "logo": "https://boischauffagepro.fr/images/logo.png",
-                            "description": "Spécialiste du bois de chauffage premium avec livraison rapide en France",
-                            "address": {
-                                "@type": "PostalAddress",
-                                "streetAddress": "123 Route Forestière",
-                                "addressLocality": "Lyon",
-                                "postalCode": "69000",
-                                "addressCountry": "FR"
-                            },
-                            "telephone": "+33123456789",
-                            "email": "contact@boischauffagepro.fr",
-                            "sameAs": [
-                                "https://facebook.com/boischauffagepro",
-                                "https://instagram.com/boischauffagepro"
-                            ]
-                        })
-                    }}
-                />
             </Head>
 
             <AnimatePresence mode="wait">
