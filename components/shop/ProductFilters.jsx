@@ -1,7 +1,117 @@
-import { useState } from 'react'
+import { useState, useMemo, memo } from 'react'
 import { motion } from 'framer-motion'
 import { X, RotateCcw, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import Button from '../ui/Button'
+
+// Composants memoized pour éviter les re-renders
+const FilterSection = memo(({ title, isExpanded, onToggle, children }) => (
+    <div className="border-b border-gray-200 pb-6 last:border-b-0">
+        <button
+            onClick={onToggle}
+            className="flex items-center justify-between w-full py-3 text-left hover:text-gray-900 transition-colors"
+            aria-expanded={isExpanded}
+        >
+            <h3 className="text-sm font-medium text-gray-900">{title}</h3>
+            {isExpanded ? (
+                <ChevronUp className="w-4 h-4 text-gray-500" />
+            ) : (
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+            )}
+        </button>
+        <motion.div
+            initial={false}
+            animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+        >
+            <div className="pt-2 space-y-3">
+                {children}
+            </div>
+        </motion.div>
+    </div>
+))
+
+FilterSection.displayName = 'FilterSection'
+
+const CheckboxFilter = memo(({ value, isChecked, onChange, label, count }) => (
+    <label className="flex items-center space-x-3 cursor-pointer group">
+        <div className="relative flex-shrink-0">
+            <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={(e) => onChange(e.target.checked ? value : '')}
+                className="sr-only"
+            />
+            <div className={`w-4 h-4 rounded border-2 transition-colors ${
+                isChecked
+                    ? 'bg-amber-600 border-amber-600'
+                    : 'border-gray-300 group-hover:border-amber-400'
+            }`}>
+                {isChecked && (
+                    <Check className="w-3 h-3 text-white absolute top-0.5 left-0.5" />
+                )}
+            </div>
+        </div>
+        <span className="text-sm text-gray-700 flex-1">{label}</span>
+        {count !== undefined && (
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                {count}
+            </span>
+        )}
+    </label>
+))
+
+CheckboxFilter.displayName = 'CheckboxFilter'
+
+const RadioFilter = memo(({ value, isSelected, onChange, label, count }) => (
+    <label className="flex items-center space-x-3 cursor-pointer group">
+        <div className="relative flex-shrink-0">
+            <input
+                type="radio"
+                checked={isSelected}
+                onChange={() => onChange(value)}
+                className="sr-only"
+            />
+            <div className={`w-4 h-4 rounded-full border-2 transition-colors ${
+                isSelected
+                    ? 'bg-amber-600 border-amber-600'
+                    : 'border-gray-300 group-hover:border-amber-400'
+            }`}>
+                {isSelected && (
+                    <div className="w-2 h-2 bg-white rounded-full absolute top-1 left-1" />
+                )}
+            </div>
+        </div>
+        <span className="text-sm text-gray-700 flex-1">{label}</span>
+        {count !== undefined && (
+            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                {count}
+            </span>
+        )}
+    </label>
+))
+
+RadioFilter.displayName = 'RadioFilter'
+
+const FilterTag = memo(({ label, onRemove }) => (
+    <motion.span
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 text-xs font-medium px-3 py-1 rounded-full"
+    >
+        <span>{label}</span>
+        <button
+            onClick={onRemove}
+            className="ml-1 hover:text-amber-900 transition-colors"
+            aria-label={`Retirer le filtre ${label}`}
+        >
+            <X className="w-3 h-3" />
+        </button>
+    </motion.span>
+))
+
+FilterTag.displayName = 'FilterTag'
 
 export default function ProductFilters({ filters, categories, onChange, onReset, mobile = false }) {
     const [expandedSections, setExpandedSections] = useState({
@@ -18,7 +128,8 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
         }))
     }
 
-    const essences = [
+    // Données statiques memoized
+    const essences = useMemo(() => [
         { value: 'chene', label: 'Chêne', count: 12 },
         { value: 'hetre', label: 'Hêtre', count: 8 },
         { value: 'charme', label: 'Charme', count: 6 },
@@ -26,109 +137,72 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
         { value: 'granules', label: 'Granulés', count: 3 },
         { value: 'compresse', label: 'Bûches Compressées', count: 2 },
         { value: 'allume-feu', label: 'Allume-feu', count: 1 }
-    ]
+    ], [])
 
-    const priceRanges = [
+    const priceRanges = useMemo(() => [
         { value: '0-50', label: 'Moins de 50€', count: 8 },
         { value: '50-100', label: '50€ - 100€', count: 15 },
         { value: '100-200', label: '100€ - 200€', count: 12 },
         { value: '200-500', label: '200€ - 500€', count: 6 },
         { value: '500+', label: 'Plus de 500€', count: 3 }
-    ]
+    ], [])
 
-    const FilterSection = ({ title, isExpanded, onToggle, children }) => (
-        <div className="border-b border-gray-200 pb-6 last:border-b-0">
-            <button
-                onClick={onToggle}
-                className="flex items-center justify-between w-full py-3 text-left"
-            >
-                <h3 className="text-sm font-medium text-gray-900">{title}</h3>
-                {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-gray-500" />
-                ) : (
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                )}
-            </button>
-            <motion.div
-                initial={false}
-                animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-            >
-                <div className="pt-2 space-y-3">
-                    {children}
-                </div>
-            </motion.div>
-        </div>
-    )
+    // Compteur de filtres actifs memoized
+    const activeFiltersCount = useMemo(() => {
+        return Object.entries(filters).filter(([key, value]) => 
+            value && value !== '' && value !== false && 
+            key !== 'sort' && key !== 'page'
+        ).length
+    }, [filters])
 
-    const CheckboxFilter = ({ value, isChecked, onChange, label, count }) => (
-        <label className="flex items-center space-x-3 cursor-pointer group">
-            <div className="relative">
-                <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={(e) => onChange(e.target.checked ? value : '')}
-                    className="sr-only"
-                />
-                <div className={`w-4 h-4 rounded border-2 transition-colors ${isChecked
-                        ? 'bg-amber-600 border-amber-600'
-                        : 'border-gray-300 group-hover:border-amber-400'
-                    }`}>
-                    {isChecked && (
-                        <Check className="w-3 h-3 text-white absolute top-0.5 left-0.5" />
-                    )}
-                </div>
-            </div>
-            <span className="text-sm text-gray-700 flex-1">
-                {label}
-            </span>
-            {count && (
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                    {count}
-                </span>
-            )}
-        </label>
-    )
-
-    const RadioFilter = ({ value, isSelected, onChange, label, count }) => (
-        <label className="flex items-center space-x-3 cursor-pointer group">
-            <div className="relative">
-                <input
-                    type="radio"
-                    checked={isSelected}
-                    onChange={() => onChange(value)}
-                    className="sr-only"
-                />
-                <div className={`w-4 h-4 rounded-full border-2 transition-colors ${isSelected
-                        ? 'bg-amber-600 border-amber-600'
-                        : 'border-gray-300 group-hover:border-amber-400'
-                    }`}>
-                    {isSelected && (
-                        <div className="w-2 h-2 bg-white rounded-full absolute top-1 left-1" />
-                    )}
-                </div>
-            </div>
-            <span className="text-sm text-gray-700 flex-1">
-                {label}
-            </span>
-            {count && (
-                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                    {count}
-                </span>
-            )}
-        </label>
-    )
-
-    const activeFiltersCount = Object.values(filters).filter(value =>
-        value && value !== '' && value !== false
-    ).length - 2 // Exclure sort et page
+    // Liste des filtres actifs pour affichage
+    const activeFiltersList = useMemo(() => {
+        const active = []
+        
+        if (filters.category) {
+            const cat = categories?.find(c => c.slug === filters.category)
+            if (cat) active.push({ key: 'category', label: cat.name })
+        }
+        
+        if (filters.essence) {
+            const ess = essences.find(e => e.value === filters.essence)
+            if (ess) active.push({ key: 'essence', label: ess.label })
+        }
+        
+        if (filters.priceRange) {
+            const price = priceRanges.find(p => p.value === filters.priceRange)
+            if (price) active.push({ key: 'priceRange', label: price.label })
+        }
+        
+        if (filters.inStock) {
+            active.push({ key: 'inStock', label: 'En stock' })
+        }
+        
+        if (filters.badges) {
+            const badgeLabels = {
+                premium: 'Premium',
+                bestseller: 'Meilleures ventes',
+                nouveau: 'Nouveautés'
+            }
+            active.push({ key: 'badges', label: badgeLabels[filters.badges] || filters.badges })
+        }
+        
+        if (filters.promotion === 'true') {
+            active.push({ key: 'promotion', label: 'En promotion' })
+        }
+        
+        if (filters.search) {
+            active.push({ key: 'search', label: `"${filters.search}"` })
+        }
+        
+        return active
+    }, [filters, categories, essences, priceRanges])
 
     return (
         <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${mobile ? 'p-4' : 'p-6'}`}>
             {/* En-tête */}
             <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                     <h2 className="text-lg font-semibold text-gray-900">Filtres</h2>
                     {activeFiltersCount > 0 && (
                         <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded-full">
@@ -142,7 +216,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                         variant="ghost"
                         size="sm"
                         onClick={onReset}
-                        className="flex items-center space-x-1 text-gray-600 hover:text-gray-900"
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
                     >
                         <RotateCcw className="w-4 h-4" />
                         <span>Reset</span>
@@ -163,9 +237,9 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                             isSelected={!filters.category}
                             onChange={(value) => onChange('category', value)}
                             label="Toutes les catégories"
-                            count={categories.reduce((sum, cat) => sum + cat.productCount, 0)}
+                            count={categories?.reduce((sum, cat) => sum + (cat.productCount || 0), 0)}
                         />
-                        {categories.map((category) => (
+                        {categories?.map((category) => (
                             <RadioFilter
                                 key={category._id}
                                 value={category.slug}
@@ -178,7 +252,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                     </div>
                 </FilterSection>
 
-                {/* Essences
+                {/* Essences */}
                 <FilterSection
                     title="Essences"
                     isExpanded={expandedSections.essence}
@@ -190,13 +264,13 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                                 key={essence.value}
                                 value={essence.value}
                                 isChecked={filters.essence === essence.value}
-                                onChange={(checked) => onChange('essence', checked ? essence.value : '')}
+                                onChange={(value) => onChange('essence', value)}
                                 label={essence.label}
                                 count={essence.count}
                             />
                         ))}
                     </div>
-                </FilterSection> */}
+                </FilterSection>
 
                 {/* Prix */}
                 <FilterSection
@@ -270,56 +344,16 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                 <div className="mt-6 pt-6 border-t border-gray-200">
                     <h4 className="text-sm font-medium text-gray-900 mb-3">Filtres actifs</h4>
                     <div className="flex flex-wrap gap-2">
-                        {filters.category && (
+                        {activeFiltersList.map((filter) => (
                             <FilterTag
-                                label={categories.find(c => c.slug === filters.category)?.name || filters.category}
-                                onRemove={() => onChange('category', '')}
+                                key={filter.key}
+                                label={filter.label}
+                                onRemove={() => onChange(filter.key, filter.key === 'inStock' ? false : '')}
                             />
-                        )}
-                        {filters.essence && (
-                            <FilterTag
-                                label={essences.find(e => e.value === filters.essence)?.label || filters.essence}
-                                onRemove={() => onChange('essence', '')}
-                            />
-                        )}
-                        {filters.priceRange && (
-                            <FilterTag
-                                label={priceRanges.find(p => p.value === filters.priceRange)?.label || filters.priceRange}
-                                onRemove={() => onChange('priceRange', '')}
-                            />
-                        )}
-                        {filters.inStock && (
-                            <FilterTag
-                                label="En stock"
-                                onRemove={() => onChange('inStock', false)}
-                            />
-                        )}
-                        {filters.search && (
-                            <FilterTag
-                                label={`"${filters.search}"`}
-                                onRemove={() => onChange('search', '')}
-                            />
-                        )}
+                        ))}
                     </div>
                 </div>
             )}
         </div>
     )
 }
-
-const FilterTag = ({ label, onRemove }) => (
-    <motion.span
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        className="inline-flex items-center space-x-1 bg-amber-100 text-amber-800 text-xs font-medium px-3 py-1 rounded-full"
-    >
-        <span>{label}</span>
-        <button
-            onClick={onRemove}
-            className="ml-1 hover:text-amber-900"
-        >
-            <X className="w-3 h-3" />
-        </button>
-    </motion.span>
-)

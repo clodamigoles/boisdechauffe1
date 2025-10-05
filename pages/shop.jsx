@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { motion, AnimatePresence } from "framer-motion"
@@ -17,59 +17,40 @@ import LoadingSpinner from "../components/ui/LoadingSpinner"
 import EmptyState from "../components/ui/EmptyState"
 import { pageVariants } from "../utils/animations"
 
-export default function ShopPage({ initialProducts, categories, totalProducts, totalPages }) {
+export default function ShopPage({ initialProducts, categories, totalProducts: initialTotal, totalPages: initialTotalPages }) {
     const router = useRouter()
     const [products, setProducts] = useState(initialProducts || [])
+    const [totalProducts, setTotalProducts] = useState(initialTotal || 0)
+    const [totalPages, setTotalPages] = useState(initialTotalPages || 0)
     const [loading, setLoading] = useState(false)
-    const [viewMode, setViewMode] = useState("grid") // 'grid' or 'list'
+    const [viewMode, setViewMode] = useState("grid")
     const [showFilters, setShowFilters] = useState(false)
-    const [isInitialized, setIsInitialized] = useState(false)
 
-    const [filters, setFilters] = useState({
-        category: "",
-        essence: "",
-        priceRange: "",
-        inStock: false,
-        search: "",
-        sort: "name-asc",
-        page: 1,
-    })
+    // Extraction des filtres depuis l'URL - memoized pour éviter recalculs
+    const filters = useMemo(() => ({
+        category: router.query.category || "",
+        essence: router.query.essence || "",
+        priceRange: router.query.priceRange || "",
+        inStock: router.query.inStock === "true",
+        search: router.query.search || "",
+        sort: router.query.sort || "name-asc",
+        page: Number.parseInt(router.query.page) || 1,
+        badges: router.query.badges || "",
+        promotion: router.query.promotion || ""
+    }), [router.query])
 
-    useEffect(() => {
-        if (!router.isReady) return
+    // Référence pour savoir si c'est le premier chargement
+    const isFirstLoad = useRef(true)
+    const previousQueryRef = useRef('')
 
-        const newFilters = {
-            category: router.query.category || "",
-            essence: router.query.essence || "",
-            priceRange: router.query.priceRange || "",
-            inStock: router.query.inStock === "true",
-            search: router.query.search || "",
-            sort: router.query.sort || "name-asc",
-            page: Number.parseInt(router.query.page) || 1,
-        }
-
-        const filtersChanged = Object.keys(newFilters).some((key) => newFilters[key] !== filters[key])
-
-        if (filtersChanged) {
-            setFilters(newFilters)
-            if (isInitialized) {
-                loadProducts(newFilters)
-            }
-        }
-
-        if (!isInitialized) {
-            setIsInitialized(true)
-        }
-    }, [router.isReady, router.query, isInitialized])
-
-    const loadProducts = useCallback(async (filtersToUse) => {
-        console.log("[v0] Loading products with filters:", filtersToUse)
+    // Chargement des produits
+    const loadProducts = useCallback(async (currentFilters) => {
         setLoading(true)
         try {
             const searchParams = new URLSearchParams()
-            Object.keys(filtersToUse).forEach((key) => {
-                if (filtersToUse[key] && filtersToUse[key] !== "" && filtersToUse[key] !== false) {
-                    searchParams.append(key, filtersToUse[key].toString())
+            Object.entries(currentFilters).forEach(([key, value]) => {
+                if (value && value !== "" && value !== false) {
+                    searchParams.append(key, value.toString())
                 }
             })
 
@@ -77,79 +58,96 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
             const data = await response.json()
 
             if (data.success) {
-                setProducts(data.products)
-                console.log("[v0] Products loaded successfully:", data.products.length)
+                setProducts(data.products || [])
+                setTotalProducts(data.total || 0)
+                setTotalPages(data.totalPages || 0)
             }
         } catch (error) {
             console.error("Erreur lors du chargement des produits:", error)
+            setProducts([])
+            setTotalProducts(0)
+            setTotalPages(0)
         } finally {
             setLoading(false)
         }
     }, [])
 
-    const updateURL = useCallback(
-        (newFilters) => {
-            const query = {}
-            Object.keys(newFilters).forEach((key) => {
-                if (newFilters[key] && newFilters[key] !== "" && newFilters[key] !== false) {
-                    query[key] = newFilters[key].toString()
-                }
-            })
+    // Effet pour charger les produits UNIQUEMENT quand l'URL change
+    useEffect(() => {
+        if (!router.isReady) return
 
-            console.log("[v0] Updating URL with query:", query)
-            router.push(
-                {
-                    pathname: "/shop",
-                    query,
-                },
-                undefined,
-                { shallow: true },
-            )
-        },
-        [router],
-    )
+        const currentQuery = router.asPath.split('?')[1] || ''
+        
+        // Ne charger que si l'URL a vraiment changé
+        if (isFirstLoad.current) {
+            isFirstLoad.current = false
+            previousQueryRef.current = currentQuery
+            return // Ne rien faire au premier chargement (SSR a déjà chargé)
+        }
 
-    const handleFilterChange = (key, value) => {
-        console.log("[v0] Filter change:", key, value)
-        const newFilters = { ...filters, [key]: value, page: 1 }
-        setFilters(newFilters)
-        updateURL(newFilters)
-    }
+        if (currentQuery !== previousQueryRef.current) {
+            previousQueryRef.current = currentQuery
+            loadProducts(filters)
+        }
+    }, [router.isReady, router.asPath, filters, loadProducts])
 
-    const handlePageChange = (page) => {
-        console.log("[v0] Page change:", page)
-        const newFilters = { ...filters, page }
-        setFilters(newFilters)
-        updateURL(newFilters)
+    // Mise à jour de l'URL - optimisée
+    const updateFilters = useCallback((key, value) => {
+        const newQuery = { ...router.query }
+        
+        // Supprimer la clé si valeur vide/false
+        if (!value || value === "" || value === false) {
+            delete newQuery[key]
+        } else {
+            newQuery[key] = value.toString()
+        }
+        
+        // Reset page si ce n'est pas un changement de page
+        if (key !== 'page') {
+            delete newQuery.page
+        }
+
+        router.push({
+            pathname: "/shop",
+            query: newQuery
+        }, undefined, { shallow: true })
+    }, [router])
+
+    // Gestion du changement de page
+    const handlePageChange = useCallback((page) => {
+        updateFilters('page', page)
         window.scrollTo({ top: 0, behavior: "smooth" })
-    }
+    }, [updateFilters])
 
-    const resetFilters = () => {
-        console.log("[v0] Resetting filters")
-        const newFilters = {
-            category: "",
-            essence: "",
-            priceRange: "",
-            inStock: false,
-            search: "",
-            sort: "name-asc",
-            page: 1,
+    // Reset des filtres
+    const resetFilters = useCallback(() => {
+        router.push("/shop", undefined, { shallow: true })
+    }, [router])
+
+    // Breadcrumb memoized
+    const breadcrumbItems = useMemo(() => {
+        const items = [
+            { label: "Accueil", href: "/" },
+            { label: "Boutique", href: "/shop" }
+        ]
+        
+        if (filters.category) {
+            const category = categories?.find((c) => c.slug === filters.category)
+            if (category) {
+                items.push({ label: category.name })
+            }
         }
-        setFilters(newFilters)
-        updateURL(newFilters)
-    }
+        
+        return items
+    }, [filters.category, categories])
 
-    const breadcrumbItems = [
-        { label: "Accueil", href: "/" },
-        { label: "Boutique", href: "/shop" },
-    ]
-
-    if (filters.category) {
-        const category = categories?.find((c) => c.slug === filters.category)
-        if (category) {
-            breadcrumbItems.push({ label: category.name })
-        }
-    }
+    // Compteur de filtres actifs
+    const activeFiltersCount = useMemo(() => {
+        return Object.entries(filters).filter(([key, value]) => 
+            value && value !== "" && value !== false && 
+            key !== 'sort' && key !== 'page'
+        ).length
+    }, [filters])
 
     return (
         <>
@@ -181,17 +179,19 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                         className="bg-white border-b border-gray-200"
                     >
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                                <div className="mb-6 lg:mb-0">
+                            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                                <div>
                                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Notre Boutique</h1>
-                                    <p className="text-lg text-gray-600">{totalProducts} produits disponibles</p>
+                                    <p className="text-lg text-gray-600">
+                                        {totalProducts} produit{totalProducts > 1 ? "s" : ""} disponible{totalProducts > 1 ? "s" : ""}
+                                    </p>
                                 </div>
 
                                 {/* Barre de recherche */}
-                                <div className="flex-1 max-w-md lg:ml-8">
+                                <div className="flex-1 max-w-md">
                                     <ProductSearch
                                         value={filters.search}
-                                        onChange={(value) => handleFilterChange("search", value)}
+                                        onChange={(value) => updateFilters("search", value)}
                                         placeholder="Rechercher un produit..."
                                     />
                                 </div>
@@ -202,30 +202,35 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         <div className="flex flex-col lg:flex-row gap-8">
                             {/* Sidebar Filtres - Desktop */}
-                            <div className="hidden lg:block w-80 flex-shrink-0">
+                            <aside className="hidden lg:block w-80 flex-shrink-0">
                                 <div className="sticky top-24">
                                     <ProductFilters
                                         filters={filters}
                                         categories={categories}
-                                        onChange={handleFilterChange}
+                                        onChange={updateFilters}
                                         onReset={resetFilters}
                                     />
                                 </div>
-                            </div>
+                            </aside>
 
                             {/* Contenu principal */}
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                                 {/* Barre d'outils */}
                                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                        {/* Bouton filtres mobile */}
-                                        <div className="flex items-center space-x-4">
+                                        {/* Bouton filtres mobile + résultats */}
+                                        <div className="flex items-center gap-4">
                                             <button
                                                 onClick={() => setShowFilters(!showFilters)}
-                                                className="lg:hidden flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                                                className="lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                                             >
                                                 <SlidersHorizontal className="w-4 h-4" />
                                                 <span>Filtres</span>
+                                                {activeFiltersCount > 0 && (
+                                                    <span className="bg-amber-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                                                        {activeFiltersCount}
+                                                    </span>
+                                                )}
                                             </button>
 
                                             <div className="text-sm text-gray-600">
@@ -234,31 +239,38 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                         </div>
 
                                         {/* Contrôles de vue et tri */}
-                                        <div className="flex items-center space-x-4">
+                                        <div className="flex items-center gap-4">
                                             {/* Mode d'affichage */}
-                                            <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+                                            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
                                                 <button
                                                     onClick={() => setViewMode("grid")}
-                                                    className={`p-2 rounded-md transition-colors ${viewMode === "grid"
+                                                    className={`p-2 rounded-md transition-colors ${
+                                                        viewMode === "grid"
                                                             ? "bg-white text-gray-900 shadow-sm"
                                                             : "text-gray-600 hover:text-gray-900"
-                                                        }`}
+                                                    }`}
+                                                    aria-label="Vue grille"
                                                 >
                                                     <Grid3X3 className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => setViewMode("list")}
-                                                    className={`p-2 rounded-md transition-colors ${viewMode === "list"
+                                                    className={`p-2 rounded-md transition-colors ${
+                                                        viewMode === "list"
                                                             ? "bg-white text-gray-900 shadow-sm"
                                                             : "text-gray-600 hover:text-gray-900"
-                                                        }`}
+                                                    }`}
+                                                    aria-label="Vue liste"
                                                 >
                                                     <List className="w-4 h-4" />
                                                 </button>
                                             </div>
 
                                             {/* Tri */}
-                                            <ProductSort value={filters.sort} onChange={(value) => handleFilterChange("sort", value)} />
+                                            <ProductSort 
+                                                value={filters.sort} 
+                                                onChange={(value) => updateFilters("sort", value)} 
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -270,12 +282,12 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                             initial={{ opacity: 0, height: 0 }}
                                             animate={{ opacity: 1, height: "auto" }}
                                             exit={{ opacity: 0, height: 0 }}
-                                            className="lg:hidden mb-6"
+                                            className="lg:hidden mb-6 overflow-hidden"
                                         >
                                             <ProductFilters
                                                 filters={filters}
                                                 categories={categories}
-                                                onChange={handleFilterChange}
+                                                onChange={updateFilters}
                                                 onReset={resetFilters}
                                                 mobile
                                             />
@@ -310,17 +322,25 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
                                             />
                                         </motion.div>
                                     ) : (
-                                        <motion.div key="products" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                        <motion.div 
+                                            key="products" 
+                                            initial={{ opacity: 0 }} 
+                                            animate={{ opacity: 1 }} 
+                                            exit={{ opacity: 0 }}
+                                        >
                                             <div
-                                                className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
-                                                    }`}
+                                                className={`grid gap-6 ${
+                                                    viewMode === "grid" 
+                                                        ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" 
+                                                        : "grid-cols-1"
+                                                }`}
                                             >
                                                 {products.map((product, index) => (
                                                     <motion.div
                                                         key={product._id}
                                                         initial={{ opacity: 0, y: 20 }}
                                                         animate={{ opacity: 1, y: 0 }}
-                                                        transition={{ delay: index * 0.1 }}
+                                                        transition={{ delay: Math.min(index * 0.05, 0.3) }}
                                                     >
                                                         <ProductCard product={product} viewMode={viewMode} />
                                                     </motion.div>
@@ -354,22 +374,22 @@ export default function ShopPage({ initialProducts, categories, totalProducts, t
 export async function getServerSideProps({ query }) {
     try {
         const searchParams = new URLSearchParams()
-        Object.keys(query).forEach((key) => {
-            if (query[key] && query[key] !== "" && query[key] !== "false") {
-                searchParams.append(key, query[key].toString())
+        Object.entries(query).forEach(([key, value]) => {
+            if (value && value !== "" && value !== "false") {
+                searchParams.append(key, value.toString())
             }
         })
 
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+        
         const [productsRes, categoriesRes] = await Promise.all([
-            fetch(
-                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/products/search?${searchParams.toString()}`,
-            ),
-            fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories`),
+            fetch(`${baseUrl}/api/products/search?${searchParams.toString()}`),
+            fetch(`${baseUrl}/api/categories`)
         ])
 
         const [productsData, categoriesData] = await Promise.all([
             productsRes.ok ? productsRes.json() : { products: [], total: 0, totalPages: 0 },
-            categoriesRes.ok ? categoriesRes.json() : { data: [] },
+            categoriesRes.ok ? categoriesRes.json() : { data: [] }
         ])
 
         return {
@@ -377,8 +397,8 @@ export async function getServerSideProps({ query }) {
                 initialProducts: productsData.products || [],
                 categories: categoriesData.data || [],
                 totalProducts: productsData.total || 0,
-                totalPages: productsData.totalPages || 0,
-            },
+                totalPages: productsData.totalPages || 0
+            }
         }
     } catch (error) {
         console.error("Erreur lors du chargement de la boutique:", error)
@@ -388,8 +408,8 @@ export async function getServerSideProps({ query }) {
                 initialProducts: [],
                 categories: [],
                 totalProducts: 0,
-                totalPages: 0,
-            },
+                totalPages: 0
+            }
         }
     }
 }

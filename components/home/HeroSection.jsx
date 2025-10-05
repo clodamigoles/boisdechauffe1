@@ -39,7 +39,7 @@ export default function HeroSection() {
                     className="w-full h-full object-cover opacity-60"
                     poster="/images/hero-poster.png"
                 >
-                    <source src="/videos/hero-backgroundx.mp4" type="video/mp4" />
+                    <source src="/videos/hero-background.mp4" type="video/mp4" />
                 </video>
 
                 {/* Overlay */}
