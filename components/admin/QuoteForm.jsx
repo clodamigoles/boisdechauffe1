@@ -13,6 +13,7 @@ export default function QuoteForm({ order, onSuccess, onCancel }) {
         amount: order.total,
         iban: "",
         bic: "",
+        accountName: "Bois de Chauffe",
         notes: "",
     })
     const [loading, setLoading] = useState(false)
@@ -114,6 +115,17 @@ export default function QuoteForm({ order, onSuccess, onCancel }) {
                         value={formData.bic}
                         onChange={(e) => handleInputChange("bic", e.target.value)}
                         placeholder="ABCDFRPP"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <Label htmlFor="accountName">Nom du bénéficiaire *</Label>
+                    <Input
+                        id="accountName"
+                        value={formData.accountName}
+                        onChange={(e) => handleInputChange("accountName", e.target.value)}
+                        placeholder="Bois de Chauffe"
                         required
                     />
                 </div>

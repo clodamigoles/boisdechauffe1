@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         }
     } else if (req.method === "PUT") {
         try {
-            const { status, paymentStatus, notes } = req.body
+            const { status, paymentStatus, notes, bankDetails } = req.body
 
             const order = await Order.findOne({ orderNumber })
             if (!order) {
@@ -61,6 +61,17 @@ export default async function handler(req, res) {
 
             if (notes) {
                 order.notes = notes
+            }
+
+            // Mise à jour des informations bancaires
+            if (bankDetails) {
+                order.bankDetails = {
+                    iban: bankDetails.iban || order.bankDetails?.iban,
+                    bic: bankDetails.bic || order.bankDetails?.bic,
+                    accountName: bankDetails.accountName || order.bankDetails?.accountName,
+                    amountToPay: bankDetails.amountToPay !== undefined ? bankDetails.amountToPay : order.bankDetails?.amountToPay,
+                    updatedAt: new Date(),
+                }
             }
 
             await order.save()

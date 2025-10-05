@@ -1,15 +1,8 @@
 import formidable from "formidable"
-import { v2 as cloudinary } from "cloudinary"
+import { put } from "@vercel/blob"
 import fs from "fs"
 import connectDB from "@/lib/mongoose"
 import { Order } from "@/models/index"
-
-// Configure Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-})
 
 export const config = {
     api: {
@@ -55,23 +48,28 @@ export default async function handler(req, res) {
         }
         console.log("[v0] File received:", file.originalFilename, "Size:", file.size)
 
-        // Upload to Cloudinary
-        console.log("[v0] Uploading to Cloudinary...")
-        const uploadResult = await cloudinary.uploader.upload(file.filepath, {
-            folder: `receipts/${orderNumber}`,
-            resource_type: "auto",
-            public_id: `receipt_${Date.now()}`,
+        // Read file as buffer
+        const fileBuffer = fs.readFileSync(file.filepath)
+
+        // Upload to Vercel Blob
+        console.log("[v0] Uploading to Vercel Blob...")
+        const filename = `receipts/${orderNumber}/receipt_${Date.now()}_${file.originalFilename || "receipt"}`
+
+        const blob = await put(filename, fileBuffer, {
+            access: "public",
+            contentType: file.mimetype,
         })
-        console.log("[v0] Cloudinary upload successful:", uploadResult.secure_url)
+
+        console.log("[v0] Vercel Blob upload successful:", blob.url)
 
         // Clean up temp file
         fs.unlinkSync(file.filepath)
 
         // Add receipt to order
         const receiptData = {
-            url: uploadResult.secure_url,
+            url: blob.url,
             filename: file.originalFilename || "receipt",
-            publicId: uploadResult.public_id,
+            blobKey: filename,
             uploadedAt: new Date(),
         }
 
@@ -107,6 +105,7 @@ export default async function handler(req, res) {
         res.status(500).json({
             success: false,
             message: "Erreur lors de l'upload du récépissé",
+            error: process.env.NODE_ENV === "development" ? error.message : undefined,
         })
     }
 }

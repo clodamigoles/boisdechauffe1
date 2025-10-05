@@ -43,14 +43,12 @@ const orderSchema = new mongoose.Schema(
             firstName: {
                 type: String,
                 required: [true, "Le prénom est requis"],
-                trim: true,
-                maxlength: [50, "Le prénom ne peut pas dépasser 50 caractères"],
+                trim: true
             },
             lastName: {
                 type: String,
                 required: [true, "Le nom est requis"],
-                trim: true,
-                maxlength: [50, "Le nom ne peut pas dépasser 50 caractères"],
+                trim: true
             },
             email: {
                 type: String,
@@ -61,10 +59,7 @@ const orderSchema = new mongoose.Schema(
             },
             phone: {
                 type: String,
-                required: [true, "Le téléphone est requis"],
-                trim: true,
-                minlength: [8, "Le numéro de téléphone doit contenir au moins 8 caractères"],
-                maxlength: [20, "Le numéro de téléphone ne peut pas dépasser 20 caractères"],
+                trim: true
             },
             company: {
                 type: String,
@@ -90,9 +85,7 @@ const orderSchema = new mongoose.Schema(
             postalCode: {
                 type: String,
                 required: [true, "Le code postal est requis"],
-                trim: true,
-                minlength: [4, "Le code postal doit contenir au moins 4 caractères"],
-                maxlength: [10, "Le code postal ne peut pas dépasser 10 caractères"],
+                trim: true
             },
             country: {
                 type: String,
@@ -171,8 +164,22 @@ const orderSchema = new mongoose.Schema(
                     type: String,
                     required: true,
                 },
+                verifiedAt: {
+                    type: Date,
+                },
+                verifiedBy: {
+                    type: String,
+                },
             },
         ],
+
+        bankDetails: {
+            iban: { type: String, trim: true, default: null },
+            bic: { type: String, trim: true, default: null },
+            accountName: { type: String, trim: true, default: null },
+            amountToPay: { type: Number, default: null },
+            updatedAt: { type: Date, default: null }
+        },
 
         // Notes et commentaires
         notes: {

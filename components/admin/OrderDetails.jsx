@@ -4,9 +4,40 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { FileText, Download, Eye, Calendar } from "lucide-react"
+import { FileText, Download, Eye, Calendar, Mail } from "lucide-react"
+import { useState } from "react"
 
 export default function OrderDetails({ order, onClose }) {
+    const [isSendingEmail, setIsSendingEmail] = useState(false)
+    const [emailStatus, setEmailStatus] = useState(null)
+
+    const handleSendBankDetails = async () => {
+        setIsSendingEmail(true)
+        setEmailStatus(null)
+
+        try {
+            const response = await fetch(`/api/admin/orders/${order._id}/send-bank-details`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                setEmailStatus({ type: "success", message: "Email envoyé avec succès !" })
+            } else {
+                setEmailStatus({ type: "error", message: data.message || "Erreur lors de l'envoi" })
+            }
+        } catch (error) {
+            console.error("Erreur:", error)
+            setEmailStatus({ type: "error", message: "Erreur de connexion" })
+        } finally {
+            setIsSendingEmail(false)
+        }
+    }
+
     const getStatusBadge = (status) => {
         const statusConfig = {
             pending: { label: "En attente", variant: "secondary" },
@@ -103,6 +134,62 @@ export default function OrderDetails({ order, onClose }) {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Bank Details */}
+            {order.bankDetails && order.bankDetails.iban && (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center justify-between">
+                            <span>Informations bancaires</span>
+                            <Button
+                                onClick={handleSendBankDetails}
+                                disabled={isSendingEmail}
+                                size="sm"
+                                className="bg-blue-600 hover:bg-blue-700"
+                            >
+                                <Mail className="w-4 h-4 mr-2" />
+                                {isSendingEmail ? "Envoi en cours..." : "Envoyer par email"}
+                            </Button>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {emailStatus && (
+                            <div
+                                className={`mb-4 p-3 rounded ${emailStatus.type === "success"
+                                        ? "bg-green-50 text-green-800 border border-green-200"
+                                        : "bg-red-50 text-red-800 border border-red-200"
+                                    }`}
+                            >
+                                {emailStatus.message}
+                            </div>
+                        )}
+                        <div className="space-y-2">
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">IBAN:</span>
+                                <span className="font-mono">{order.bankDetails.iban}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">BIC:</span>
+                                <span className="font-mono">{order.bankDetails.bic}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">Bénéficiaire:</span>
+                                <span>{order.bankDetails.accountName}</span>
+                            </div>
+                            {order.bankDetails.amountToPay && (
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Montant à payer:</span>
+                                    <span className="font-semibold">{order.bankDetails.amountToPay}€</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                                <span>Mis à jour le:</span>
+                                <span>{formatDate(order.bankDetails.updatedAt)}</span>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             {order.paymentReceipts && order.paymentReceipts.length > 0 && (
                 <Card>

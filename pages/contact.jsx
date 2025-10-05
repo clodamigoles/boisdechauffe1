@@ -340,7 +340,7 @@ export default function ContactPage() {
                     className="pt-20"
                 > */}
                     {/* Hero Section */}
-                    <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20">
+                    <section className="bg-gray-800 text-white py-20">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             <motion.div
                                 initial={{ opacity: 0, y: 30 }}

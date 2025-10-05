@@ -22,73 +22,105 @@ const pageTransition = {
     duration: 0.5,
 }
 
+// Composant Skeleton pour les informations bancaires
+const BankDetailsSkeleton = () => (
+    <div className="bg-white rounded-lg p-4 mb-4 animate-pulse">
+        <h3 className="font-medium text-gray-900 mb-3">Coordonnées bancaires</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            {[1, 2, 3, 4].map((i) => (
+                <div key={i}>
+                    <div className="h-3 bg-gray-200 rounded w-20 mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded w-32"></div>
+                </div>
+            ))}
+        </div>
+        <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <div className="h-4 bg-amber-200 rounded w-3/4 mb-2"></div>
+            <div className="h-3 bg-amber-100 rounded w-full"></div>
+        </div>
+    </div>
+)
+
 export default function OrderTrackingPage() {
     const router = useRouter()
     const { orderNumber } = router.query
     const [orderData, setOrderData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
+    const loadOrderData = async () => {
         if (!orderNumber) return
 
-        const loadOrderData = async () => {
-            try {
-                setIsLoading(true)
+        try {
+            setIsLoading(true)
 
-                const response = await fetch(`/api/orders/${orderNumber}`)
-                const result = await response.json()
+            const response = await fetch(`/api/orders/${orderNumber}`)
+            const result = await response.json()
 
-                if (!response.ok) {
-                    throw new Error(result.message || "Erreur lors du chargement de la commande")
-                }
-
-                if (!result.success) {
-                    throw new Error(result.message || "Commande introuvable")
-                }
-
-                // Transform the backend data to match the frontend format
-                const transformedData = {
-                    orderNumber: result.data.orderNumber,
-                    status: result.data.status,
-                    paymentStatus: result.data.paymentStatus,
-                    createdAt: result.data.createdAt,
-                    customer: result.data.customer,
-                    shippingAddress: result.data.shippingAddress,
-                    items: result.data.items.map((item) => ({
-                        id: item.product,
-                        name: item.productSnapshot.name,
-                        quantity: item.quantity,
-                        price: item.unitPrice,
-                        unit: "unité", // Default unit, could be enhanced
-                        image: item.productSnapshot.image,
-                    })),
-                    totals: {
-                        subtotal: result.data.subtotal,
-                        shipping: result.data.shippingCost,
-                        total: result.data.total,
-                    },
-                    paymentMethod: result.data.paymentMethod,
-                    notes: result.data.notes,
-                    bankDetails: {
-                        iban: "FR76 1234 5678 9012 3456 789",
-                        bic: "ABCDEFGH",
-                        accountName: "Bois de Chauffage Premium SARL",
-                        reference: result.data.orderNumber,
-                    },
-                    timeline: generateTimeline(result.data.status, result.data.paymentStatus, result.data.statusHistory),
-                }
-
-                setOrderData(transformedData)
-            } catch (error) {
-                console.error("Erreur lors du chargement de la commande:", error)
-                setOrderData(null)
-            } finally {
-                setIsLoading(false)
+            if (!response.ok) {
+                throw new Error(result.message || "Erreur lors du chargement de la commande")
             }
-        }
 
+            if (!result.success) {
+                throw new Error(result.message || "Commande introuvable")
+            }
+
+            // Transform the backend data to match the frontend format
+            const transformedData = {
+                orderNumber: result.data.orderNumber,
+                status: result.data.status,
+                paymentStatus: result.data.paymentStatus,
+                createdAt: result.data.createdAt,
+                customer: result.data.customer,
+                shippingAddress: result.data.shippingAddress,
+                items: result.data.items.map((item) => ({
+                    id: item.product,
+                    name: item.productSnapshot.name,
+                    quantity: item.quantity,
+                    price: item.unitPrice,
+                    unit: "unité",
+                    image: item.productSnapshot.image,
+                })),
+                totals: {
+                    subtotal: result.data.subtotal,
+                    shipping: result.data.shippingCost,
+                    total: result.data.total,
+                },
+                paymentMethod: result.data.paymentMethod,
+                notes: result.data.notes,
+                bankDetails: result.data.bankDetails || null,
+                timeline: generateTimeline(result.data.status, result.data.paymentStatus, result.data.statusHistory),
+            }
+
+            setOrderData(transformedData)
+        } catch (error) {
+            console.error("Erreur lors du chargement de la commande:", error)
+            setOrderData(null)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    useEffect(() => {
         loadOrderData()
     }, [orderNumber])
+
+    // Polling automatique si pas d'informations bancaires
+    useEffect(() => {
+        if (!orderNumber || !orderData) return
+
+        const hasBankDetails = orderData?.bankDetails?.iban &&
+            orderData?.bankDetails?.bic &&
+            orderData?.bankDetails?.accountName
+
+        if (hasBankDetails || orderData.paymentStatus !== "pending") return
+
+        // Polling toutes les 30 secondes
+        const interval = setInterval(() => {
+            loadOrderData()
+        }, 30000)
+
+        return () => clearInterval(interval)
+    }, [orderNumber, orderData?.bankDetails, orderData?.paymentStatus])
 
     const generateTimeline = (status, paymentStatus, statusHistory) => {
         const timeline = [
@@ -125,7 +157,7 @@ export default function OrderTrackingPage() {
             },
             {
                 status: "shipped",
-                title: "Exp��diée",
+                title: "Expédiée",
                 description: "Votre commande est en route",
                 date: statusHistory.find((h) => h.status === "shipped")?.date || null,
                 completed: ["shipped", "delivered"].includes(status),
@@ -176,6 +208,10 @@ export default function OrderTrackingPage() {
         if (completed) return "text-green-600"
         if (current) return "text-amber-600"
         return "text-gray-400"
+    }
+
+    const hasBankDetails = () => {
+        return orderData?.bankDetails?.iban && orderData?.bankDetails?.bic && orderData?.bankDetails?.accountName
     }
 
     if (isLoading) {
@@ -296,49 +332,78 @@ export default function OrderTrackingPage() {
                                         <h2 className="text-lg font-semibold text-amber-900">Informations de paiement</h2>
                                     </div>
 
-                                    <div className="bg-white rounded-lg p-4 mb-4">
-                                        <h3 className="font-medium text-gray-900 mb-3">Coordonnées bancaires</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                            <div>
-                                                <span className="text-gray-600">IBAN :</span>
-                                                <p className="font-mono font-medium">{orderData.bankDetails.iban}</p>
+                                    {hasBankDetails() ? (
+                                        <>
+                                            <div className="bg-white rounded-lg p-4 mb-4">
+                                                <h3 className="font-medium text-gray-900 mb-3">Coordonnées bancaires</h3>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                                    <div>
+                                                        <span className="text-gray-600">IBAN :</span>
+                                                        <p className="font-mono font-medium">{orderData.bankDetails.iban}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">BIC :</span>
+                                                        <p className="font-mono font-medium">{orderData.bankDetails.bic}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Bénéficiaire :</span>
+                                                        <p className="font-medium">{orderData.bankDetails.accountName}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Référence :</span>
+                                                        <p className="font-mono font-medium text-amber-600">{orderData.orderNumber}</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <span className="text-gray-600">BIC :</span>
-                                                <p className="font-mono font-medium">{orderData.bankDetails.bic}</p>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Bénéficiaire :</span>
-                                                <p className="font-medium">{orderData.bankDetails.accountName}</p>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Référence :</span>
-                                                <p className="font-mono font-medium text-amber-600">{orderData.bankDetails.reference}</p>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                        <h4 className="font-medium text-blue-900 mb-2">Instructions importantes</h4>
-                                        <ul className="text-sm text-blue-800 space-y-1">
-                                            <li>
-                                                • Indiquez obligatoirement la référence <strong>{orderData.bankDetails.reference}</strong> dans
-                                                le libellé
-                                            </li>
-                                            <li>
-                                                • Le montant exact à virer est de <strong>{formatPrice(orderData.totals.total)}</strong>
-                                            </li>
-                                            <li>• Votre commande sera traitée dès réception du paiement (1-2 jours ouvrés)</li>
-                                        </ul>
-                                    </div>
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                                <h4 className="font-medium text-blue-900 mb-2">Instructions importantes</h4>
+                                                <ul className="text-sm text-blue-800 space-y-1">
+                                                    <li>
+                                                        • Indiquez obligatoirement la référence <strong>{orderData.orderNumber}</strong> dans le
+                                                        libellé
+                                                    </li>
+                                                    <li>
+                                                        • Le montant exact à virer est de{" "}
+                                                        <strong>
+                                                            {formatPrice(
+                                                                orderData.bankDetails.amountToPay !== null
+                                                                    ? orderData.bankDetails.amountToPay
+                                                                    : orderData.totals.total,
+                                                            )}
+                                                        </strong>
+                                                    </li>
+                                                    <li>• Votre commande sera traitée dès réception du paiement (1-2 jours ouvrés)</li>
+                                                </ul>
+                                            </div>
 
-                                    <PaymentReceiptUpload
-                                        orderNumber={orderData.orderNumber}
-                                        onUploadSuccess={(receiptData) => {
-                                            // Optionally refresh order data or show success message
-                                            console.log("Receipt uploaded:", receiptData)
-                                        }}
-                                    />
+                                            <PaymentReceiptUpload
+                                                orderNumber={orderData.orderNumber}
+                                                onUploadSuccess={(receiptData) => {
+                                                    console.log("Receipt uploaded:", receiptData)
+                                                }}
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <BankDetailsSkeleton />
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                                <div className="flex items-start space-x-3">
+                                                    <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                                    <div>
+                                                        <h4 className="font-medium text-blue-900 mb-1">
+                                                            Informations bancaires en cours de préparation
+                                                        </h4>
+                                                        <p className="text-sm text-blue-800">
+                                                            Nos équipes sont en train de préparer vos coordonnées bancaires personnalisées. Vous
+                                                            recevrez un email dès qu'elles seront disponibles. Cela prend généralement quelques
+                                                            minutes.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </motion.div>
                             )}
 
@@ -386,15 +451,6 @@ export default function OrderTrackingPage() {
                                         </div>
                                     </div>
                                 </div>
-
-                                {orderData.paymentStatus === "pending" && (
-                                    <PaymentReceiptUpload
-                                        orderNumber={orderData.orderNumber}
-                                        onUploadSuccess={(receiptData) => {
-                                            console.log("Receipt uploaded after summary:", receiptData)
-                                        }}
-                                    />
-                                )}
                             </motion.div>
                         </div>
 
@@ -434,8 +490,7 @@ export default function OrderTrackingPage() {
                                         <p>
                                             {orderData.customer.firstName} {orderData.customer.lastName}
                                         </p>
-                                        <p>{orderData.shippingAddress.address1}</p>
-                                        {orderData.shippingAddress.address2 && <p>{orderData.shippingAddress.address2}</p>}
+                                        <p>{orderData.shippingAddress.street}</p>
                                         <p>
                                             {orderData.shippingAddress.postalCode} {orderData.shippingAddress.city}
                                         </p>
@@ -443,47 +498,6 @@ export default function OrderTrackingPage() {
                                     </div>
                                 </div>
                             </motion.div>
-
-                            {/* Actions
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
-                                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-                            >
-                                <h3 className="font-semibold text-gray-900 mb-4">Actions</h3>
-                                <div className="space-y-3">
-                                    <Button variant="outline" size="sm" className="w-full justify-start bg-transparent">
-                                        <Download className="w-4 h-4 mr-2" />
-                                        Télécharger la facture
-                                    </Button>
-                                    <Button variant="outline" size="sm" className="w-full justify-start bg-transparent">
-                                        <Mail className="w-4 h-4 mr-2" />
-                                        Contacter le support
-                                    </Button>
-                                </div>
-                            </motion.div>
-
-                            {/* Besoin d'aide 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.6 }}
-                                className="bg-gray-50 rounded-xl p-6"
-                            >
-                                <h3 className="font-semibold text-gray-900 mb-2">Besoin d'aide ?</h3>
-                                <p className="text-sm text-gray-600 mb-4">Notre équipe est là pour vous accompagner</p>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex items-center space-x-2">
-                                        <Phone className="w-4 h-4 text-gray-400" />
-                                        <span>01 23 45 67 89</span>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <Mail className="w-4 h-4 text-gray-400" />
-                                        <span>support@boisdecharbon.fr</span>
-                                    </div>
-                                </div>
-                            </motion.div> */}
                         </div>
                     </div>
                 </div>

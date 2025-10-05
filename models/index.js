@@ -72,11 +72,6 @@ categorySchema.virtual("productCount", {
     match: { isActive: true },
 })
 
-/* Index pour les performances
-categorySchema.index({ slug: 1 })
-categorySchema.index({ featured: 1, isActive: 1 })
-categorySchema.index({ order: 1 }) */
-
 // Schéma Produit
 const productSchema = new mongoose.Schema(
     {
@@ -246,17 +241,6 @@ productSchema.pre("save", function (next) {
     next()
 })
 
-/* Index pour les performances
-productSchema.index({ slug: 1 })
-productSchema.index({ categoryId: 1, isActive: 1 })
-productSchema.index({ featured: 1, isActive: 1 })
-productSchema.index({ bestseller: 1, isActive: 1 })
-productSchema.index({ essence: 1, isActive: 1 })
-productSchema.index({ price: 1 })
-productSchema.index({ averageRating: -1 })
-productSchema.index({ salesCount: -1 })
-productSchema.index({ name: "text", shortDescription: "text" }) */
-
 // Schéma Newsletter
 const newsletterSchema = new mongoose.Schema(
     {
@@ -303,11 +287,6 @@ const newsletterSchema = new mongoose.Schema(
         timestamps: true,
     },
 )
-
-/* Index pour les performances
-newsletterSchema.index({ email: 1 })
-newsletterSchema.index({ isActive: 1 })
-newsletterSchema.index({ subscribedAt: -1 }) */
 
 // Schéma Témoignage
 const testimonialSchema = new mongoose.Schema(
@@ -368,12 +347,6 @@ const testimonialSchema = new mongoose.Schema(
     },
 )
 
-/* Index pour les performances
-testimonialSchema.index({ featured: 1, isActive: 1 })
-testimonialSchema.index({ verified: 1, isActive: 1 })
-testimonialSchema.index({ rating: -1 })
-testimonialSchema.index({ order: 1 }) */
-
 // Schéma Commande
 const orderItemSchema = new mongoose.Schema({
     product: {
@@ -418,14 +391,12 @@ const orderSchema = new mongoose.Schema(
             firstName: {
                 type: String,
                 required: [true, "Le prénom est requis"],
-                trim: true,
-                maxlength: [50, "Le prénom ne peut pas dépasser 50 caractères"],
+                trim: true
             },
             lastName: {
                 type: String,
                 required: [true, "Le nom est requis"],
-                trim: true,
-                maxlength: [50, "Le nom ne peut pas dépasser 50 caractères"],
+                trim: true
             },
             email: {
                 type: String,
@@ -437,13 +408,11 @@ const orderSchema = new mongoose.Schema(
             phone: {
                 type: String,
                 required: [true, "Le téléphone est requis"],
-                trim: true,
-                match: [/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/, "Numéro de téléphone invalide"],
+                trim: true
             },
             company: {
                 type: String,
-                trim: true,
-                maxlength: [100, "Le nom de l'entreprise ne peut pas dépasser 100 caractères"],
+                trim: true
             },
         },
 
@@ -452,20 +421,17 @@ const orderSchema = new mongoose.Schema(
             street: {
                 type: String,
                 required: [true, "L'adresse est requise"],
-                trim: true,
-                maxlength: [200, "L'adresse ne peut pas dépasser 200 caractères"],
+                trim: true
             },
             city: {
                 type: String,
                 required: [true, "La ville est requise"],
-                trim: true,
-                maxlength: [100, "La ville ne peut pas dépasser 100 caractères"],
+                trim: true
             },
             postalCode: {
                 type: String,
                 required: [true, "Le code postal est requis"],
-                trim: true,
-                match: [/^[0-9]{5}$/, "Code postal invalide (5 chiffres requis)"],
+                trim: true
             },
             country: {
                 type: String,
@@ -496,6 +462,34 @@ const orderSchema = new mongoose.Schema(
             min: [0, "Le total ne peut pas être négatif"],
         },
 
+        // Informations bancaires personnalisées (remplies lors de l'envoi du devis)
+        bankDetails: {
+            iban: {
+                type: String,
+                trim: true,
+                default: null,
+            },
+            bic: {
+                type: String,
+                trim: true,
+                default: null,
+            },
+            accountName: {
+                type: String,
+                trim: true,
+                default: null,
+            },
+            amountToPay: {
+                type: Number,
+                min: [0, "Le montant à payer ne peut pas être négatif"],
+                default: null,
+            },
+            updatedAt: {
+                type: Date,
+                default: null,
+            },
+        },
+
         // Informations de paiement
         paymentMethod: {
             type: String,
@@ -506,6 +500,7 @@ const orderSchema = new mongoose.Schema(
             default: "bank_transfer",
         },
 
+        // Récépissés de paiement (avec Vercel Blob)
         paymentReceipts: [
             {
                 url: {
@@ -520,7 +515,7 @@ const orderSchema = new mongoose.Schema(
                     type: Date,
                     default: Date.now,
                 },
-                publicId: {
+                blobKey: {
                     type: String,
                     required: true,
                 },
@@ -590,6 +585,10 @@ orderSchema.virtual("customerFullName").get(function () {
 
 orderSchema.virtual("isShippingFree").get(function () {
     return this.subtotal >= 500
+})
+
+orderSchema.virtual("hasBankDetails").get(function () {
+    return !!(this.bankDetails?.iban && this.bankDetails?.bic && this.bankDetails?.accountName)
 })
 
 // Méthode pour générer un numéro de commande unique
