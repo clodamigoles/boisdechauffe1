@@ -7,9 +7,12 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
         try {
+            console.log("[v0] Received order data:", JSON.stringify(req.body, null, 2))
+
             // Validation des données
             const { error, value } = validateOrderData(req.body)
             if (error) {
+                console.log("[v0] Validation errors:", error.details)
                 return res.status(400).json({
                     success: false,
                     message: "Données invalides",
@@ -17,7 +20,9 @@ export default async function handler(req, res) {
                 })
             }
 
-            const { customer, shippingAddress, items, notes } = value
+            console.log("[v0] Validated data:", JSON.stringify(value, null, 2))
+
+            const { customer, shippingAddress, items, notes, shippingCost: providedShippingCost } = value
 
             // Vérification et récupération des produits
             const productIds = items.map((item) => item.productId)
@@ -71,8 +76,8 @@ export default async function handler(req, res) {
                 subtotal += totalPrice
             }
 
-            // Calcul des frais de port
-            const shippingCost = subtotal >= 500 ? 0 : 15
+            // If not provided, fall back to default calculation
+            const shippingCost = providedShippingCost !== undefined ? providedShippingCost : subtotal >= 500 ? 0 : 15
             const total = subtotal + shippingCost
 
             // Génération du numéro de commande

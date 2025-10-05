@@ -1,6 +1,5 @@
 import mongoose from "mongoose"
-
-import { Contact } from './Contact'
+import { Contact as ContactModel } from "./Contact.js"
 
 // Schéma Catégorie
 const categorySchema = new mongoose.Schema(
@@ -554,23 +553,6 @@ const orderSchema = new mongoose.Schema(
             default: "pending",
         },
 
-        // Informations de paiement
-        paymentMethod: {
-            type: String,
-            enum: {
-                values: ["bank_transfer"],
-                message: "Méthode de paiement invalide",
-            },
-            default: "bank_transfer",
-        },
-
-        // Notes et commentaires
-        notes: {
-            type: String,
-            trim: true,
-            maxlength: [500, "Les notes ne peuvent pas dépasser 500 caractères"],
-        },
-
         // Historique des statuts
         statusHistory: [
             {
@@ -712,6 +694,7 @@ export const Newsletter = mongoose.models.Newsletter || mongoose.model("Newslett
 export const Testimonial = mongoose.models.Testimonial || mongoose.model("Testimonial", testimonialSchema)
 export const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)
 export const Quote = mongoose.models.Quote || mongoose.model("Quote", quoteSchema)
+export const Contact = ContactModel
 
 // Export par défaut pour faciliter l'import
 export default {
@@ -721,5 +704,5 @@ export default {
     Testimonial,
     Order,
     Quote,
-    Contact
+    Contact,
 }

@@ -312,7 +312,7 @@ export default function ProductsSection({ products = [] }) {
                             {
                                 icon: TrendingUp,
                                 title: 'Livraison Express',
-                                description: 'Livraison 24-48h partout en France, équipe dédiée'
+                                description: 'Livraison 4-5j'
                             },
                             {
                                 icon: Star,

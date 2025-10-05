@@ -11,6 +11,7 @@ import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
+import { getRegionsForCountry, calculateShippingCost } from "../lib/shipping-regions"
 
 const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -46,12 +47,15 @@ export default function CheckoutPage() {
         city: "",
         postalCode: "",
         country: "France",
+        region: "",
         instructions: "",
 
         // Acceptation des conditions
         acceptTerms: false,
         acceptNewsletter: false,
     })
+
+    const [availableRegions, setAvailableRegions] = useState([])
 
     useEffect(() => {
         // Rediriger si le panier est vide
@@ -63,6 +67,17 @@ export default function CheckoutPage() {
         const timer = setTimeout(() => setIsLoading(false), 100)
         return () => clearTimeout(timer)
     }, [items, router])
+
+    useEffect(() => {
+        const regions = getRegionsForCountry(formData.country)
+        setAvailableRegions(regions)
+        // Reset region when country changes
+        if (formData.region && !regions.find((r) => r.name === formData.region)) {
+            setFormData((prev) => ({ ...prev, region: regions[0]?.name || "" }))
+        } else if (!formData.region && regions.length > 0) {
+            setFormData((prev) => ({ ...prev, region: regions[0].name }))
+        }
+    }, [formData.country])
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
@@ -87,6 +102,7 @@ export default function CheckoutPage() {
         if (!formData.address1) newErrors.address1 = "Adresse requise"
         if (!formData.city) newErrors.city = "Ville requise"
         if (!formData.postalCode) newErrors.postalCode = "Code postal requis"
+        if (!formData.region) newErrors.region = "Région requise"
         if (!formData.acceptTerms) newErrors.acceptTerms = "Vous devez accepter les conditions"
 
         setErrors(newErrors)
@@ -101,6 +117,9 @@ export default function CheckoutPage() {
         setIsSubmitting(true)
 
         try {
+            const subtotal = getTotalPrice()
+            const shippingCost = calculateShippingCost(formData.country, formData.region, subtotal)
+
             const orderData = {
                 customer: {
                     firstName: formData.firstName,
@@ -120,7 +139,10 @@ export default function CheckoutPage() {
                     quantity: item.quantity,
                 })),
                 notes: formData.instructions || "",
+                shippingCost: shippingCost,
             }
+
+            console.log("[v0] Sending order data:", orderData)
 
             // Call the new API endpoint
             const response = await fetch("/api/orders", {
@@ -132,6 +154,8 @@ export default function CheckoutPage() {
             })
 
             const result = await response.json()
+
+            console.log("[v0] API response:", result)
 
             if (!response.ok) {
                 throw new Error(result.message || "Erreur lors de la création de la commande")
@@ -162,7 +186,7 @@ export default function CheckoutPage() {
     }
 
     const subtotal = getTotalPrice()
-    const shippingCost = subtotal >= 500 ? 0 : 15
+    const shippingCost = calculateShippingCost(formData.country, formData.region, subtotal)
     const total = subtotal + shippingCost
 
     if (isLoading) {
@@ -338,6 +362,28 @@ export default function CheckoutPage() {
                                                     <option value="Luxembourg">Luxembourg</option>
                                                 </select>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Région <span className="text-red-500">*</span>
+                                            </label>
+                                            <select
+                                                value={formData.region}
+                                                onChange={(e) => handleInputChange("region", e.target.value)}
+                                                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500 ${errors.region ? "border-red-500" : "border-gray-300"
+                                                    }`}
+                                            >
+                                                <option value="">Sélectionnez une région</option>
+                                                {availableRegions.map((region) => (
+                                                    <option key={region.name} value={region.name}>
+                                                        {region.name} - {formatPrice(region.cost)} {subtotal >= 500 && "(Gratuit)"}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {errors.region && <p className="mt-1 text-sm text-red-600">{errors.region}</p>}
+                                            <p className="mt-2 text-sm text-gray-500">
+                                                Les frais de livraison varient selon la région sélectionnée
+                                            </p>
                                         </div>
                                         <Input
                                             type="text"

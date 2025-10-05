@@ -11,7 +11,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             _id: '1',
             name: 'Marie Dubois',
             location: 'Lyon, France',
-            avatar: '/images/avatars/marie.jpg',
+            avatar: '/images/avatar.jpg',
             rating: 5,
             comment: 'Excellent service ! Le bois de chêne livré était parfaitement sec et de qualité exceptionnelle. Livraison rapide et équipe très professionnelle.',
             shortComment: 'Qualité exceptionnelle, livraison rapide !',
@@ -22,7 +22,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             _id: '2',
             name: 'Pierre Martin',
             location: 'Toulouse, France',
-            avatar: '/images/avatars/pierre.jpg',
+            avatar: '/images/avatar.jpg',
             rating: 5,
             comment: 'Commande passée le lundi, livrée le mercredi ! Le bois brûle parfaitement, très peu de cendres. Je recommande vivement BoisChauffage Pro.',
             shortComment: 'Service impeccable, très satisfait !',
@@ -33,7 +33,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             _id: '3',
             name: 'Sophie Laurent',
             location: 'Marseille, France',
-            avatar: '/images/avatars/sophie.jpg',
+            avatar: '/images/avatar.jpg',
             rating: 5,
             comment: 'Troisième commande cette année. La qualité est constante, les prix corrects et le service client au top. Mon fournisseur de confiance !',
             shortComment: 'Mon fournisseur de confiance depuis 3 ans',
@@ -44,7 +44,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             _id: '4',
             name: 'Jean-Claude Moreau',
             location: 'Bordeaux, France',
-            avatar: '/images/avatars/jean-claude.jpg',
+            avatar: '/images/avatar.jpg',
             rating: 5,
             comment: 'Ancien bûcheron, je sais reconnaître la qualité. Ce bois est parfaitement calibré, sec et homogène. Bravo pour le sérieux !',
             shortComment: 'Qualité professionnelle reconnue',
@@ -55,7 +55,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             _id: '5',
             name: 'Isabelle Durand',
             location: 'Nantes, France',
-            avatar: '/images/avatars/isabelle.jpg',
+            avatar: '/images/avatar.jpg',
             rating: 5,
             comment: 'Livraison impeccable même dans mon village isolé. Le livreur était très sympa et a même rangé le bois proprement. Service 5 étoiles !',
             shortComment: 'Service 5 étoiles, même en zone isolée',
@@ -66,7 +66,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             _id: '6',
             name: 'Michel Rousseau',
             location: 'Strasbourg, France',
-            avatar: '/images/avatars/michel.jpg',
+            avatar: '/images/avatar.jpg',
             rating: 5,
             comment: 'Les granulés sont de qualité exceptionnelle. Mon poêle n\'a jamais aussi bien fonctionné. Très peu de résidus et excellent rendement.',
             shortComment: 'Granulés de qualité exceptionnelle',
@@ -230,7 +230,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
                     </div>
                 </div>
 
-                {/* Grille de témoignages secondaires */}
+                {/* Grille de témoignages secondaires
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -252,7 +252,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
                         </motion.div>
                     ))}
                 </motion.div>
-
+ */}
                 {/* Statistiques Sociales
                 <motion.div
                     initial={{ opacity: 0, y: 40 }}

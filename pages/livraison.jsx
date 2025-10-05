@@ -640,7 +640,7 @@ export default function LivraisonPage() {
                 )}
 
                 {/* CTA Section */}
-                <section className="py-16 bg-gradient-to-br from-amber-600 via-orange-600 to-red-600">
+                <section className="py-16 bg-gray-400">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
@@ -711,7 +711,7 @@ export default function LivraisonPage() {
                     </div>
                 </section>
 
-                {/* Informations Pratiques */}
+                {/* Informations Pratiques
                 <section className="py-16 bg-gray-900 text-white">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -820,7 +820,7 @@ export default function LivraisonPage() {
                             </motion.div>
                         </div>
                     </div>
-                </section>
+                </section> */}
 
                 <Footer />
             </div>

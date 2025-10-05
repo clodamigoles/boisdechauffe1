@@ -63,7 +63,8 @@ const orderSchema = new mongoose.Schema(
                 type: String,
                 required: [true, "Le téléphone est requis"],
                 trim: true,
-                match: [/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/, "Numéro de téléphone invalide"],
+                minlength: [8, "Le numéro de téléphone doit contenir au moins 8 caractères"],
+                maxlength: [20, "Le numéro de téléphone ne peut pas dépasser 20 caractères"],
             },
             company: {
                 type: String,
@@ -90,7 +91,8 @@ const orderSchema = new mongoose.Schema(
                 type: String,
                 required: [true, "Le code postal est requis"],
                 trim: true,
-                match: [/^[0-9]{5}$/, "Code postal invalide (5 chiffres requis)"],
+                minlength: [4, "Le code postal doit contenir au moins 4 caractères"],
+                maxlength: [10, "Le code postal ne peut pas dépasser 10 caractères"],
             },
             country: {
                 type: String,

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Play, ArrowRight, Users, Clock, Shield, Award } from 'lucide-react'
+
 import Button from '../ui/Button'
 import { heroVariants } from '../../utils/animations'
 
@@ -35,9 +37,9 @@ export default function HeroSection() {
                     loop
                     playsInline
                     className="w-full h-full object-cover opacity-60"
-                    poster="/images/hero-poster.jpg"
+                    poster="/images/hero-poster.png"
                 >
-                    <source src="/videos/hero-background.mp4" type="video/mp4" />
+                    <source src="/videos/hero-backgroundx.mp4" type="video/mp4" />
                 </video>
 
                 {/* Overlay */}
@@ -95,15 +97,16 @@ export default function HeroSection() {
                             transition={{ delay: 0.8, duration: 0.8 }}
                             className="flex flex-col sm:flex-row gap-4 mb-12"
                         >
-                            <Button
-                                variant="primary"
-                                size="lg"
-                                className="flex items-center justify-center space-x-2"
-                            >
-                                <span>Commander Maintenant</span>
-                                <ArrowRight className="w-5 h-5" />
-                            </Button>
-
+                            <Link href="/shop">
+                                <Button
+                                    variant="primary"
+                                    size="lg"
+                                    className="flex items-center justify-center space-x-2"
+                                >
+                                    <span>Commander Maintenant</span>
+                                    <ArrowRight className="w-5 h-5" />
+                                </Button>
+                            </Link>
                             {/* <Button
                                 variant="secondary"
                                 size="lg"

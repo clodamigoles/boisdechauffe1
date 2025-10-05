@@ -29,10 +29,10 @@ export default function Header() {
             href: '/shop',
             current: router.pathname.startsWith('/shop'),
             submenu: [
-                { name: 'Bois Feuillus', href: '/shop?category=bois-feuillus' },
-                { name: 'Bois Résineux', href: '/shop?category=bois-resineux' },
-                { name: 'Granulés', href: '/shop?category=granules' },
-                { name: 'Allume-feu', href: '/shop?category=allume-feu' }
+                { name: 'Bois de chauffage', href: '/shop?category=bois-de-chauffage' },
+                { name: 'Granulés et pellets', href: '/shop?category=granules-et-pellets' },
+                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' },
+                { name: 'Chaudières, cuisinières et poêles', href: '/shop?category=chaudieres-cuisinieres-et-poeles' }
             ]
         },
         { name: 'Livraison', href: '/livraison', current: router.pathname === '/livraison' },

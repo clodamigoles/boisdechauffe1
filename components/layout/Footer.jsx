@@ -53,41 +53,40 @@ export default function Footer() {
         {
             title: 'Produits',
             links: [
-                { name: 'Bois Feuillus', href: '/categories/bois-feuillus' },
-                { name: 'Bois Résineux', href: '/categories/bois-resineux' },
-                { name: 'Granulés Premium', href: '/categories/granules' },
-                { name: 'Allume-Feu', href: '/categories/allume-feu' },
-                { name: 'Tous les Produits', href: '/shop' }
+                { name: 'Bois de chauffage', href: '/shop?category=bois-de-chauffage' },
+                { name: 'Granulés et pellets', href: '/shop?category=granules-et-pellets' },
+                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' },
+                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' }
+                // { name: 'Tous les Produits', href: '/shop' }
             ]
         },
+        // {
+        //     title: 'Services',
+        //     links: [
+        //         { name: 'Livraison Express', href: '/livraison' },
+        //         { name: 'Devis Gratuit', href: '/devis' },
+        //         { name: 'Conseils Expert', href: '/conseils' },
+        //         { name: 'Service Client', href: '/contact' },
+        //         { name: 'Suivi Commande', href: '/suivi' }
+        //     ]
+        // },
+        // {
+        //     title: 'Informations',
+        //     links: [
+        //         { name: 'À Propos', href: '/a-propos' },
+        //         { name: 'Nos Engagements', href: '/engagements' },
+        //         { name: 'Qualité & Certifications', href: '/qualite' },
+        //         { name: 'Zone de Livraison', href: '/zones-livraison' },
+        //         { name: 'Témoignages', href: '/temoignages' }
+        //     ]
+        // },
         {
-            title: 'Services',
+            title: 'Support & services',
             links: [
-                { name: 'Livraison Express', href: '/livraison' },
-                { name: 'Devis Gratuit', href: '/devis' },
-                { name: 'Conseils Expert', href: '/conseils' },
-                { name: 'Service Client', href: '/contact' },
-                { name: 'Suivi Commande', href: '/suivi' }
-            ]
-        },
-        {
-            title: 'Informations',
-            links: [
-                { name: 'À Propos', href: '/a-propos' },
-                { name: 'Nos Engagements', href: '/engagements' },
-                { name: 'Qualité & Certifications', href: '/qualite' },
-                { name: 'Zone de Livraison', href: '/zones-livraison' },
-                { name: 'Témoignages', href: '/temoignages' }
-            ]
-        },
-        {
-            title: 'Support',
-            links: [
-                { name: 'Centre d\'Aide', href: '/aide' },
                 { name: 'FAQ', href: '/faq' },
                 { name: 'Contact', href: '/contact' },
-                { name: 'Réclamations', href: '/reclamations' },
-                { name: 'Garanties', href: '/garanties' }
+                { name: 'Livraison Express', href: '/livraison' },
+                { name: 'Suivi Commande', href: '/suivi' }
             ]
         }
     ]
@@ -176,7 +175,7 @@ export default function Footer() {
                                 </div>
                             </div>
 
-                            {/* Réseaux sociaux */}
+                            {/* Réseaux sociaux
                             <div className="flex space-x-4">
                                 {socialLinks.map((social) => {
                                     const IconComponent = social.icon
@@ -193,12 +192,12 @@ export default function Footer() {
                                         </motion.a>
                                     )
                                 })}
-                            </div>
+                            </div> */}
                         </motion.div>
                     </div>
 
                     {/* Colonnes Navigation */}
-                    <div className="lg:col-span-6 grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+                    <div className="lg:col-span-6 grid grid-cols-2 gap-6 lg:gap-8">
                         {footerSections.map((section, sectionIndex) => (
                             <motion.div
                                 key={section.title}
