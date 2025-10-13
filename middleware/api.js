@@ -5,7 +5,7 @@ import cors from 'cors'
 // Configuration CORS
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://boisdechauffe1.vercel.app']
+        ? ['https://boisdechauffe1.vercel.app', 'monboisdechauffe.fr']
         : ['http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key'],

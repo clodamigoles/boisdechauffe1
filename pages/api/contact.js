@@ -386,16 +386,16 @@ async function sendSubjectSpecificNotification(contact) {
 // Obtenir les emails de l'équipe selon le sujet
 function getTeamEmailsBySubject(subject) {
     const teamEmails = {
-        'devis': ['commercial@boischauffagepro.fr'],
-        'livraison': ['livraison@boischauffagepro.fr', 'logistique@boischauffagepro.fr'],
-        'produits': ['technique@boischauffagepro.fr'],
-        'commande': ['service@boischauffagepro.fr'],
-        'support': ['support@boischauffagepro.fr'],
-        'autre': ['contact@boischauffagepro.fr']
+        'devis': [EMAIL],
+        'livraison': [EMAIL],
+        'produits': [EMAIL],
+        'commande': [EMAIL],
+        'support': [EMAIL],
+        'autre': [EMAIL]
     }
 
     return [
-        'contact@boischauffagepro.fr', // Email principal toujours notifié
+        EMAIL,
         ...(teamEmails[subject] || [])
     ]
 }

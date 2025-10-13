@@ -35,7 +35,8 @@ export default function Header() {
                 { name: 'Chaudières, cuisinières et poêles', href: '/shop?category=chaudieres-cuisinieres-et-poeles' }
             ]
         },
-        { name: 'Livraison', href: '/livraison', current: router.pathname === '/livraison' },
+        { name: 'FAQ', href: '/faq', current: router.pathname === '/faq' },
+        // { name: 'Livraison', href: '/livraison', current: router.pathname === '/livraison' },
         { name: 'Contact', href: '/contact', current: router.pathname === '/contact' }
     ]
 

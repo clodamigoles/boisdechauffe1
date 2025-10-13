@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
-import Header from '../components/layout/Header'
-import Footer from '../components/layout/Footer'
-import HeroSection from '../components/home/HeroSection'
-import CategoriesSection from '../components/home/CategoriesSection'
-import ProductsSection from '../components/home/ProductsSection'
-import TestimonialsSection from '../components/home/TestimonialsSection'
-import NewsletterSection from '../components/home/NewsletterSection'
-import { pageVariants } from '../utils/animations'
-import { cachedAPI } from '../lib/api'
+
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import HeroSection from '@/components/home/HeroSection'
+import CategoriesSection from '@/components/home/CategoriesSection'
+import ProductsSection from '@/components/home/ProductsSection'
+import TestimonialsSection from '@/components/home/TestimonialsSection'
+import NewsletterSection from '@/components/home/NewsletterSection'
+import { pageVariants } from '@/utils/animations'
+import { cachedAPI } from '@/lib/api'
+import { APP_NAME } from '@/constants/config'
 
 export default function HomePage({
     initialCategories,
@@ -74,7 +76,7 @@ export default function HomePage({
     return (
         <>
             <Head>
-                <title>BoisChauffage Pro - Bois de Chauffage Premium | Livraison Rapide France</title>
+                <title>{`${APP_NAME} | Livraison Rapide France`}</title>
                 <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France. Devis gratuit !" />
                 <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec, france" />
             </Head>
@@ -115,7 +117,7 @@ export default function HomePage({
                                 transition={{ delay: 0.3 }}
                                 className="text-xl font-semibold text-gray-900 mb-2"
                             >
-                                BoisChauffage Pro
+                                {APP_NAME}
                             </motion.h2>
 
                             <motion.p

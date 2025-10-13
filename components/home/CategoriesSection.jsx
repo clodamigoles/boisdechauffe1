@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { TreePine, Flame, Package, Zap, ArrowRight, TrendingUp } from 'lucide-react'
+
 import CategoryCard from '../ui/CategoryCard'
-import { containerVariants, itemVariants } from '../../utils/animations'
+import { containerVariants, itemVariants } from '@/utils/animations'
 
 export default function CategoriesSection({ categories = [] }) {
     const iconMap = {

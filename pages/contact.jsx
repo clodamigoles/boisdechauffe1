@@ -24,6 +24,7 @@ import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
+import { ADDRESS, EMAIL, PHONE } from "@/constants/config"
 
 const pageTransition = {
     type: "tween",
@@ -62,7 +63,7 @@ export default function ContactPage() {
             icon: Phone,
             title: "Téléphone",
             description: "Appelez-nous directement",
-            value: "01 23 45 67 89",
+            value: PHONE,
             availability: "Lun-Sam : 8h-19h",
             href: "tel:+33123456789",
             color: "bg-green-500",
@@ -72,9 +73,9 @@ export default function ContactPage() {
             icon: Mail,
             title: "Email",
             description: "Écrivez-nous",
-            value: "contact@boischauffagepro.fr",
+            value: EMAIL,
             availability: "Réponse sous 2-4h",
-            href: "mailto:contact@boischauffagepro.fr",
+            href: `mailto:${EMAIL}`,
             color: "bg-blue-500",
             urgent: false
         },
@@ -296,36 +297,6 @@ export default function ContactPage() {
                 <meta property="og:description" content="Contactez nos experts pour vos questions sur le bois de chauffage. Réponse rapide garantie." />
                 <meta property="og:url" content="https://boischauffagepro.fr/contact" />
 
-                {/* Schema.org ContactPage */}
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "ContactPage",
-                            "name": "Contact BoisChauffage Pro",
-                            "description": "Contactez BoisChauffage Pro pour vos questions et devis",
-                            "url": "https://boischauffagepro.fr/contact",
-                            "mainEntity": {
-                                "@type": "Organization",
-                                "name": "BoisChauffage Pro",
-                                "telephone": "+33123456789",
-                                "email": "contact@boischauffagepro.fr",
-                                "address": {
-                                    "@type": "PostalAddress",
-                                    "streetAddress": "123 Route Forestière",
-                                    "addressLocality": "Lyon",
-                                    "postalCode": "69000",
-                                    "addressCountry": "FR"
-                                },
-                                "openingHours": [
-                                    "Mo-Fr 08:00-19:00",
-                                    "Sa 08:00-12:00"
-                                ]
-                            }
-                        })
-                    }}
-                />
             </Head>
 
             <div className="min-h-screen bg-gray-50">
@@ -377,7 +348,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-white text-blue-700 hover:bg-gray-100"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>01 23 45 67 89</span>
+                                        <span>{PHONE}</span>
                                     </Button>
 
                                     <Button
@@ -750,8 +721,7 @@ export default function ContactPage() {
                                                 <div>
                                                     <h4 className="font-semibold text-gray-900 mb-1">Adresse</h4>
                                                     <p className="text-gray-600 text-sm">
-                                                        123 Route Forestière<br />
-                                                        69000 Lyon, France
+                                                        {ADDRESS}
                                                     </p>
                                                 </div>
                                             </div>
@@ -806,55 +776,7 @@ export default function ContactPage() {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Notre équipe */}
-                                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
-                                        <h3 className="text-xl font-bold text-gray-900 mb-6">
-                                            Notre Équipe
-                                        </h3>
-
-                                        <div className="space-y-6">
-                                            {teamMembers.map((member, index) => (
-                                                <motion.div
-                                                    key={member.name}
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    whileInView={{ opacity: 1, y: 0 }}
-                                                    viewport={{ once: true }}
-                                                    transition={{ delay: index * 0.1 }}
-                                                    className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg"
-                                                >
-                                                    <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
-                                                        <span className="text-gray-600 font-medium text-sm">
-                                                            {member.name.split(' ').map(n => n[0]).join('')}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <h4 className="font-semibold text-gray-900">{member.name}</h4>
-                                                        <p className="text-amber-600 text-sm font-medium">{member.role}</p>
-                                                        <p className="text-gray-600 text-sm mt-1">{member.speciality}</p>
-                                                        <div className="flex items-center space-x-4 mt-2">
-                                                            <a
-                                                                href={`tel:${member.phone.replace(/\s/g, '')}`}
-                                                                className="text-xs text-blue-600 hover:text-blue-700 flex items-center space-x-1"
-                                                            >
-                                                                <Phone className="w-3 h-3" />
-                                                                <span>{member.phone}</span>
-                                                            </a>
-                                                            <a
-                                                                href={`mailto:${member.email}`}
-                                                                className="text-xs text-green-600 hover:text-green-700 flex items-center space-x-1"
-                                                            >
-                                                                <Mail className="w-3 h-3" />
-                                                                <span>Email</span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </motion.div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* FAQ Rapide */}
+                                    
                                     <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-8">
                                         <h3 className="text-xl font-bold text-gray-900 mb-4">
                                             Questions Fréquentes
@@ -889,90 +811,6 @@ export default function ContactPage() {
                         </div>
                     </section>
 
-                    {/* Carte et localisation */}
-                    <section className="py-16 bg-white">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="text-center mb-12"
-                            >
-                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Venez Nous Rencontrer
-                                </h2>
-                                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    Notre entrepôt est situé à Lyon, au cœur de notre zone de distribution principale
-                                </p>
-                            </motion.div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                                <motion.div
-                                    initial={{ opacity: 0, x: -30 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                >
-                                    <div className="bg-gray-100 rounded-2xl h-96 flex items-center justify-center">
-                                        <div className="text-center">
-                                            <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                                            <p className="text-gray-600">Carte interactive</p>
-                                            <p className="text-sm text-gray-500 mt-2">
-                                                123 Route Forestière, 69000 Lyon
-                                            </p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-
-                                <motion.div
-                                    initial={{ opacity: 0, x: 30 }}
-                                    whileInView={{ opacity: 1, x: 0 }}
-                                    viewport={{ once: true }}
-                                    className="space-y-6"
-                                >
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                                            Accès et Parking
-                                        </h3>
-                                        <div className="space-y-4">
-                                            <div className="flex items-start space-x-3">
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                                                <div>
-                                                    <p className="font-medium text-gray-900">Parking gratuit</p>
-                                                    <p className="text-gray-600 text-sm">Plus de 20 places disponibles</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-start space-x-3">
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                                                <div>
-                                                    <p className="font-medium text-gray-900">Accès facilité</p>
-                                                    <p className="text-gray-600 text-sm">Sortie autoroute A6 à 5min</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-start space-x-3">
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
-                                                <div>
-                                                    <p className="font-medium text-gray-900">Transports en commun</p>
-                                                    <p className="text-gray-600 text-sm">Arrêt bus ligne 15 devant l'entrepôt</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                                        <h4 className="font-semibold text-blue-900 mb-3">Visite de l'entrepôt</h4>
-                                        <p className="text-blue-800 text-sm mb-4">
-                                            Découvrez nos installations, nos méthodes de séchage et de stockage.
-                                            Visite guidée sur rendez-vous.
-                                        </p>
-                                        <Button variant="outline" size="sm" className="bg-white text-blue-700 border-blue-300 hover:bg-blue-50">
-                                            Planifier une visite
-                                        </Button>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        </div>
-                    </section>
-
                     {/* CTA Final */}
                     <section className="py-16 bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -996,10 +834,10 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-amber-600 hover:bg-amber-700"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>Appel Gratuit : 01 23 45 67 89</span>
+                                        <span>Appel Whatsapp Gratuit : {PHONE}</span>
                                     </Button>
 
-                                    <Link href="/devis">
+                                    {/* <Link href="/devis">
                                         <Button
                                             variant="outline"
                                             size="lg"
@@ -1008,7 +846,7 @@ export default function ContactPage() {
                                             <FileText className="w-5 h-5" />
                                             <span>Devis en Ligne</span>
                                         </Button>
-                                    </Link>
+                                    </Link> */}
                                 </div>
 
                                 <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">

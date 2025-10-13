@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Play, ArrowRight, Users, Clock, Shield, Award } from 'lucide-react'
+import { ArrowRight, Clock, Shield } from 'lucide-react'
 
 import Button from '../ui/Button'
-import { heroVariants } from '../../utils/animations'
+import { heroVariants } from '@/utils/animations'
+import { APP_NAME } from '@/constants/config'
 
 export default function HeroSection() {
     const [isVideoLoaded, setIsVideoLoaded] = useState(false)
@@ -20,8 +21,6 @@ export default function HeroSection() {
     }, [])
 
     const stats = [
-        // { value: '15+', label: 'Années d\'expérience', icon: Award },
-        // { value: '50k+', label: 'Clients satisfaits', icon: Users },
         { value: '5j', label: 'Livraison express', icon: Clock },
         { value: '99%', label: 'Qualité garantie', icon: Shield }
     ]
@@ -63,7 +62,7 @@ export default function HeroSection() {
                             className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
                         >
                             <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse" />
-                            Livraison 4/5j partout dans l'UE
+                            Livraison 4/5j partout
                         </motion.div>
 
                         {/* Titre Principal */}
@@ -73,7 +72,7 @@ export default function HeroSection() {
                             transition={{ delay: 0.4, duration: 0.8 }}
                             className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
                         >
-                            Bois de Chauffage
+                            {APP_NAME}
                             <span className="block text-amber-400">
                                 Premium
                             </span>

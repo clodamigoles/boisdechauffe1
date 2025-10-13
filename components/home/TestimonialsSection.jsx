@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
 import TestimonialCard from '../ui/TestimonialCard'
+import { APP_NAME } from '@/constants/config'
 
 export default function TestimonialsSection({ testimonials = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -24,7 +26,7 @@ export default function TestimonialsSection({ testimonials = [] }) {
             location: 'Toulouse, France',
             avatar: '/images/avatar.jpg',
             rating: 5,
-            comment: 'Commande passée le lundi, livrée le mercredi ! Le bois brûle parfaitement, très peu de cendres. Je recommande vivement BoisChauffage Pro.',
+            comment: `Commande passée le lundi, livrée le mercredi ! Le bois brûle parfaitement, très peu de cendres. Je recommande vivement ${APP_NAME}.`,
             shortComment: 'Service impeccable, très satisfait !',
             productPurchased: 'Mix Feuillus Premium',
             verified: true

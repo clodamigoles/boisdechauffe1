@@ -24,6 +24,7 @@ import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import { containerVariants, itemVariants } from "../utils/animations"
+import { EMAIL, PHONE } from "@/constants/config"
 
 export default function FAQPage() {
     const [isLoading, setIsLoading] = useState(true)
@@ -185,7 +186,7 @@ export default function FAQPage() {
             category: "commande",
             question: "Comment passer commande ?",
             answer:
-                "Vous pouvez commander directement sur notre site web 24h/24, par téléphone au 01 23 45 67 89 (Lun-Sam 8h-19h), ou par email à contact@boischauffagepro.fr. Pour les grandes quantités ou les professionnels, nous établissons un devis personnalisé sur demande.",
+                `Vous pouvez commander directement sur notre site web 24h/24, ou par email à ${EMAIL}. Pour les grandes quantités ou les professionnels, nous établissons un devis personnalisé sur demande.`,
         },
         {
             category: "commande",
@@ -486,7 +487,7 @@ export default function FAQPage() {
                                         className="flex items-center space-x-2 bg-white text-amber-700 border-amber-300 hover:bg-amber-50"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>01 23 45 67 89</span>
+                                        <span>{PHONE}</span>
                                     </Button>
                                 </div>
 

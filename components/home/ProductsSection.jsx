@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { Filter, Star, TrendingUp, Award, Sparkles, Eye } from 'lucide-react'
+
 import ProductCard from '../ui/ProductCard'
 import Button from '../ui/Button'
-import { containerVariants, itemVariants } from '../../utils/animations'
+import { containerVariants, itemVariants } from '@/utils/animations'
+import { APP_NAME } from '@/constants/config'
 
 export default function ProductsSection({ products = [] }) {
     const [activeFilter, setActiveFilter] = useState('all')
@@ -281,7 +283,7 @@ export default function ProductsSection({ products = [] }) {
                     </Link>
 
                     <p className="text-gray-600 mt-4">
-                        Plus de 50 références disponibles • Livraison 24-48h
+                        Plus de 50 références disponibles • Livraison 4/5j
                     </p>
                 </motion.div>
 
@@ -295,10 +297,10 @@ export default function ProductsSection({ products = [] }) {
                 >
                     <div className="text-center mb-12">
                         <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                            Pourquoi Choisir BoisChauffage Pro ?
+                            Pourquoi Choisir {APP_NAME} ?
                         </h3>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            15 années d'expertise au service de votre confort
+                            8 années d'expertise au service de votre confort
                         </p>
                     </div>
 
@@ -312,7 +314,7 @@ export default function ProductsSection({ products = [] }) {
                             {
                                 icon: TrendingUp,
                                 title: 'Livraison Express',
-                                description: 'Livraison 4-5j'
+                                description: 'Livraison 4/5j'
                             },
                             {
                                 icon: Star,

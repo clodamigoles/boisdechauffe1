@@ -22,6 +22,7 @@ import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
+import { PHONE, WA_LINK } from "@/constants/config"
 
 const pageTransition = {
     type: "tween",
@@ -247,23 +248,24 @@ export default function LivraisonPage() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Button
+                                {/* <Button
                                     variant="primary"
                                     size="lg"
                                     className="flex items-center space-x-2 bg-amber-600 hover:bg-amber-700"
                                 >
                                     <MapPin className="w-5 h-5" />
                                     <span>Vérifier ma zone</span>
-                                </Button>
-
-                                <Button
-                                    variant="secondary"
-                                    size="lg"
-                                    className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
-                                >
-                                    <Phone className="w-5 h-5" />
-                                    <span>01 23 45 67 89</span>
-                                </Button>
+                                </Button> */}
+                                <Link href={WA_LINK}>
+                                    <Button
+                                        variant="secondary"
+                                        size="lg"
+                                        className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
+                                    >
+                                        <Phone className="w-5 h-5" />
+                                        <span>{PHONE}</span>
+                                    </Button>
+                                </Link>
                             </div>
                         </motion.div>
                     </div>
@@ -710,117 +712,6 @@ export default function LivraisonPage() {
                         </motion.div>
                     </div>
                 </section>
-
-                {/* Informations Pratiques
-                <section className="py-16 bg-gray-900 text-white">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                            <motion.div
-                                initial={{ opacity: 0, x: -30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                            >
-                                <h2 className="text-3xl font-bold mb-6">
-                                    Informations Pratiques
-                                </h2>
-
-                                <div className="space-y-6">
-                                    <div className="flex items-start space-x-4">
-                                        <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                            <Clock className="w-4 h-4 text-white" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold mb-2">Horaires de Livraison</h3>
-                                            <p className="text-gray-300 text-sm">
-                                                Du lundi au vendredi : 8h-18h<br />
-                                                Samedi : 8h-12h (sur demande)<br />
-                                                Créneaux de 2h avec préavis 24h
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start space-x-4">
-                                        <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                            <MapPin className="w-4 h-4 text-white" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold mb-2">Zone de Déchargement</h3>
-                                            <p className="text-gray-300 text-sm">
-                                                Au plus près de votre habitation<br />
-                                                Accessible par camion (largeur 2.5m)<br />
-                                                Déchargement manuel inclus
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start space-x-4">
-                                        <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                                            <Phone className="w-4 h-4 text-white" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold mb-2">Contact Urgence</h3>
-                                            <p className="text-gray-300 text-sm">
-                                                Hotline livraison : 01 23 45 67 89<br />
-                                                Du lundi au samedi : 7h-19h<br />
-                                                Email : livraison@boischauffagepro.fr
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, x: 30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                className="bg-gray-800 rounded-2xl p-8"
-                            >
-                                <h3 className="text-xl font-bold mb-6">Calculateur de Livraison</h3>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Votre code postal
-                                        </label>
-                                        <input
-                                            type="text"
-                                            placeholder="ex: 69000"
-                                            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Quantité (stères)
-                                        </label>
-                                        <select className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-amber-500">
-                                            <option>1 stère</option>
-                                            <option>2 stères</option>
-                                            <option>3 stères</option>
-                                            <option>5 stères</option>
-                                            <option>10 stères</option>
-                                        </select>
-                                    </div>
-
-                                    <Button variant="primary" className="w-full mt-4">
-                                        Calculer les frais de livraison
-                                    </Button>
-                                </div>
-
-                                <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <span className="text-gray-300">Délai estimé :</span>
-                                        <span className="text-white font-medium">24-48h</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-sm mt-2">
-                                        <span className="text-gray-300">Coût de livraison :</span>
-                                        <span className="text-green-400 font-medium">Gratuite</span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
-                    </div>
-                </section> */}
 
                 <Footer />
             </div>

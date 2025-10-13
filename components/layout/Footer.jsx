@@ -18,6 +18,8 @@ import {
     ArrowRight
 } from 'lucide-react'
 
+import { EMAIL, ADDRESS, PHONE, WA_LINK } from "@/constants/config"
+
 export default function Footer() {
     const [newsletterEmail, setNewsletterEmail] = useState('')
     const [isNewsletterLoading, setIsNewsletterLoading] = useState(false)
@@ -159,18 +161,18 @@ export default function Footer() {
                             <div className="space-y-3 mb-6">
                                 <div className="flex items-center space-x-3">
                                     <MapPin className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                                    <span className="text-gray-300">123 Route Forestière, 69000 Lyon</span>
+                                    <span className="text-gray-300">{ADDRESS}</span>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <Phone className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                                    <a href="tel:+33123456789" className="text-gray-300 hover:text-amber-400 transition-colors">
-                                        01 23 45 67 89
+                                    <a href={WA_LINK} className="text-gray-300 hover:text-amber-400 transition-colors">
+                                        {PHONE}
                                     </a>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <Mail className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                                    <a href="mailto:contact@boischauffagepro.fr" className="text-gray-300 hover:text-amber-400 transition-colors">
-                                        contact@boischauffagepro.fr
+                                    <a href={`mailto:${EMAIL}`} className="text-gray-300 hover:text-amber-400 transition-colors">
+                                        {EMAIL}
                                     </a>
                                 </div>
                             </div>
