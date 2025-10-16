@@ -6,7 +6,7 @@ import { useRouter } from "next/router"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { LayoutDashboard, Package, Users, ShoppingCart, Menu, Home } from "lucide-react"
+import { LayoutDashboard, Package, Users, ShoppingCart, Menu, Home, Settings } from "lucide-react"
 
 const navigation = [
     {
@@ -28,6 +28,11 @@ const navigation = [
         name: "Commandes",
         href: "/delta/orders",
         icon: ShoppingCart,
+    },
+    {
+        name: "Paramètres",
+        href: "/delta/settings",
+        icon: Settings,
     },
 ]
 

@@ -13,6 +13,9 @@
     "db:products": "node scripts/init-database.js products",
     "db:backup": "node scripts/backup-database.js",
     "db:restore": "node scripts/restore-database.js",
+    "db:migrate": "node scripts/migrate-database.js",
+    "db:migrate:check": "node scripts/migrate-database.js --check",
+    "settings:init": "node scripts/init-settings.js",
     "seed": "node scripts/seed"
   },
   "dependencies": {

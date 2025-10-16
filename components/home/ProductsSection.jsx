@@ -6,9 +6,10 @@ import { Filter, Star, TrendingUp, Award, Sparkles, Eye } from 'lucide-react'
 import ProductCard from '../ui/ProductCard'
 import Button from '../ui/Button'
 import { containerVariants, itemVariants } from '@/utils/animations'
-import { APP_NAME } from '@/constants/config'
+import { useSettings } from '@/hooks/useSettings'
 
 export default function ProductsSection({ products = [] }) {
+    const { siteName } = useSettings()
     const [activeFilter, setActiveFilter] = useState('all')
 
     const defaultProducts = [
@@ -297,7 +298,7 @@ export default function ProductsSection({ products = [] }) {
                 >
                     <div className="text-center mb-12">
                         <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                            Pourquoi Choisir {APP_NAME} ?
+                            Pourquoi Choisir {siteName} ?
                         </h3>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                             8 années d'expertise au service de votre confort

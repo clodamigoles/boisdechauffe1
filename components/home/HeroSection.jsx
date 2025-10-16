@@ -5,9 +5,10 @@ import { ArrowRight, Clock, Shield } from 'lucide-react'
 
 import Button from '../ui/Button'
 import { heroVariants } from '@/utils/animations'
-import { APP_NAME } from '@/constants/config'
+import { useSettings } from '@/hooks/useSettings'
 
 export default function HeroSection() {
+    const { siteName } = useSettings()
     const [isVideoLoaded, setIsVideoLoaded] = useState(false)
     const videoRef = useRef(null)
 
@@ -72,7 +73,7 @@ export default function HeroSection() {
                             transition={{ delay: 0.4, duration: 0.8 }}
                             className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
                         >
-                            {APP_NAME}
+                            {siteName}
                             <span className="block text-amber-400">
                                 Premium
                             </span>

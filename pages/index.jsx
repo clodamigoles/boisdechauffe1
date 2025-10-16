@@ -12,7 +12,7 @@ import TestimonialsSection from '@/components/home/TestimonialsSection'
 import NewsletterSection from '@/components/home/NewsletterSection'
 import { pageVariants } from '@/utils/animations'
 import { cachedAPI } from '@/lib/api'
-import { APP_NAME } from '@/constants/config'
+import { useSettings } from '@/hooks/useSettings'
 
 export default function HomePage({
     initialCategories,
@@ -20,6 +20,7 @@ export default function HomePage({
     initialTestimonials,
     hasErrors
 }) {
+    const { siteName } = useSettings()
     const [isLoading, setIsLoading] = useState(true)
     const [categories, setCategories] = useState(initialCategories || [])
     const [products, setProducts] = useState(initialProducts || [])
@@ -76,9 +77,9 @@ export default function HomePage({
     return (
         <>
             <Head>
-                <title>{`${APP_NAME} | Livraison Rapide France`}</title>
+                <title>{`${siteName} | Livraison Rapide`}</title>
                 <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France. Devis gratuit !" />
-                <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec, france" />
+                <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec" />
             </Head>
 
             <AnimatePresence mode="wait">
@@ -99,16 +100,10 @@ export default function HomePage({
                                     transition={{ duration: 0.6 }}
                                     className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4"
                                 >
-                                    <motion.span
-                                        animate={{ rotate: [0, 10, -10, 0] }}
-                                        transition={{ duration: 2, repeat: Infinity }}
-                                        className="text-2xl"
-                                    >
-                                        🔥
-                                    </motion.span>
+                                    <div className="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center">
+                                        <div className="w-6 h-6 bg-white rounded-sm transform rotate-45"></div>
+                                    </div>
                                 </motion.div>
-
-                                <Loader2 className="w-8 h-8 animate-spin text-amber-600 mx-auto mb-4" />
                             </div>
 
                             <motion.h2
@@ -117,7 +112,7 @@ export default function HomePage({
                                 transition={{ delay: 0.3 }}
                                 className="text-xl font-semibold text-gray-900 mb-2"
                             >
-                                {APP_NAME}
+                                {siteName}
                             </motion.h2>
 
                             <motion.p

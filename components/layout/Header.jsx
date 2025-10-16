@@ -5,8 +5,10 @@ import { useRouter } from 'next/router'
 import { Menu, X, Search, ShoppingCart, Phone, ChevronDown, ShoppingBag, ShoppingBagIcon } from 'lucide-react'
 import { useCartStore } from '../../store/cartStore'
 import Button from '../ui/Button'
+import { useSettings } from '@/hooks/useSettings'
 
 export default function Header() {
+    const { siteName } = useSettings()
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -66,7 +68,7 @@ export default function Header() {
                                 <div className="hidden sm:block">
                                     <span className={`text-lg font-bold ${!isScrolled && router.pathname === '/' ? 'text-white' : 'text-gray-900'
                                         }`}>
-                                        BoisChauffage Pro
+                                        {siteName}
                                     </span>
                                     <p className={`text-sm ${!isScrolled && router.pathname === '/' ? 'text-white/80' : 'text-gray-500'
                                         }`}>

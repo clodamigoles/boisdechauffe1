@@ -24,7 +24,7 @@ import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
-import { ADDRESS, EMAIL, PHONE } from "@/constants/config"
+import { useSettings } from "@/hooks/useSettings"
 
 const pageTransition = {
     type: "tween",
@@ -33,6 +33,7 @@ const pageTransition = {
 }
 
 export default function ContactPage() {
+    const { contactEmail, fullAddress, contactPhone, whatsappLink } = useSettings()
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitSuccess, setSubmitSuccess] = useState(false)
@@ -63,9 +64,9 @@ export default function ContactPage() {
             icon: Phone,
             title: "Téléphone",
             description: "Appelez-nous directement",
-            value: PHONE,
+            value: contactPhone,
             availability: "Lun-Sam : 8h-19h",
-            href: "tel:+33123456789",
+            href: whatsappLink,
             color: "bg-green-500",
             urgent: true
         },
@@ -73,9 +74,9 @@ export default function ContactPage() {
             icon: Mail,
             title: "Email",
             description: "Écrivez-nous",
-            value: EMAIL,
+            value: contactEmail,
             availability: "Réponse sous 2-4h",
-            href: `mailto:${EMAIL}`,
+            href: `mailto:${contactEmail}`,
             color: "bg-blue-500",
             urgent: false
         },
@@ -348,7 +349,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-white text-blue-700 hover:bg-gray-100"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>{PHONE}</span>
+                                        <span>{contactPhone}</span>
                                     </Button>
 
                                     <Button
@@ -721,7 +722,7 @@ export default function ContactPage() {
                                                 <div>
                                                     <h4 className="font-semibold text-gray-900 mb-1">Adresse</h4>
                                                     <p className="text-gray-600 text-sm">
-                                                        {ADDRESS}
+                                                        {fullAddress}
                                                     </p>
                                                 </div>
                                             </div>
@@ -834,7 +835,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-amber-600 hover:bg-amber-700"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>Appel Whatsapp Gratuit : {PHONE}</span>
+                                        <span>Appel Whatsapp Gratuit : {contactPhone}</span>
                                     </Button>
 
                                     {/* <Link href="/devis">

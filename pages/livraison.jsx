@@ -22,7 +22,7 @@ import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
-import { PHONE, WA_LINK } from "@/constants/config"
+import { useSettings } from "@/hooks/useSettings"
 
 const pageTransition = {
     type: "tween",
@@ -31,6 +31,7 @@ const pageTransition = {
 }
 
 export default function LivraisonPage() {
+    const { contactPhone, whatsappLink } = useSettings()
     const [selectedRegion, setSelectedRegion] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [selectedTab, setSelectedTab] = useState('zones')
@@ -256,14 +257,14 @@ export default function LivraisonPage() {
                                     <MapPin className="w-5 h-5" />
                                     <span>Vérifier ma zone</span>
                                 </Button> */}
-                                <Link href={WA_LINK}>
+                                <Link href={whatsappLink}>
                                     <Button
                                         variant="secondary"
                                         size="lg"
                                         className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>{PHONE}</span>
+                                        <span>{contactPhone}</span>
                                     </Button>
                                 </Link>
                             </div>

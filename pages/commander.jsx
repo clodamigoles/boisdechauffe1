@@ -56,6 +56,7 @@ export default function CheckoutPage() {
     })
 
     const [availableRegions, setAvailableRegions] = useState([])
+    const [shippingCost, setShippingCost] = useState(0)
 
     useEffect(() => {
         // Rediriger si le panier est vide
@@ -69,15 +70,27 @@ export default function CheckoutPage() {
     }, [items, router])
 
     useEffect(() => {
-        const regions = getRegionsForCountry(formData.country)
-        setAvailableRegions(regions)
-        // Reset region when country changes
-        if (formData.region && !regions.find((r) => r.name === formData.region)) {
-            setFormData((prev) => ({ ...prev, region: regions[0]?.name || "" }))
-        } else if (!formData.region && regions.length > 0) {
-            setFormData((prev) => ({ ...prev, region: regions[0].name }))
+        async function loadRegions() {
+            const regions = await getRegionsForCountry(formData.country)
+            setAvailableRegions(regions)
+            // Reset region when country changes
+            if (formData.region && !regions.find((r) => r.name === formData.region)) {
+                setFormData((prev) => ({ ...prev, region: regions[0]?.name || "" }))
+            } else if (!formData.region && regions.length > 0) {
+                setFormData((prev) => ({ ...prev, region: regions[0].name }))
+            }
         }
+        loadRegions()
     }, [formData.country])
+
+    useEffect(() => {
+        async function updateShippingCost() {
+            const subtotal = getTotalPrice()
+            const cost = await calculateShippingCost(formData.country, formData.region, subtotal)
+            setShippingCost(cost)
+        }
+        updateShippingCost()
+    }, [formData.country, formData.region, items, getTotalPrice])
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
@@ -118,7 +131,7 @@ export default function CheckoutPage() {
 
         try {
             const subtotal = getTotalPrice()
-            const shippingCost = calculateShippingCost(formData.country, formData.region, subtotal)
+            const shippingCost = await calculateShippingCost(formData.country, formData.region, subtotal)
 
             const orderData = {
                 customer: {
@@ -186,7 +199,6 @@ export default function CheckoutPage() {
     }
 
     const subtotal = getTotalPrice()
-    const shippingCost = calculateShippingCost(formData.country, formData.region, subtotal)
     const total = subtotal + shippingCost
 
     if (isLoading) {
@@ -441,11 +453,11 @@ export default function CheckoutPage() {
                                             />
                                             <span className="text-sm text-gray-700">
                                                 J'accepte les{" "}
-                                                <Link href="/conditions" className="text-amber-600 hover:text-amber-700 underline">
+                                                <Link href="/cgv" className="text-amber-600 hover:text-amber-700 underline">
                                                     conditions générales de vente
                                                 </Link>{" "}
                                                 et la{" "}
-                                                <Link href="/confidentialite" className="text-amber-600 hover:text-amber-700 underline">
+                                                <Link href="/politique-confidentialite" className="text-amber-600 hover:text-amber-700 underline">
                                                     politique de confidentialité
                                                 </Link>
                                                 <span className="text-red-500 ml-1">*</span>

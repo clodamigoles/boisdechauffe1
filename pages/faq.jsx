@@ -24,9 +24,10 @@ import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import { containerVariants, itemVariants } from "../utils/animations"
-import { EMAIL, PHONE } from "@/constants/config"
+import { useSettings } from "@/hooks/useSettings"
 
 export default function FAQPage() {
+    const { contactEmail, contactPhone } = useSettings()
     const [isLoading, setIsLoading] = useState(true)
     const [selectedCategory, setSelectedCategory] = useState("all")
     const [searchQuery, setSearchQuery] = useState("")
@@ -186,7 +187,7 @@ export default function FAQPage() {
             category: "commande",
             question: "Comment passer commande ?",
             answer:
-                `Vous pouvez commander directement sur notre site web 24h/24, ou par email à ${EMAIL}. Pour les grandes quantités ou les professionnels, nous établissons un devis personnalisé sur demande.`,
+                `Vous pouvez commander directement sur notre site web 24h/24, ou par email à ${contactEmail}. Pour les grandes quantités ou les professionnels, nous établissons un devis personnalisé sur demande.`,
         },
         {
             category: "commande",
@@ -487,7 +488,7 @@ export default function FAQPage() {
                                         className="flex items-center space-x-2 bg-white text-amber-700 border-amber-300 hover:bg-amber-50"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>{PHONE}</span>
+                                        <span>{contactPhone}</span>
                                     </Button>
                                 </div>
 
