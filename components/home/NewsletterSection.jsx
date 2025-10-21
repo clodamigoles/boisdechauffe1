@@ -2,10 +2,8 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
-import { useTranslation } from '@/lib/useTranslation'
 
 export default function NewsletterSection() {
-    const { t } = useTranslation('home')
     const [email, setEmail] = useState('')
     const [firstName, setFirstName] = useState('')
     const [interests, setInterests] = useState([])
@@ -14,10 +12,10 @@ export default function NewsletterSection() {
     const [error, setError] = useState('')
 
     const interestOptions = [
-        { id: 'promotions', label: t('newsletter.form.interests.promotions'), icon: '💰' },
-        { id: 'nouveautes', label: t('newsletter.form.interests.new'), icon: '✨' },
-        { id: 'conseils', label: t('newsletter.form.interests.tips'), icon: '💡' },
-        { id: 'saisons', label: t('newsletter.form.interests.seasons'), icon: '🍂' }
+        { id: 'promotions', label: 'Promotions exclusives', icon: '💰' },
+        { id: 'nouveautes', label: 'Nouveaux produits', icon: '✨' },
+        { id: 'conseils', label: 'Conseils d\'experts', icon: '💡' },
+        { id: 'saisons', label: 'Conseils saisonniers', icon: '🍂' }
     ]
 
     const handleInterestChange = (interestId) => {
@@ -114,22 +112,23 @@ export default function NewsletterSection() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.2 }}
-                        className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
-                    >
-                        <span className="mr-2">📬</span>
-                        {t('newsletter.badge')}
-                    </motion.div>
+                            className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
+                        >
+                            <span className="mr-2">📬</span>
+                            Newsletter Exclusive
+                        </motion.div>
 
-                    <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                        {t('newsletter.title')}
-                        <span className="block bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
-                            {t('newsletter.titleHighlight')}
-                        </span>
-                    </h2>
+                        <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+                            Restez Informé des
+                            <span className="block bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
+                                Meilleures Offres
+                            </span>
+                        </h2>
 
-                    <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
-                        {t('newsletter.description')}
-                    </p>
+                        <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
+                            Inscrivez-vous à notre newsletter et recevez en exclusivité nos promotions,
+                            nouveautés et conseils d'experts pour optimiser votre chauffage au bois.
+                        </p>
                     </motion.div>
 
                     {/* Formulaire */}
@@ -148,10 +147,11 @@ export default function NewsletterSection() {
                             >
                                 <div className="text-6xl mb-4">🎉</div>
                                 <h3 className="text-2xl font-bold text-white mb-4">
-                                    {t('newsletter.success.title')}
+                                    Inscription réussie !
                                 </h3>
                                 <p className="text-gray-300 text-lg">
-                                    {t('newsletter.success.description')}
+                                    Merci ! Vous recevrez bientôt un email de confirmation.
+                                    Consultez votre boîte mail (et vos spams) pour valider votre abonnement.
                                 </p>
                             </motion.div>
                         ) : (
@@ -161,7 +161,7 @@ export default function NewsletterSection() {
                                     <div>
                                         <Input
                                             type="email"
-                                            placeholder={t('newsletter.form.emailPlaceholder')}
+                                            placeholder="Votre adresse email *"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             required
@@ -171,7 +171,7 @@ export default function NewsletterSection() {
                                     <div>
                                         <Input
                                             type="text"
-                                            placeholder={t('newsletter.form.firstNamePlaceholder')}
+                                            placeholder="Votre prénom (optionnel)"
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                             className="bg-white/10 border-white/20 text-white placeholder-gray-400"
@@ -182,7 +182,7 @@ export default function NewsletterSection() {
                                 {/* Centres d'intérêt */}
                                 <div className="text-left">
                                     <label className="block text-white font-medium mb-4">
-                                        {t('newsletter.form.interestsLabel')}
+                                        Que souhaitez-vous recevoir ? (optionnel)
                                     </label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {interestOptions.map((option) => (
@@ -240,18 +240,18 @@ export default function NewsletterSection() {
                                         {isLoading ? (
                                             <div className="flex items-center space-x-2">
                                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                <span>{t('newsletter.form.submitting')}</span>
+                                                <span>Inscription...</span>
                                             </div>
                                         ) : (
                                             <>
                                                 <span className="mr-2">✉️</span>
-                                                {t('newsletter.form.submit')}
+                                                S'inscrire Gratuitement
                                             </>
                                         )}
                                     </Button>
 
                                     <p className="text-sm text-gray-400 mt-4">
-                                        {t('newsletter.form.required')}
+                                        * Champ obligatoire. Désabonnement possible à tout moment.
                                     </p>
                                 </div>
                             </form>

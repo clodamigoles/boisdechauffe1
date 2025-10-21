@@ -1,23 +1,21 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, Check } from 'lucide-react'
-import { useTranslation } from '@/lib/useTranslation'
 
 export default function ProductSort({ value, onChange }) {
-    const { t } = useTranslation('shop')
     const [isOpen, setIsOpen] = useState(false)
     const dropdownRef = useRef(null)
 
     const sortOptions = useMemo(() => [
-        { value: 'name-asc', label: t('sort.options.name-asc') },
-        { value: 'name-desc', label: t('sort.options.name-desc') },
-        { value: 'price-asc', label: t('sort.options.price-asc') },
-        { value: 'price-desc', label: t('sort.options.price-desc') },
-        { value: 'rating-desc', label: t('sort.options.rating-desc') },
-        { value: 'sales-desc', label: t('sort.options.sales-desc') },
-        { value: 'created-desc', label: t('sort.options.created-desc') },
-        { value: 'created-asc', label: t('sort.options.created-asc') }
-    ], [t])
+        { value: 'name-asc', label: 'Nom A-Z' },
+        { value: 'name-desc', label: 'Nom Z-A' },
+        { value: 'price-asc', label: 'Prix croissant' },
+        { value: 'price-desc', label: 'Prix décroissant' },
+        { value: 'rating-desc', label: 'Mieux notés' },
+        { value: 'sales-desc', label: 'Plus vendus' },
+        { value: 'created-desc', label: 'Plus récents' },
+        { value: 'created-asc', label: 'Plus anciens' }
+    ], [])
 
     const selectedOption = useMemo(() => 
         sortOptions.find(option => option.value === value) || sortOptions[0],
@@ -69,7 +67,7 @@ export default function ProductSort({ value, onChange }) {
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
             >
-                <span className="text-gray-600">{t('sort.label')}</span>
+                <span className="text-gray-600">Trier par :</span>
                 <span className="text-gray-900 flex-1 text-left">{selectedOption.label}</span>
                 <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
             </button>

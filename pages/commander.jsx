@@ -12,8 +12,6 @@ import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { getRegionsForCountry, calculateShippingCost } from "../lib/shipping-regions"
-import { useTranslation } from "@/lib/useTranslation"
-import { loadTranslations } from "@/lib/i18n-server"
 
 const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -29,7 +27,6 @@ const pageTransition = {
 
 export default function CheckoutPage() {
     const router = useRouter()
-    const { t } = useTranslation('commander')
     const { items, getTotalPrice, clearCart } = useCartStore()
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -107,19 +104,19 @@ export default function CheckoutPage() {
         const newErrors = {}
 
         // Validation des champs requis
-        if (!formData.email) newErrors.email = t('validation.emailRequired')
+        if (!formData.email) newErrors.email = "Email requis"
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = t('validation.emailInvalid')
+            newErrors.email = "Format email invalide"
         }
 
-        if (!formData.firstName) newErrors.firstName = t('validation.firstNameRequired')
-        if (!formData.lastName) newErrors.lastName = t('validation.lastNameRequired')
-        if (!formData.phone) newErrors.phone = t('validation.phoneRequired')
-        if (!formData.address1) newErrors.address1 = t('validation.address1Required')
-        if (!formData.city) newErrors.city = t('validation.cityRequired')
-        if (!formData.postalCode) newErrors.postalCode = t('validation.postalCodeRequired')
-        if (!formData.region) newErrors.region = t('validation.regionRequired')
-        if (!formData.acceptTerms) newErrors.acceptTerms = t('validation.acceptTermsRequired')
+        if (!formData.firstName) newErrors.firstName = "Prénom requis"
+        if (!formData.lastName) newErrors.lastName = "Nom requis"
+        if (!formData.phone) newErrors.phone = "Téléphone requis"
+        if (!formData.address1) newErrors.address1 = "Adresse requise"
+        if (!formData.city) newErrors.city = "Ville requise"
+        if (!formData.postalCode) newErrors.postalCode = "Code postal requis"
+        if (!formData.region) newErrors.region = "Région requise"
+        if (!formData.acceptTerms) newErrors.acceptTerms = "Vous devez accepter les conditions"
 
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
@@ -174,11 +171,11 @@ export default function CheckoutPage() {
             console.log("[v0] API response:", result)
 
             if (!response.ok) {
-                throw new Error(result.message || t('errors.orderCreationError'))
+                throw new Error(result.message || "Erreur lors de la création de la commande")
             }
 
             if (!result.success) {
-                throw new Error(result.message || t('errors.orderCreationError'))
+                throw new Error(result.message || "Erreur lors de la création de la commande")
             }
 
             // Clear cart on success
@@ -188,7 +185,7 @@ export default function CheckoutPage() {
             router.push(`/commande/${result.data.orderNumber}`)
         } catch (error) {
             console.error("Erreur lors de la création de la commande:", error)
-            setErrors({ submit: error.message || t('errors.submitError') })
+            setErrors({ submit: error.message || "Une erreur est survenue. Veuillez réessayer." })
         } finally {
             setIsSubmitting(false)
         }
@@ -239,13 +236,13 @@ export default function CheckoutPage() {
                                     className="flex items-center space-x-2 text-gray-600 hover:text-amber-600 transition-colors"
                                 >
                                     <ArrowLeft className="w-5 h-5" />
-                                    <span>{t('navigation.backToCart')}</span>
+                                    <span>Retour au panier</span>
                                 </motion.button>
                             </Link>
                         </div>
 
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('header.title')}</h1>
-                        <p className="text-gray-600">{t('header.subtitle')}</p>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Finaliser ma commande</h1>
+                        <p className="text-gray-600">Remplissez vos informations pour obtenir votre devis personnalisé</p>
                     </div>
 
                     <form onSubmit={handleSubmit}>
@@ -262,14 +259,14 @@ export default function CheckoutPage() {
                                         <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
                                             <User className="w-4 h-4 text-amber-600" />
                                         </div>
-                                        <h2 className="text-lg font-semibold text-gray-900">{t('sections.personalInfo')}</h2>
+                                        <h2 className="text-lg font-semibold text-gray-900">Informations personnelles</h2>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <Input
                                             type="email"
-                                            label={t('form.fields.email.label')}
-                                            placeholder={t('form.fields.email.placeholder')}
+                                            label="Email"
+                                            placeholder="votre@email.com"
                                             value={formData.email}
                                             onChange={(e) => handleInputChange("email", e.target.value)}
                                             error={errors.email}
@@ -277,8 +274,8 @@ export default function CheckoutPage() {
                                         />
                                         <Input
                                             type="tel"
-                                            label={t('form.fields.phone.label')}
-                                            placeholder={t('form.fields.phone.placeholder')}
+                                            label="Téléphone"
+                                            placeholder="06 12 34 56 78"
                                             value={formData.phone}
                                             onChange={(e) => handleInputChange("phone", e.target.value)}
                                             error={errors.phone}
@@ -286,8 +283,8 @@ export default function CheckoutPage() {
                                         />
                                         <Input
                                             type="text"
-                                            label={t('form.fields.firstName.label')}
-                                            placeholder={t('form.fields.firstName.placeholder')}
+                                            label="Prénom"
+                                            placeholder="Jean"
                                             value={formData.firstName}
                                             onChange={(e) => handleInputChange("firstName", e.target.value)}
                                             error={errors.firstName}
@@ -295,8 +292,8 @@ export default function CheckoutPage() {
                                         />
                                         <Input
                                             type="text"
-                                            label={t('form.fields.lastName.label')}
-                                            placeholder={t('form.fields.lastName.placeholder')}
+                                            label="Nom"
+                                            placeholder="Dupont"
                                             value={formData.lastName}
                                             onChange={(e) => handleInputChange("lastName", e.target.value)}
                                             error={errors.lastName}
@@ -304,8 +301,8 @@ export default function CheckoutPage() {
                                         />
                                         <Input
                                             type="text"
-                                            label={t('form.fields.company.label')}
-                                            placeholder={t('form.fields.company.placeholder')}
+                                            label="Entreprise (optionnel)"
+                                            placeholder="Nom de l'entreprise"
                                             value={formData.company}
                                             onChange={(e) => handleInputChange("company", e.target.value)}
                                         />
@@ -323,14 +320,14 @@ export default function CheckoutPage() {
                                         <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
                                             <MapPin className="w-4 h-4 text-amber-600" />
                                         </div>
-                                        <h2 className="text-lg font-semibold text-gray-900">{t('sections.shippingAddress')}</h2>
+                                        <h2 className="text-lg font-semibold text-gray-900">Adresse de livraison</h2>
                                     </div>
 
                                     <div className="space-y-6">
                                         <Input
                                             type="text"
-                                            label={t('form.fields.address1.label')}
-                                            placeholder={t('form.fields.address1.placeholder')}
+                                            label="Adresse"
+                                            placeholder="123 rue de la République"
                                             value={formData.address1}
                                             onChange={(e) => handleInputChange("address1", e.target.value)}
                                             error={errors.address1}
@@ -338,16 +335,16 @@ export default function CheckoutPage() {
                                         />
                                         <Input
                                             type="text"
-                                            label={t('form.fields.address2.label')}
-                                            placeholder={t('form.fields.address2.placeholder')}
+                                            label="Complément d'adresse (optionnel)"
+                                            placeholder="Appartement, étage, bâtiment..."
                                             value={formData.address2}
                                             onChange={(e) => handleInputChange("address2", e.target.value)}
                                         />
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <Input
                                                 type="text"
-                                                label={t('form.fields.postalCode.label')}
-                                                placeholder={t('form.fields.postalCode.placeholder')}
+                                                label="Code postal"
+                                                placeholder="75001"
                                                 value={formData.postalCode}
                                                 onChange={(e) => handleInputChange("postalCode", e.target.value)}
                                                 error={errors.postalCode}
@@ -355,8 +352,8 @@ export default function CheckoutPage() {
                                             />
                                             <Input
                                                 type="text"
-                                                label={t('form.fields.city.label')}
-                                                placeholder={t('form.fields.city.placeholder')}
+                                                label="Ville"
+                                                placeholder="Paris"
                                                 value={formData.city}
                                                 onChange={(e) => handleInputChange("city", e.target.value)}
                                                 error={errors.city}
@@ -364,23 +361,23 @@ export default function CheckoutPage() {
                                             />
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                    {t('form.fields.country.label')} <span className="text-red-500">*</span>
+                                                    Pays <span className="text-red-500">*</span>
                                                 </label>
                                                 <select
                                                     value={formData.country}
                                                     onChange={(e) => handleInputChange("country", e.target.value)}
                                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
                                                 >
-                                                    <option value="France">{t('form.countries.france')}</option>
-                                                    <option value="Belgique">{t('form.countries.belgium')}</option>
-                                                    <option value="Suisse">{t('form.countries.switzerland')}</option>
-                                                    <option value="Luxembourg">{t('form.countries.luxembourg')}</option>
+                                                    <option value="France">France</option>
+                                                    <option value="Belgique">Belgique</option>
+                                                    <option value="Suisse">Suisse</option>
+                                                    <option value="Luxembourg">Luxembourg</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                {t('form.fields.region.label')} <span className="text-red-500">*</span>
+                                                Région <span className="text-red-500">*</span>
                                             </label>
                                             <select
                                                 value={formData.region}
@@ -388,22 +385,22 @@ export default function CheckoutPage() {
                                                 className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500 ${errors.region ? "border-red-500" : "border-gray-300"
                                                     }`}
                                             >
-                                                <option value="">{t('form.fields.region.placeholder')}</option>
+                                                <option value="">Sélectionnez une région</option>
                                                 {availableRegions.map((region) => (
                                                     <option key={region.name} value={region.name}>
-                                                        {region.name} - {formatPrice(region.cost)} {subtotal >= 500 && t('form.fields.region.free')}
+                                                        {region.name} - {formatPrice(region.cost)} {subtotal >= 500 && "(Gratuit)"}
                                                     </option>
                                                 ))}
                                             </select>
                                             {errors.region && <p className="mt-1 text-sm text-red-600">{errors.region}</p>}
                                             <p className="mt-2 text-sm text-gray-500">
-                                                {t('form.fields.region.note')}
+                                                Les frais de livraison varient selon la région sélectionnée
                                             </p>
                                         </div>
                                         <Input
                                             type="text"
-                                            label={t('form.fields.instructions.label')}
-                                            placeholder={t('form.fields.instructions.placeholder')}
+                                            label="Instructions de livraison (optionnel)"
+                                            placeholder="Laisser devant le garage, sonner chez le voisin..."
                                             value={formData.instructions}
                                             onChange={(e) => handleInputChange("instructions", e.target.value)}
                                         />
@@ -421,7 +418,7 @@ export default function CheckoutPage() {
                                         <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
                                             <CreditCard className="w-4 h-4 text-amber-600" />
                                         </div>
-                                        <h2 className="text-lg font-semibold text-gray-900">{t('sections.paymentMethod')}</h2>
+                                        <h2 className="text-lg font-semibold text-gray-900">Mode de paiement</h2>
                                     </div>
 
                                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -430,9 +427,9 @@ export default function CheckoutPage() {
                                                 <CheckCircle className="w-4 h-4 text-white" />
                                             </div>
                                             <div>
-                                                <h3 className="font-medium text-blue-900">{t('payment.title')}</h3>
+                                                <h3 className="font-medium text-blue-900">Virement bancaire</h3>
                                                 <p className="text-sm text-blue-700 mt-1">
-                                                    {t('payment.description')}
+                                                    Après validation de votre commande, vous recevrez les coordonnées bancaires par email
                                                 </p>
                                             </div>
                                         </div>
@@ -455,13 +452,13 @@ export default function CheckoutPage() {
                                                 className="mt-1 w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
                                             />
                                             <span className="text-sm text-gray-700">
-                                                {t('terms.accept')}{" "}
+                                                J'accepte les{" "}
                                                 <Link href="/cgv" className="text-amber-600 hover:text-amber-700 underline">
-                                                    {t('terms.cgv')}
+                                                    conditions générales de vente
                                                 </Link>{" "}
-                                                {t('terms.and')}{" "}
+                                                et la{" "}
                                                 <Link href="/politique-confidentialite" className="text-amber-600 hover:text-amber-700 underline">
-                                                    {t('terms.privacy')}
+                                                    politique de confidentialité
                                                 </Link>
                                                 <span className="text-red-500 ml-1">*</span>
                                             </span>
@@ -476,7 +473,7 @@ export default function CheckoutPage() {
                                                 className="mt-1 w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
                                             />
                                             <span className="text-sm text-gray-700">
-                                                {t('terms.newsletter')}
+                                                Je souhaite recevoir les offres promotionnelles et actualités par email (optionnel)
                                             </span>
                                         </label>
                                     </div>
@@ -502,7 +499,7 @@ export default function CheckoutPage() {
                                     transition={{ delay: 0.4 }}
                                     className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24"
                                 >
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('sections.orderSummary')}</h2>
+                                    <h2 className="text-lg font-semibold text-gray-900 mb-6">Résumé de commande</h2>
 
                                     {/* Articles */}
                                     <div className="space-y-4 mb-6">
@@ -525,24 +522,24 @@ export default function CheckoutPage() {
                                     {/* Totaux */}
                                     <div className="space-y-3 mb-6 pt-6 border-t border-gray-100">
                                         <div className="flex justify-between text-gray-600">
-                                            <span>{t('summary.subtotal')}</span>
+                                            <span>Sous-total</span>
                                             <span>{formatPrice(subtotal)}</span>
                                         </div>
                                         <div className="flex justify-between text-gray-600">
-                                            <span>{t('summary.shipping')}</span>
+                                            <span>Livraison</span>
                                             <span className={shippingCost === 0 ? "text-green-600 font-medium" : ""}>
-                                                {shippingCost === 0 ? t('summary.shippingFree') : formatPrice(shippingCost)}
+                                                {shippingCost === 0 ? "Gratuite" : formatPrice(shippingCost)}
                                             </span>
                                         </div>
                                         {subtotal < 500 && (
                                             <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
-                                                <p className="font-medium">{t('summary.freeShippingThreshold')}</p>
-                                                <p>{t('summary.freeShippingRemaining', { amount: formatPrice(500 - subtotal) })}</p>
+                                                <p className="font-medium">Livraison gratuite dès 500€</p>
+                                                <p>Plus que {formatPrice(500 - subtotal)} pour en bénéficier !</p>
                                             </div>
                                         )}
                                         <div className="border-t border-gray-100 pt-3">
                                             <div className="flex justify-between text-lg font-semibold text-gray-900">
-                                                <span>{t('summary.total')}</span>
+                                                <span>Total</span>
                                                 <span>{formatPrice(total)}</span>
                                             </div>
                                         </div>
@@ -552,10 +549,10 @@ export default function CheckoutPage() {
                                     <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                                         <div className="flex items-center space-x-2 text-green-700 mb-2">
                                             <Truck className="w-5 h-5" />
-                                            <span className="font-medium">{t('delivery.title')}</span>
+                                            <span className="font-medium">Livraison</span>
                                         </div>
                                         <p className="text-sm text-green-600">
-                                            {t('delivery.description')}
+                                            Livraison sous 5-7 jours ouvrés après réception du paiement
                                         </p>
                                     </div>
 
@@ -564,12 +561,12 @@ export default function CheckoutPage() {
                                         {isSubmitting ? (
                                             <div className="flex items-center space-x-2">
                                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                <span>{t('buttons.processing')}</span>
+                                                <span>Traitement...</span>
                                             </div>
                                         ) : (
                                             <>
                                                 <FileText className="w-5 h-5 mr-2" />
-                                                {t('buttons.placeOrder')}
+                                                Placer ma commande
                                             </>
                                         )}
                                     </Button>
@@ -579,15 +576,15 @@ export default function CheckoutPage() {
                                         <div className="space-y-3 text-sm text-gray-600">
                                             <div className="flex items-center space-x-2">
                                                 <Shield className="w-4 h-4 text-green-500" />
-                                                <span>{t('guarantees.securePayment')}</span>
+                                                <span>Paiement sécurisé</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <Shield className="w-4 h-4 text-green-500" />
-                                                <span>{t('guarantees.satisfaction')}</span>
+                                                <span>Satisfaction garantie</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <Shield className="w-4 h-4 text-green-500" />
-                                                <span>{t('guarantees.support')}</span>
+                                                <span>Service client 7j/7</span>
                                             </div>
                                         </div>
                                     </div>
@@ -601,27 +598,4 @@ export default function CheckoutPage() {
             <Footer />
         </div>
     )
-}
-
-export async function getServerSideProps({ locale }) {
-    try {
-        // Charger les traductions
-        const translations = await loadTranslations(locale || 'en', ['common', 'commander'])
-        
-        return {
-            props: {
-                translations
-            }
-        }
-    } catch (error) {
-        console.error("Erreur lors du chargement des traductions:", error)
-        
-        const translations = await loadTranslations(locale || 'en', ['common', 'commander'])
-        
-        return {
-            props: {
-                translations
-            }
-        }
-    }
 }

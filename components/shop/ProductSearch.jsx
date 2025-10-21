@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
-import { useTranslation } from '@/lib/useTranslation'
 
-export default function ProductSearch({ value, onChange, placeholder }) {
-    const { t } = useTranslation('shop')
+export default function ProductSearch({ value, onChange, placeholder = "Rechercher..." }) {
     const [searchTerm, setSearchTerm] = useState(value || '')
     const timeoutRef = useRef(null)
 
@@ -53,15 +51,15 @@ export default function ProductSearch({ value, onChange, placeholder }) {
                 type="text"
                 value={searchTerm}
                 onChange={handleChange}
-                placeholder={placeholder || t('search.placeholder')}
+                placeholder={placeholder}
                 className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
-                aria-label={placeholder || t('search.placeholder')}
+                aria-label={placeholder}
             />
             {searchTerm && (
                 <button
                     onClick={handleClear}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                    aria-label={t('search.clear')}
+                    aria-label="Effacer la recherche"
                 >
                     <X className="w-4 h-4" />
                 </button>

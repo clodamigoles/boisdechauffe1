@@ -6,12 +6,9 @@ import { Menu, X, Search, ShoppingCart, Phone, ChevronDown, ShoppingBag, Shoppin
 import { useCartStore } from '../../store/cartStore'
 import Button from '../ui/Button'
 import { useSettings } from '@/hooks/useSettings'
-import { useTranslation } from '@/lib/useTranslation'
-import LanguageSwitcher from '../ui/LanguageSwitcher'
 
 export default function Header() {
     const { siteName } = useSettings()
-    const { t } = useTranslation('common')
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -28,21 +25,21 @@ export default function Header() {
     }, [])
 
     const navigation = [
-        { name: t('header.nav.home'), href: '/', current: router.pathname === '/' },
+        { name: 'Accueil', href: '/', current: router.pathname === '/' },
         {
-            name: t('header.nav.catalog'),
+            name: 'Catalogue',
             href: '/shop',
             current: router.pathname.startsWith('/shop'),
             submenu: [
-                { name: t('header.submenu.firewood'), href: '/shop?category=bois-de-chauffage' },
-                { name: t('header.submenu.pellets'), href: '/shop?category=granules-et-pellets' },
-                { name: t('header.submenu.logs'), href: '/shop?category=buches-compressees' },
-                { name: t('header.submenu.heating'), href: '/shop?category=chaudieres-cuisinieres-et-poeles' }
+                { name: 'Bois de chauffage', href: '/shop?category=bois-de-chauffage' },
+                { name: 'Granulés et pellets', href: '/shop?category=granules-et-pellets' },
+                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' },
+                { name: 'Chaudières, cuisinières et poêles', href: '/shop?category=chaudieres-cuisinieres-et-poeles' }
             ]
         },
-        { name: t('header.nav.faq'), href: '/faq', current: router.pathname === '/faq' },
-        // { name: t('header.nav.delivery'), href: '/livraison', current: router.pathname === '/livraison' },
-        { name: t('header.nav.contact'), href: '/contact', current: router.pathname === '/contact' }
+        { name: 'FAQ', href: '/faq', current: router.pathname === '/faq' },
+        // { name: 'Livraison', href: '/livraison', current: router.pathname === '/livraison' },
+        { name: 'Contact', href: '/contact', current: router.pathname === '/contact' }
     ]
 
     return (
@@ -75,7 +72,7 @@ export default function Header() {
                                     </span>
                                     <p className={`text-sm ${!isScrolled && router.pathname === '/' ? 'text-white/80' : 'text-gray-500'
                                         }`}>
-                                        {t('header.quality')}
+                                        Qualité Premium
                                     </p>
                                 </div>
                             </Link>
@@ -122,9 +119,6 @@ export default function Header() {
 
                         {/* Actions */}
                         <div className="flex items-center space-x-2 lg:space-x-4">
-                            {/* Sélecteur de langue */}
-                            <LanguageSwitcher />
-                            
                             {/* Recherche */}
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
@@ -172,7 +166,7 @@ export default function Header() {
                                         className="flex items-center space-x-2"
                                     >
                                         <ShoppingBagIcon className="w-4 h-4" />
-                                        <span>{t('header.nav.shop')}</span>
+                                        <span>Boutique</span>
                                     </Button>
                                 </Link>
                             </div>
@@ -246,7 +240,7 @@ export default function Header() {
                                         <Link href="/shop">
                                             <Button variant="primary" className="w-full flex items-center justify-center space-x-2">
                                                 <ShoppingBag className="w-4 h-4" />
-                                                <span>{t('header.nav.shop')}</span>
+                                                <span>Boutique</span>
                                             </Button>
                                         </Link>
                                     </div>
@@ -279,7 +273,7 @@ export default function Header() {
                                     <Search className="w-6 h-6 text-gray-400" />
                                     <input
                                         type="text"
-                                        placeholder={t('header.search.placeholder')}
+                                        placeholder="Rechercher des produits..."
                                         autoFocus
                                         className="flex-1 text-lg border-none outline-none placeholder-gray-400"
                                     />

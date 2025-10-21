@@ -1,9 +1,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useTranslation } from '@/lib/useTranslation'
 
 export default function TestimonialCard({ testimonial, featured = false, compact = false }) {
-    const { t } = useTranslation('common')
     const renderStars = (rating) => {
         return [...Array(5)].map((_, i) => (
             <span
@@ -114,7 +112,7 @@ export default function TestimonialCard({ testimonial, featured = false, compact
                         </div>
                         {testimonial.productPurchased && (
                             <div className="text-sm text-amber-600 font-medium">
-                                {t('product.purchased')} {testimonial.productPurchased}
+                                A acheté : {testimonial.productPurchased}
                             </div>
                         )}
                     </div>
@@ -169,7 +167,7 @@ export default function TestimonialCard({ testimonial, featured = false, compact
             {testimonial.productPurchased && (
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="text-sm text-gray-500">
-                        {t('product.productPurchased')}
+                        Produit acheté :
                     </div>
                     <div className="text-sm font-medium text-amber-600">
                         {testimonial.productPurchased}
@@ -181,7 +179,7 @@ export default function TestimonialCard({ testimonial, featured = false, compact
             {testimonial.verified && (
                 <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
                     <span className="mr-1">✓</span>
-                    {t('product.verifiedPurchase')}
+                    Achat vérifié
                 </div>
             )}
         </motion.div>

@@ -13,8 +13,6 @@ import NewsletterSection from '@/components/home/NewsletterSection'
 import { pageVariants } from '@/utils/animations'
 import { cachedAPI } from '@/lib/api'
 import { useSettings } from '@/hooks/useSettings'
-import { loadTranslations } from '@/lib/i18n-server'
-import { useTranslation } from '@/lib/useTranslation'
 
 export default function HomePage({
     initialCategories,
@@ -23,8 +21,6 @@ export default function HomePage({
     hasErrors
 }) {
     const { siteName } = useSettings()
-    const { t } = useTranslation('home')
-    const { t: tSeo } = useTranslation('seo')
     const [isLoading, setIsLoading] = useState(true)
     const [categories, setCategories] = useState(initialCategories || [])
     const [products, setProducts] = useState(initialProducts || [])
@@ -81,9 +77,9 @@ export default function HomePage({
     return (
         <>
             <Head>
-                <title>{tSeo('home.title', { siteName })}</title>
-                <meta name="description" content={tSeo('home.description')} />
-                <meta name="keywords" content={tSeo('home.keywords')} />
+                <title>{`${siteName} | Livraison Rapide`}</title>
+                <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France. Devis gratuit !" />
+                <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec" />
             </Head>
 
             <AnimatePresence mode="wait">
@@ -125,7 +121,7 @@ export default function HomePage({
                                 transition={{ delay: 0.5 }}
                                 className="text-gray-600"
                             >
-                                {t('loading')}
+                                Chargement de votre expérience premium...
                             </motion.p>
                         </div>
                     </motion.div>
@@ -169,11 +165,8 @@ export default function HomePage({
     )
 }
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps() {
     try {
-        // Charger les traductions
-        const translations = await loadTranslations(locale || 'en', ['common', 'home', 'seo', 'api', 'demo', 'products', 'categories'])
-        
         // Timeouts pour éviter les blocages
         const TIMEOUT_DURATION = 8000 // 8 secondes
 
@@ -210,8 +203,7 @@ export async function getStaticProps({ locale }) {
                 initialCategories: categories,
                 initialProducts: products,
                 initialTestimonials: testimonials,
-                hasErrors,
-                translations: translations.translations
+                hasErrors
             },
             // Revalidation ISR - régénérer la page toutes les heures
             revalidate: 3600
@@ -225,8 +217,7 @@ export async function getStaticProps({ locale }) {
                 initialCategories: [],
                 initialProducts: [],
                 initialTestimonials: [],
-                hasErrors: true,
-                translations: {}
+                hasErrors: true
             },
             // Revalidation plus fréquente en cas d'erreur
             revalidate: 300 // 5 minutes

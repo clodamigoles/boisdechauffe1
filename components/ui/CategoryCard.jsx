@@ -3,10 +3,8 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, TrendingUp } from 'lucide-react'
-import { useTranslation } from '@/lib/useTranslation'
 
 export default function CategoryCard({ category }) {
-    const { t } = useTranslation('common')
     const [isImageLoading, setIsImageLoading] = useState(true)
     const [imageError, setImageError] = useState(false)
     const IconComponent = category.icon
@@ -53,7 +51,7 @@ export default function CategoryCard({ category }) {
                             className="absolute top-3 right-3 bg-amber-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1"
                         >
                             <TrendingUp className="w-3 h-3" />
-                            <span>{t('category.trending')}</span>
+                            <span>Tendance</span>
                         </motion.div>
                     )}
 
@@ -66,7 +64,7 @@ export default function CategoryCard({ category }) {
                             </div>
                             <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                                 <span className="text-white text-sm font-medium">
-                                    {category.productCount} {t('category.products')}
+                                    {category.productCount} produits
                                 </span>
                             </div>
                         </div>
@@ -99,7 +97,7 @@ export default function CategoryCard({ category }) {
                                 className="flex items-center justify-between"
                             >
                                 <span className="text-white font-medium group-hover:text-amber-200 transition-colors flex items-center space-x-2">
-                                    <span>{t('category.discover')}</span>
+                                    <span>Découvrir</span>
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </motion.div>

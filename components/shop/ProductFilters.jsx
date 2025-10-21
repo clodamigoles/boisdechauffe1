@@ -2,7 +2,6 @@ import { useState, useMemo, memo } from 'react'
 import { motion } from 'framer-motion'
 import { X, RotateCcw, Check, ChevronDown, ChevronUp } from 'lucide-react'
 import Button from '../ui/Button'
-import { useTranslation } from '@/lib/useTranslation'
 
 // Composants memoized pour éviter les re-renders
 const FilterSection = memo(({ title, isExpanded, onToggle, children }) => (
@@ -115,7 +114,6 @@ const FilterTag = memo(({ label, onRemove }) => (
 FilterTag.displayName = 'FilterTag'
 
 export default function ProductFilters({ filters, categories, onChange, onReset, mobile = false }) {
-    const { t } = useTranslation('shop')
     const [expandedSections, setExpandedSections] = useState({
         category: true,
         essence: true,
@@ -132,22 +130,22 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
 
     // Données statiques memoized
     const essences = useMemo(() => [
-        { value: 'chene', label: t('filters.essences.chene'), count: 12 },
-        { value: 'hetre', label: t('filters.essences.hetre'), count: 8 },
-        { value: 'charme', label: t('filters.essences.charme'), count: 6 },
-        { value: 'mix', label: t('filters.essences.mix'), count: 4 },
-        { value: 'granules', label: t('filters.essences.granules'), count: 3 },
-        { value: 'compresse', label: t('filters.essences.compresse'), count: 2 },
-        { value: 'allume-feu', label: t('filters.essences.allume-feu'), count: 1 }
-    ], [t])
+        { value: 'chene', label: 'Chêne', count: 12 },
+        { value: 'hetre', label: 'Hêtre', count: 8 },
+        { value: 'charme', label: 'Charme', count: 6 },
+        { value: 'mix', label: 'Mix Feuillus', count: 4 },
+        { value: 'granules', label: 'Granulés', count: 3 },
+        { value: 'compresse', label: 'Bûches Compressées', count: 2 },
+        { value: 'allume-feu', label: 'Allume-feu', count: 1 }
+    ], [])
 
     const priceRanges = useMemo(() => [
-        { value: '0-50', label: t('filters.priceRanges.0-50'), count: 8 },
-        { value: '50-100', label: t('filters.priceRanges.50-100'), count: 15 },
-        { value: '100-200', label: t('filters.priceRanges.100-200'), count: 12 },
-        { value: '200-500', label: t('filters.priceRanges.200-500'), count: 6 },
-        { value: '500+', label: t('filters.priceRanges.500+'), count: 3 }
-    ], [t])
+        { value: '0-50', label: 'Moins de 50€', count: 8 },
+        { value: '50-100', label: '50€ - 100€', count: 15 },
+        { value: '100-200', label: '100€ - 200€', count: 12 },
+        { value: '200-500', label: '200€ - 500€', count: 6 },
+        { value: '500+', label: 'Plus de 500€', count: 3 }
+    ], [])
 
     // Compteur de filtres actifs memoized
     const activeFiltersCount = useMemo(() => {
@@ -177,16 +175,20 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
         }
         
         if (filters.inStock) {
-            active.push({ key: 'inStock', label: t('filters.features.inStock') })
+            active.push({ key: 'inStock', label: 'En stock' })
         }
         
         if (filters.badges) {
-            const badgeKey = `filters.badges.${filters.badges}`
-            active.push({ key: 'badges', label: t(badgeKey) })
+            const badgeLabels = {
+                premium: 'Premium',
+                bestseller: 'Meilleures ventes',
+                nouveau: 'Nouveautés'
+            }
+            active.push({ key: 'badges', label: badgeLabels[filters.badges] || filters.badges })
         }
         
         if (filters.promotion === 'true') {
-            active.push({ key: 'promotion', label: t('filters.features.promotion') })
+            active.push({ key: 'promotion', label: 'En promotion' })
         }
         
         if (filters.search) {
@@ -194,14 +196,14 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
         }
         
         return active
-    }, [filters, categories, essences, priceRanges, t])
+    }, [filters, categories, essences, priceRanges])
 
     return (
         <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${mobile ? 'p-4' : 'p-6'}`}>
             {/* En-tête */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-semibold text-gray-900">{t('filters.title')}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">Filtres</h2>
                     {activeFiltersCount > 0 && (
                         <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded-full">
                             {activeFiltersCount}
@@ -217,7 +219,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                         className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
                     >
                         <RotateCcw className="w-4 h-4" />
-                        <span>{t('filters.reset')}</span>
+                        <span>Reset</span>
                     </Button>
                 )}
             </div>
@@ -225,7 +227,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
             <div className="space-y-6">
                 {/* Catégories */}
                 <FilterSection
-                    title={t('filters.sections.categories')}
+                    title="Catégories"
                     isExpanded={expandedSections.category}
                     onToggle={() => toggleSection('category')}
                 >
@@ -234,7 +236,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                             value=""
                             isSelected={!filters.category}
                             onChange={(value) => onChange('category', value)}
-                            label={t('filters.categories.all')}
+                            label="Toutes les catégories"
                             count={categories?.reduce((sum, cat) => sum + (cat.productCount || 0), 0)}
                         />
                         {categories?.map((category) => (
@@ -252,7 +254,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
 
                 {/* Essences */}
                 <FilterSection
-                    title={t('filters.sections.essences')}
+                    title="Essences"
                     isExpanded={expandedSections.essence}
                     onToggle={() => toggleSection('essence')}
                 >
@@ -272,7 +274,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
 
                 {/* Prix */}
                 <FilterSection
-                    title={t('filters.sections.price')}
+                    title="Prix"
                     isExpanded={expandedSections.price}
                     onToggle={() => toggleSection('price')}
                 >
@@ -281,7 +283,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                             value=""
                             isSelected={!filters.priceRange}
                             onChange={(value) => onChange('priceRange', value)}
-                            label={t('filters.priceRanges.all')}
+                            label="Tous les prix"
                         />
                         {priceRanges.map((range) => (
                             <RadioFilter
@@ -298,7 +300,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
 
                 {/* Caractéristiques */}
                 <FilterSection
-                    title={t('filters.sections.features')}
+                    title="Caractéristiques"
                     isExpanded={expandedSections.features}
                     onToggle={() => toggleSection('features')}
                 >
@@ -307,31 +309,31 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                             value={true}
                             isChecked={filters.inStock}
                             onChange={(checked) => onChange('inStock', checked)}
-                            label={t('filters.features.inStock')}
+                            label="En stock uniquement"
                         />
                         <CheckboxFilter
                             value="premium"
                             isChecked={filters.badges === 'premium'}
                             onChange={(checked) => onChange('badges', checked ? 'premium' : '')}
-                            label={t('filters.features.premium')}
+                            label="Produits Premium"
                         />
                         <CheckboxFilter
                             value="bestseller"
                             isChecked={filters.badges === 'bestseller'}
                             onChange={(checked) => onChange('badges', checked ? 'bestseller' : '')}
-                            label={t('filters.features.bestseller')}
+                            label="Meilleures ventes"
                         />
                         <CheckboxFilter
                             value="nouveau"
                             isChecked={filters.badges === 'nouveau'}
                             onChange={(checked) => onChange('badges', checked ? 'nouveau' : '')}
-                            label={t('filters.features.new')}
+                            label="Nouveautés"
                         />
                         <CheckboxFilter
                             value="promotion"
                             isChecked={filters.promotion === 'true'}
                             onChange={(checked) => onChange('promotion', checked ? 'true' : '')}
-                            label={t('filters.features.promotion')}
+                            label="En promotion"
                         />
                     </div>
                 </FilterSection>
@@ -340,7 +342,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
             {/* Filtres actifs */}
             {activeFiltersCount > 0 && (
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">{t('filters.activeFilters')}</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">Filtres actifs</h4>
                     <div className="flex flex-wrap gap-2">
                         {activeFiltersList.map((filter) => (
                             <FilterTag
