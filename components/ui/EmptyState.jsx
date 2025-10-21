@@ -1,5 +1,6 @@
 import { Search, Package, Filter } from 'lucide-react'
 import Button from './Button'
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function EmptyState({
     type = 'search',
@@ -9,6 +10,7 @@ export default function EmptyState({
     onAction,
     className = ''
 }) {
+    const { t } = useTranslation('shop')
     const getIcon = () => {
         switch (type) {
             case 'search':
@@ -23,27 +25,11 @@ export default function EmptyState({
     }
 
     const getDefaultContent = () => {
-        switch (type) {
-            case 'search':
-                return {
-                    title: 'Aucun résultat trouvé',
-                    description: 'Essayez de modifier votre recherche ou vos filtres'
-                }
-            case 'products':
-                return {
-                    title: 'Aucun produit disponible',
-                    description: 'Nous ajoutons régulièrement de nouveaux produits'
-                }
-            case 'filter':
-                return {
-                    title: 'Aucun produit ne correspond',
-                    description: 'Essayez de modifier vos critères de filtrage'
-                }
-            default:
-                return {
-                    title: 'Aucun élément trouvé',
-                    description: 'Aucun contenu à afficher pour le moment'
-                }
+        const typeKey = type || 'default'
+        return {
+            title: t(`empty.${typeKey}.title`),
+            description: t(`empty.${typeKey}.description`),
+            action: t(`empty.${typeKey}.action`)
         }
     }
 
@@ -51,6 +37,7 @@ export default function EmptyState({
     const defaultContent = getDefaultContent()
     const finalTitle = title || defaultContent.title
     const finalDescription = description || defaultContent.description
+    const finalActionLabel = actionLabel || defaultContent.action
 
     return (
         <div className={`text-center py-12 ${className}`}>
@@ -68,12 +55,12 @@ export default function EmptyState({
                 {finalDescription}
             </p>
 
-            {actionLabel && onAction && (
+            {(finalActionLabel || onAction) && onAction && (
                 <Button
                     variant="primary"
                     onClick={onAction}
                 >
-                    {actionLabel}
+                    {finalActionLabel}
                 </Button>
             )}
         </div>

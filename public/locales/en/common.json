@@ -1,0 +1,88 @@
+{
+  "header": {
+    "nav": {
+      "home": "Home",
+      "catalog": "Catalog",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "shop": "Shop"
+    },
+    "submenu": {
+      "firewood": "Firewood",
+      "pellets": "Pellets and granules",
+      "logs": "Compressed logs",
+      "heating": "Boilers, stoves and cookers"
+    },
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "cart": "Cart",
+    "quality": "Premium Quality"
+  },
+  "footer": {
+    "sections": {
+      "products": "Products",
+      "services": "Support & Services"
+    },
+    "links": {
+      "firewood": "Firewood",
+      "pellets": "Pellets and granules",
+      "logs": "Compressed logs",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "delivery": "Express Delivery",
+      "tracking": "Track Order"
+    },
+    "certifications": {
+      "pefc": "PEFC Certified",
+      "origin": "Made in France",
+      "quality": "Quality Controlled",
+      "delivery": "24-48h Delivery"
+    },
+    "about": {
+      "description": "Premium firewood specialist for 15 years. We carefully select our species to guarantee optimal and sustainable heating."
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Receive our exclusive offers and expert advice",
+      "placeholder": "Your email",
+      "submit": "Subscribe",
+      "success": "Successfully subscribed!"
+    },
+    "legal": {
+      "copyright": "© 2025 BoisChauffage Pro. All rights reserved.",
+      "terms": "Legal Notice",
+      "privacy": "Privacy",
+      "cgv": "Terms of Sale",
+      "cookies": "Cookies"
+    },
+    "payment": {
+      "secure": "Secure payment"
+    }
+  },
+  "buttons": {
+    "orderNow": "Order Now",
+    "seeMore": "See More",
+    "seeAll": "See All Our Products",
+    "shopNow": "Shop",
+    "discover": "Discover",
+    "subscribe": "Subscribe",
+    "continue": "Continue shopping"
+  },
+  "product": {
+    "viewProduct": "View product",
+    "addToCart": "Add",
+    "addToFavorites": "Add to favorites",
+    "inStock": "In stock",
+    "delivery": "Delivery 24-48h",
+    "purchased": "Purchased:",
+    "productPurchased": "Product purchased:",
+    "verifiedPurchase": "Verified purchase"
+  },
+  "category": {
+    "trending": "Trending",
+    "products": "products",
+    "discover": "Discover"
+  }
+}
+

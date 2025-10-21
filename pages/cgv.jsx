@@ -4,6 +4,8 @@ import Head from "next/head"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import { FileText } from "lucide-react"
+import { useTranslation } from "@/lib/useTranslation"
+import { loadTranslations } from "@/lib/i18n-server"
 
 const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -18,6 +20,7 @@ const pageTransition = {
 }
 
 export default function CGVPage() {
+    const { t } = useTranslation('cgv')
     const [content, setContent] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [settings, setSettings] = useState(null)
@@ -30,151 +33,144 @@ export default function CGVPage() {
 
                 if (data.success) {
                     setSettings(data.data)
-                    setContent(data.data.legalContent?.cgv || generateDefaultContent(data.data))
+                    // Toujours utiliser le contenu traduit
+                    setContent(generateTranslatedContent(data.data, t))
                 }
             } catch (error) {
                 console.error("Erreur lors du chargement du contenu:", error)
+                setContent(generateTranslatedContent({}, t))
             } finally {
                 setIsLoading(false)
             }
         }
         loadContent()
-    }, [])
+    }, [t])
 
-    const generateDefaultContent = (settings) => {
+    const generateTranslatedContent = (settings, t) => {
+        const companyName = settings?.companyName || settings?.siteName || "Mon bois de chauffe"
+        const freeShippingThreshold = settings?.freeShippingThreshold || 500
+        const contactEmail = settings?.contactEmail || ""
+        const contactPhone = settings?.contactPhone || ""
+        const address = `${settings?.address?.street || ""}, ${settings?.address?.postalCode || ""} ${settings?.address?.city || ""}`
+        
         return `
-# Conditions Générales de Vente
+# ${t('content.title')}
 
-## 1. Objet
+## ${t('content.section1.title')}
 
-Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre ${settings?.companyName || settings?.siteName || "Mon bois de chauffe"} et ses clients.
+${t('content.section1.content', { companyName })}
 
-## 2. Produits et Services
+## ${t('content.section2.title')}
 
-Nous proposons à la vente du bois de chauffage de qualité premium :
+${t('content.section2.intro')}
 
-- Bûches de bois dur séchées
-- Différentes essences disponibles
-- Livraison à domicile
-- Service client personnalisé
+${t('content.section2.items').map((item, i) => `- ${item}`).join('\n')}
 
-## 3. Prix
+## ${t('content.section3.title')}
 
-Les prix sont indiqués en euros (€) TTC, incluant la TVA applicable.
+${t('content.section3.intro')}
 
-**Livraison :**
-- Les frais de livraison varient selon la région
-- Livraison gratuite à partir de ${settings?.freeShippingThreshold || 500}€ d'achat
-- Les tarifs de livraison sont indiqués lors du processus de commande
+**${t('content.section3.delivery.title')}**
+${t('content.section3.delivery.items').map((item, i) => `- ${item.replace('{{freeShippingThreshold}}', freeShippingThreshold)}`).join('\n')}
 
-Nous nous réservons le droit de modifier nos prix à tout moment, les commandes étant facturées sur la base des tarifs en vigueur au moment de la validation de la commande.
+${t('content.section3.outro')}
 
-## 4. Commande
+## ${t('content.section4.title')}
 
-### 4.1 Processus de commande
+### ${t('content.section4.subsection1.title')}
 
-1. Sélection des produits
-2. Ajout au panier
-3. Validation du panier
-4. Renseignement des informations de livraison
-5. Validation de la commande
+${t('content.section4.subsection1.steps').map((step, i) => `${i + 1}. ${step}`).join('\n')}
 
-### 4.2 Confirmation
+### ${t('content.section4.subsection2.title')}
 
-Une confirmation de commande est envoyée par email à l'adresse indiquée lors de la commande.
+${t('content.section4.subsection2.content')}
 
-## 5. Paiement
+## ${t('content.section5.title')}
 
-### 5.1 Modalités de paiement
+### ${t('content.section5.subsection1.title')}
 
-Nous acceptons les modes de paiement suivants :
-- Virement bancaire
-- Autres moyens de paiement sur demande
+${t('content.section5.subsection1.intro')}
+${t('content.section5.subsection1.items').map(item => `- ${item}`).join('\n')}
 
-### 5.2 Sécurité
+### ${t('content.section5.subsection2.title')}
 
-Tous les paiements sont sécurisés. Nous ne conservons pas vos informations bancaires.
+${t('content.section5.subsection2.content')}
 
-### 5.3 Délai de paiement
+### ${t('content.section5.subsection3.title')}
 
-Le paiement doit être effectué dans les 7 jours suivant la validation de la commande.
+${t('content.section5.subsection3.content')}
 
-## 6. Livraison
+## ${t('content.section6.title')}
 
-### 6.1 Zone de livraison
+### ${t('content.section6.subsection1.title')}
 
-Nous livrons en France métropolitaine, Belgique, Suisse et Luxembourg.
+${t('content.section6.subsection1.content')}
 
-### 6.2 Délais de livraison
+### ${t('content.section6.subsection2.title')}
 
-- Livraison sous 5-7 jours ouvrés après réception du paiement
-- Les délais peuvent varier selon la destination et la disponibilité
+${t('content.section6.subsection2.items').map(item => `- ${item}`).join('\n')}
 
-### 6.3 Modalités de livraison
+### ${t('content.section6.subsection3.title')}
 
-- Livraison en bordure de route ou lieu accessible au camion
-- Déchargement par nos soins
-- Présence obligatoire lors de la livraison
+${t('content.section6.subsection3.items').map(item => `- ${item}`).join('\n')}
 
-## 7. Droit de rétractation
+## ${t('content.section7.title')}
 
-Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne peut être exercé pour les contrats de fourniture de biens confectionnés selon les spécifications du consommateur ou nettement personnalisés.
+${t('content.section7.paragraph1')}
 
-Pour les produits standards, vous disposez d'un délai de 14 jours pour exercer votre droit de rétractation sans avoir à justifier de motifs.
+${t('content.section7.paragraph2')}
 
-## 8. Garanties
+## ${t('content.section8.title')}
 
-### 8.1 Qualité des produits
+### ${t('content.section8.subsection1.title')}
 
-Nous garantissons :
-- Bois séché (taux d'humidité < 20%)
-- Essences conformes à la description
-- Qualité premium
+${t('content.section8.subsection1.intro')}
+${t('content.section8.subsection1.items').map(item => `- ${item}`).join('\n')}
 
-### 8.2 Réclamations
+### ${t('content.section8.subsection2.title')}
 
-Toute réclamation doit être formulée dans les 48h suivant la livraison par email à : ${settings?.contactEmail || ""}
+${t('content.section8.subsection2.content', { contactEmail })}
 
-## 9. Responsabilité
+## ${t('content.section9.title')}
 
-Notre responsabilité est limitée au montant de la commande. Nous ne saurions être tenus responsables des dommages indirects.
+${t('content.section9.content')}
 
-## 10. Force majeure
+## ${t('content.section10.title')}
 
-Nous ne saurions être tenus responsables en cas de force majeure ou d'événements indépendants de notre volonté (intempéries, grèves, etc.).
+${t('content.section10.content')}
 
-## 11. Protection des données personnelles
+## ${t('content.section11.title')}
 
-Vos données personnelles sont traitées conformément à notre [Politique de confidentialité](/politique-confidentialite).
+${t('content.section11.content')}
 
-## 12. Propriété intellectuelle
+## ${t('content.section12.title')}
 
-Tous les éléments du site (textes, images, logos) sont protégés par le droit d'auteur et restent notre propriété exclusive.
+${t('content.section12.content')}
 
-## 13. Droit applicable et juridiction
+## ${t('content.section13.title')}
 
-Les présentes CGV sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents.
+${t('content.section13.content')}
 
-## 14. Médiation
+## ${t('content.section14.title')}
 
-Conformément à l'article L.612-1 du Code de la consommation, nous proposons un dispositif de médiation de la consommation.
+${t('content.section14.paragraph1')}
 
-L'entité de médiation retenue est :
+${t('content.section14.paragraph2')}
 
-**Médiateur de la consommation**
-[À compléter avec les coordonnées du médiateur]
+**${t('content.section14.mediatorTitle')}**
+${t('content.section14.mediatorNote')}
 
-## 15. Contact
+## ${t('content.section15.title')}
 
-Pour toute question concernant nos CGV :
+${t('content.section15.intro')}
 
-**Email :** ${settings?.contactEmail || ""}
-**Téléphone :** ${settings?.contactPhone || ""}
-**Adresse :** ${settings?.address?.street || ""}, ${settings?.address?.postalCode || ""} ${settings?.address?.city || ""}
+**${t('content.section15.email')}** ${contactEmail}
+**${t('content.section15.phone')}** ${contactPhone}
+**${t('content.section15.address')}** ${address}
 
-## 16. Acceptation des CGV
+## ${t('content.section16.title')}
 
-La validation de votre commande implique l'acceptation pleine et entière des présentes CGV.
+${t('content.section16.content')}
 `
     }
 
@@ -194,11 +190,11 @@ La validation de votre commande implique l'acceptation pleine et entière des pr
         <>
             <Head>
                 <title>
-                    Conditions Générales de Vente - {settings?.siteName || "Mon bois de chauffe"}
+                    {t('seo.title', { siteName: settings?.siteName || "Mon bois de chauffe" })}
                 </title>
                 <meta
                     name="description"
-                    content="Conditions générales de vente et conditions d'utilisation"
+                    content={t('seo.description')}
                 />
             </Head>
 
@@ -221,11 +217,11 @@ La validation de votre commande implique l'acceptation pleine et entière des pr
                                     <FileText className="w-6 h-6 text-green-600" />
                                 </div>
                                 <h1 className="text-4xl font-bold text-gray-900">
-                                    Conditions Générales de Vente
+                                    {t('header.title')}
                                 </h1>
                             </div>
                             <p className="text-gray-600">
-                                Nos conditions de vente et modalités contractuelles
+                                {t('header.subtitle')}
                             </p>
                         </div>
 
@@ -260,10 +256,11 @@ La validation de votre commande implique l'acceptation pleine et entière des pr
                         {/* Dernière mise à jour */}
                         <div className="mt-8 text-center text-sm text-gray-500">
                             <p>
-                                Dernière mise à jour :{" "}
-                                {settings?.updatedAt
-                                    ? new Date(settings.updatedAt).toLocaleDateString("fr-FR")
-                                    : new Date().toLocaleDateString("fr-FR")}
+                                {t('lastUpdate', { 
+                                    date: settings?.updatedAt
+                                        ? new Date(settings.updatedAt).toLocaleDateString()
+                                        : new Date().toLocaleDateString()
+                                })}
                             </p>
                         </div>
                     </div>
@@ -273,4 +270,27 @@ La validation de votre commande implique l'acceptation pleine et entière des pr
             </div>
         </>
     )
+}
+
+export async function getServerSideProps({ locale }) {
+    try {
+        // Charger les traductions
+        const translations = await loadTranslations(locale || 'en', ['common', 'cgv'])
+        
+        return {
+            props: {
+                translations
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors du chargement des traductions:", error)
+        
+        const translations = await loadTranslations(locale || 'en', ['common', 'cgv'])
+        
+        return {
+            props: {
+                translations
+            }
+        }
+    }
 }

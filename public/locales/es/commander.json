@@ -1,0 +1,123 @@
+{
+  "navigation": {
+    "backToCart": "Volver al carrito"
+  },
+  "header": {
+    "title": "Finalizar mi pedido",
+    "subtitle": "Complete su información para obtener su presupuesto personalizado"
+  },
+  "sections": {
+    "personalInfo": "Información personal",
+    "shippingAddress": "Dirección de envío",
+    "paymentMethod": "Método de pago",
+    "orderSummary": "Resumen del pedido"
+  },
+  "form": {
+    "fields": {
+      "email": {
+        "label": "Correo electrónico",
+        "placeholder": "su@email.com"
+      },
+      "phone": {
+        "label": "Teléfono",
+        "placeholder": "+33 6 12 34 56 78"
+      },
+      "firstName": {
+        "label": "Nombre",
+        "placeholder": "Juan"
+      },
+      "lastName": {
+        "label": "Apellido",
+        "placeholder": "García"
+      },
+      "company": {
+        "label": "Empresa (opcional)",
+        "placeholder": "Nombre de la empresa"
+      },
+      "address1": {
+        "label": "Dirección",
+        "placeholder": "Calle Principal 123"
+      },
+      "address2": {
+        "label": "Información adicional (opcional)",
+        "placeholder": "Apartamento, piso, edificio..."
+      },
+      "postalCode": {
+        "label": "Código postal",
+        "placeholder": "75001"
+      },
+      "city": {
+        "label": "Ciudad",
+        "placeholder": "París"
+      },
+      "country": {
+        "label": "País"
+      },
+      "region": {
+        "label": "Región",
+        "placeholder": "Seleccione una región",
+        "free": "(Gratis)",
+        "note": "Los gastos de envío varían según la región seleccionada"
+      },
+      "instructions": {
+        "label": "Instrucciones de entrega (opcional)",
+        "placeholder": "Dejar frente al garaje, llamar al vecino..."
+      }
+    },
+    "countries": {
+      "france": "Francia",
+      "belgium": "Bélgica",
+      "switzerland": "Suiza",
+      "luxembourg": "Luxemburgo"
+    }
+  },
+  "payment": {
+    "title": "Transferencia bancaria",
+    "description": "Después de validar su pedido, recibirá los datos bancarios por correo electrónico"
+  },
+  "terms": {
+    "accept": "Acepto las",
+    "cgv": "condiciones generales de venta",
+    "and": "y la",
+    "privacy": "política de privacidad",
+    "newsletter": "Deseo recibir ofertas promocionales y noticias por correo electrónico (opcional)"
+  },
+  "validation": {
+    "emailRequired": "Correo electrónico requerido",
+    "emailInvalid": "Formato de correo electrónico inválido",
+    "firstNameRequired": "Nombre requerido",
+    "lastNameRequired": "Apellido requerido",
+    "phoneRequired": "Teléfono requerido",
+    "address1Required": "Dirección requerida",
+    "cityRequired": "Ciudad requerida",
+    "postalCodeRequired": "Código postal requerido",
+    "regionRequired": "Región requerida",
+    "acceptTermsRequired": "Debe aceptar los términos"
+  },
+  "summary": {
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "shippingFree": "Gratis",
+    "total": "Total",
+    "freeShippingThreshold": "Envío gratis desde 500€",
+    "freeShippingRemaining": "¡Solo {{amount}} más para conseguirlo!"
+  },
+  "delivery": {
+    "title": "Entrega",
+    "description": "Entrega en 5-7 días laborables después de recibir el pago"
+  },
+  "guarantees": {
+    "securePayment": "Pago seguro",
+    "satisfaction": "Satisfacción garantizada",
+    "support": "Servicio al cliente 7/7"
+  },
+  "buttons": {
+    "placeOrder": "Realizar pedido",
+    "processing": "Procesando..."
+  },
+  "errors": {
+    "submitError": "Ocurrió un error. Por favor, inténtelo de nuevo.",
+    "orderCreationError": "Error al crear el pedido"
+  }
+}
+

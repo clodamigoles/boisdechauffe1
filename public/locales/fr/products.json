@@ -1,0 +1,64 @@
+{
+  "defaults": {
+    "1": {
+      "name": "Chêne Premium Séché",
+      "shortDescription": "Bois de chêne séché < 18% d'humidité",
+      "alt": "Chêne Premium",
+      "specs": {
+        "humidity": "Humidité",
+        "calorificValue": "Pouvoir calorifique",
+        "density": "Densité",
+        "quantity": "Quantité",
+        "duration": "Durée",
+        "content": "Contenu",
+        "essences": "Essences"
+      }
+    },
+    "2": {
+      "name": "Hêtre Traditionnel",
+      "shortDescription": "Bois de hêtre pour chauffage continu",
+      "alt": "Hêtre Traditionnel"
+    },
+    "3": {
+      "name": "Charme Excellence",
+      "shortDescription": "Bois de charme haute qualité",
+      "alt": "Charme Excellence"
+    },
+    "4": {
+      "name": "Mix Feuillus Premium",
+      "shortDescription": "Mélange chêne, hêtre, charme",
+      "alt": "Mix Feuillus"
+    },
+    "5": {
+      "name": "Granulés Haute Performance",
+      "shortDescription": "Pellets 100% résineux premium",
+      "alt": "Granulés Premium"
+    },
+    "6": {
+      "name": "Bûches Compressées",
+      "shortDescription": "Bûches densifiées longue durée",
+      "alt": "Bûches Compressées"
+    },
+    "7": {
+      "name": "Allume-Feu Écologique",
+      "shortDescription": "Allume-feu naturel en fibres de bois",
+      "alt": "Allume-feu Écologique"
+    },
+    "8": {
+      "name": "Pack Découverte",
+      "shortDescription": "Assortiment de nos meilleures essences",
+      "alt": "Pack Découverte"
+    }
+  },
+  "units": {
+    "stere": "stère",
+    "tonne": "tonne",
+    "pack50": "pack de 50",
+    "2steres": "2 stères",
+    "pieces": "pièces",
+    "min": "min",
+    "types": "types"
+  }
+}
+
+

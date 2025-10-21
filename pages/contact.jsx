@@ -25,6 +25,8 @@ import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
 import { useSettings } from "@/hooks/useSettings"
+import { useTranslation } from "@/lib/useTranslation"
+import { loadTranslations } from "@/lib/i18n-server"
 
 const pageTransition = {
     type: "tween",
@@ -33,6 +35,7 @@ const pageTransition = {
 }
 
 export default function ContactPage() {
+    const { t } = useTranslation('contact')
     const { contactEmail, fullAddress, contactPhone, whatsappLink } = useSettings()
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -62,40 +65,40 @@ export default function ContactPage() {
     const contactMethods = [
         {
             icon: Phone,
-            title: "Téléphone",
-            description: "Appelez-nous directement",
+            title: t('contactMethods.methods.phone.title'),
+            description: t('contactMethods.methods.phone.description'),
             value: contactPhone,
-            availability: "Lun-Sam : 8h-19h",
+            availability: t('contactMethods.methods.phone.availability'),
             href: whatsappLink,
             color: "bg-green-500",
             urgent: true
         },
         {
             icon: Mail,
-            title: "Email",
-            description: "Écrivez-nous",
+            title: t('contactMethods.methods.email.title'),
+            description: t('contactMethods.methods.email.description'),
             value: contactEmail,
-            availability: "Réponse sous 2-4h",
+            availability: t('contactMethods.methods.email.availability'),
             href: `mailto:${contactEmail}`,
             color: "bg-blue-500",
             urgent: false
         },
         {
             icon: MessageSquare,
-            title: "Chat en ligne",
-            description: "Discussion instantanée",
-            value: "Chat disponible",
-            availability: "Lun-Ven : 9h-18h",
+            title: t('contactMethods.methods.chat.title'),
+            description: t('contactMethods.methods.chat.description'),
+            value: t('contactMethods.methods.chat.value'),
+            availability: t('contactMethods.methods.chat.availability'),
             href: "#",
             color: "bg-purple-500",
             urgent: true
         },
         {
             icon: Calendar,
-            title: "Rendez-vous",
-            description: "Planifier une visite",
-            value: "Prise de RDV",
-            availability: "Sur rendez-vous",
+            title: t('contactMethods.methods.appointment.title'),
+            description: t('contactMethods.methods.appointment.description'),
+            value: t('contactMethods.methods.appointment.value'),
+            availability: t('contactMethods.methods.appointment.availability'),
             href: "#",
             color: "bg-orange-500",
             urgent: false
@@ -105,39 +108,39 @@ export default function ContactPage() {
     const subjects = [
         {
             id: "devis",
-            label: "Demande de devis",
+            label: t('form.subjects.quote.label'),
             icon: FileText,
-            description: "Pour une estimation personnalisée"
+            description: t('form.subjects.quote.description')
         },
         {
             id: "livraison",
-            label: "Questions livraison",
+            label: t('form.subjects.delivery.label'),
             icon: Truck,
-            description: "Délais, zones, modalités"
+            description: t('form.subjects.delivery.description')
         },
         {
             id: "produits",
-            label: "Informations produits",
+            label: t('form.subjects.products.label'),
             icon: Users,
-            description: "Caractéristiques, qualité, stock"
+            description: t('form.subjects.products.description')
         },
         {
             id: "commande",
-            label: "Suivi de commande",
+            label: t('form.subjects.order.label'),
             icon: CheckCircle,
-            description: "État, modification, problème"
+            description: t('form.subjects.order.description')
         },
         {
             id: "support",
-            label: "Support technique",
+            label: t('form.subjects.support.label'),
             icon: Headphones,
-            description: "Aide et assistance"
+            description: t('form.subjects.support.description')
         },
         {
             id: "autre",
-            label: "Autre demande",
+            label: t('form.subjects.other.label'),
             icon: MessageSquare,
-            description: "Toute autre question"
+            description: t('form.subjects.other.description')
         }
     ]
 
@@ -152,25 +155,25 @@ export default function ContactPage() {
         const newErrors = {}
 
         // Validation des champs requis
-        if (!formData.firstName.trim()) newErrors.firstName = "Prénom requis"
-        if (!formData.lastName.trim()) newErrors.lastName = "Nom requis"
+        if (!formData.firstName.trim()) newErrors.firstName = t('validation.firstNameRequired')
+        if (!formData.lastName.trim()) newErrors.lastName = t('validation.lastNameRequired')
 
         if (!formData.email.trim()) {
-            newErrors.email = "Email requis"
+            newErrors.email = t('validation.emailRequired')
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = "Format email invalide"
+            newErrors.email = t('validation.emailInvalid')
         }
 
         if (!formData.phone.trim()) {
-            newErrors.phone = "Téléphone requis"
+            newErrors.phone = t('validation.phoneRequired')
         } else if (!/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(formData.phone)) {
-            newErrors.phone = "Numéro de téléphone invalide"
+            newErrors.phone = t('validation.phoneInvalid')
         }
 
-        if (!formData.subject.trim()) newErrors.subject = "Sujet requis"
-        if (!formData.message.trim()) newErrors.message = "Message requis"
-        if (formData.message.trim().length < 10) newErrors.message = "Message trop court (minimum 10 caractères)"
-        if (!formData.acceptTerms) newErrors.acceptTerms = "Vous devez accepter les conditions"
+        if (!formData.subject.trim()) newErrors.subject = t('validation.subjectRequired')
+        if (!formData.message.trim()) newErrors.message = t('validation.messageRequired')
+        if (formData.message.trim().length < 10) newErrors.message = t('validation.messageTooShort')
+        if (!formData.acceptTerms) newErrors.acceptTerms = t('validation.acceptTermsRequired')
 
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
@@ -203,11 +206,11 @@ export default function ContactPage() {
             const result = await response.json()
 
             if (!response.ok) {
-                throw new Error(result.message || 'Erreur lors de l\'envoi du message')
+                throw new Error(result.message || t('validation.sendError'))
             }
 
             if (!result.success) {
-                throw new Error(result.message || 'Erreur lors de l\'envoi du message')
+                throw new Error(result.message || t('validation.sendError'))
             }
 
             // Succès
@@ -234,7 +237,7 @@ export default function ContactPage() {
 
         } catch (error) {
             console.error('Erreur lors de l\'envoi:', error)
-            setErrors({ submit: error.message || 'Une erreur est survenue. Veuillez réessayer.' })
+            setErrors({ submit: error.message || t('validation.submitError') })
         } finally {
             setIsSubmitting(false)
         }
@@ -282,20 +285,20 @@ export default function ContactPage() {
     return (
         <>
             <Head>
-                <title>Contact | BoisChauffage Pro - Contactez Nos Experts</title>
+                <title>{t('seo.title')}</title>
                 <meta
                     name="description"
-                    content="Contactez BoisChauffage Pro pour vos questions, devis personnalisés et conseils d'experts. Réponse rapide garantie. Téléphone, email, chat en ligne."
+                    content={t('seo.description')}
                 />
                 <meta
                     name="keywords"
-                    content="contact bois chauffage, devis gratuit, conseil expert, service client, téléphone, email"
+                    content={t('seo.keywords')}
                 />
                 <link rel="canonical" href="https://boischauffagepro.fr/contact" />
 
                 {/* Open Graph */}
-                <meta property="og:title" content="Contact | BoisChauffage Pro" />
-                <meta property="og:description" content="Contactez nos experts pour vos questions sur le bois de chauffage. Réponse rapide garantie." />
+                <meta property="og:title" content={t('seo.title')} />
+                <meta property="og:description" content={t('seo.description')} />
                 <meta property="og:url" content="https://boischauffagepro.fr/contact" />
 
             </Head>
@@ -327,19 +330,18 @@ export default function ContactPage() {
                                     className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
                                 >
                                     <Headphones className="w-4 h-4 mr-2" />
-                                    Service Client Dédié
+                                    {t('hero.badge')}
                                 </motion.div>
 
                                 <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-                                    Contactez Nos
+                                    {t('hero.title')}
                                     <span className="block text-amber-400">
-                                        Experts Bois
+                                        {t('hero.titleHighlight')}
                                     </span>
                                 </h1>
 
                                 <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                                    Une question ? Un projet ? Notre équipe d'experts est là pour vous conseiller
-                                    et vous accompagner dans tous vos besoins en bois de chauffage.
+                                    {t('hero.subtitle')}
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -349,7 +351,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-white text-blue-700 hover:bg-gray-100"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>{contactPhone}</span>
+                                        <span>{t('hero.phoneButton', { phone: contactPhone })}</span>
                                     </Button>
 
                                     <Button
@@ -358,7 +360,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
                                     >
                                         <Calendar className="w-5 h-5" />
-                                        <span>Prendre RDV</span>
+                                        <span>{t('hero.appointmentButton')}</span>
                                     </Button>
                                 </div>
                             </motion.div>
@@ -376,10 +378,10 @@ export default function ContactPage() {
                                 className="text-center mb-12"
                             >
                                 <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Comment Nous Contacter ?
+                                    {t('contactMethods.title')}
                                 </h2>
                                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    Choisissez le moyen de contact qui vous convient le mieux
+                                    {t('contactMethods.subtitle')}
                                 </p>
                             </motion.div>
 
@@ -397,7 +399,7 @@ export default function ContactPage() {
                                             {method.urgent && (
                                                 <div className="absolute top-3 right-3">
                                                     <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                                                        Urgent
+                                                        {t('contactMethods.urgentBadge')}
                                                     </span>
                                                 </div>
                                             )}
@@ -424,7 +426,7 @@ export default function ContactPage() {
                                                     size="sm"
                                                     className="w-full bg-transparent hover:bg-gray-50"
                                                 >
-                                                    Contacter
+                                                    {t('contactMethods.contactButton')}
                                                 </Button>
                                             </Link>
                                         </motion.div>
@@ -447,10 +449,10 @@ export default function ContactPage() {
                                     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
                                         <div className="mb-8">
                                             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                                                Envoyez-nous un message
+                                                {t('form.title')}
                                             </h2>
                                             <p className="text-gray-600">
-                                                Remplissez le formulaire ci-dessous et nous vous répondrons rapidement
+                                                {t('form.subtitle')}
                                             </p>
                                         </div>
 
@@ -464,16 +466,16 @@ export default function ContactPage() {
                                                     <CheckCircle className="w-8 h-8 text-green-600" />
                                                 </div>
                                                 <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                                    Message envoyé avec succès !
+                                                    {t('form.success.title')}
                                                 </h3>
                                                 <p className="text-gray-600 mb-6">
-                                                    Merci pour votre message. Notre équipe vous contactera sous 2-4h.
+                                                    {t('form.success.message')}
                                                 </p>
                                                 <Button
                                                     variant="outline"
                                                     onClick={() => setSubmitSuccess(false)}
                                                 >
-                                                    Envoyer un autre message
+                                                    {t('form.success.button')}
                                                 </Button>
                                             </motion.div>
                                         ) : (
@@ -482,8 +484,8 @@ export default function ContactPage() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <Input
                                                         type="text"
-                                                        label="Prénom"
-                                                        placeholder="Jean"
+                                                        label={t('form.fields.firstName.label')}
+                                                        placeholder={t('form.fields.firstName.placeholder')}
                                                         value={formData.firstName}
                                                         onChange={(e) => handleInputChange("firstName", e.target.value)}
                                                         error={errors.firstName}
@@ -491,8 +493,8 @@ export default function ContactPage() {
                                                     />
                                                     <Input
                                                         type="text"
-                                                        label="Nom"
-                                                        placeholder="Dupont"
+                                                        label={t('form.fields.lastName.label')}
+                                                        placeholder={t('form.fields.lastName.placeholder')}
                                                         value={formData.lastName}
                                                         onChange={(e) => handleInputChange("lastName", e.target.value)}
                                                         error={errors.lastName}
@@ -503,8 +505,8 @@ export default function ContactPage() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <Input
                                                         type="email"
-                                                        label="Email"
-                                                        placeholder="jean@exemple.com"
+                                                        label={t('form.fields.email.label')}
+                                                        placeholder={t('form.fields.email.placeholder')}
                                                         value={formData.email}
                                                         onChange={(e) => handleInputChange("email", e.target.value)}
                                                         error={errors.email}
@@ -512,8 +514,8 @@ export default function ContactPage() {
                                                     />
                                                     <Input
                                                         type="tel"
-                                                        label="Téléphone"
-                                                        placeholder="06 12 34 56 78"
+                                                        label={t('form.fields.phone.label')}
+                                                        placeholder={t('form.fields.phone.placeholder')}
                                                         value={formData.phone}
                                                         onChange={(e) => handleInputChange("phone", e.target.value)}
                                                         error={errors.phone}
@@ -523,8 +525,8 @@ export default function ContactPage() {
 
                                                 <Input
                                                     type="text"
-                                                    label="Entreprise (optionnel)"
-                                                    placeholder="Nom de votre entreprise"
+                                                    label={t('form.fields.company.label')}
+                                                    placeholder={t('form.fields.company.placeholder')}
                                                     value={formData.company}
                                                     onChange={(e) => handleInputChange("company", e.target.value)}
                                                 />
@@ -532,7 +534,7 @@ export default function ContactPage() {
                                                 {/* Sujet de la demande */}
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                                                        Sujet de votre demande <span className="text-red-500">*</span>
+                                                        {t('form.fields.subject.label')} <span className="text-red-500">*</span>
                                                     </label>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                         {subjects.map((subject) => {
@@ -579,11 +581,11 @@ export default function ContactPage() {
                                                 {/* Message */}
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Votre message <span className="text-red-500">*</span>
+                                                        {t('form.fields.message.label')} <span className="text-red-500">*</span>
                                                     </label>
                                                     <textarea
                                                         rows={5}
-                                                        placeholder="Décrivez votre demande en détail..."
+                                                        placeholder={t('form.fields.message.placeholder')}
                                                         value={formData.message}
                                                         onChange={(e) => handleInputChange("message", e.target.value)}
                                                         className={`w-full px-4 py-3 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-200 ${errors.message
@@ -596,7 +598,7 @@ export default function ContactPage() {
                                                             <p className="text-sm text-red-600">{errors.message}</p>
                                                         )}
                                                         <p className="text-xs text-gray-500 ml-auto">
-                                                            {formData.message.length}/500 caractères
+                                                            {t('form.fields.message.charCount', { count: formData.message.length })}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -605,30 +607,30 @@ export default function ContactPage() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                            Moyen de contact préféré
+                                                            {t('form.fields.preferredContact.label')}
                                                         </label>
                                                         <select
                                                             value={formData.preferredContact}
                                                             onChange={(e) => handleInputChange("preferredContact", e.target.value)}
                                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
                                                         >
-                                                            <option value="email">Email</option>
-                                                            <option value="phone">Téléphone</option>
-                                                            <option value="both">Les deux</option>
+                                                            <option value="email">{t('form.fields.preferredContact.options.email')}</option>
+                                                            <option value="phone">{t('form.fields.preferredContact.options.phone')}</option>
+                                                            <option value="both">{t('form.fields.preferredContact.options.both')}</option>
                                                         </select>
                                                     </div>
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                            Urgence
+                                                            {t('form.fields.urgency.label')}
                                                         </label>
                                                         <select
                                                             value={formData.urgency}
                                                             onChange={(e) => handleInputChange("urgency", e.target.value)}
                                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
                                                         >
-                                                            <option value="normal">Normal (2-4h)</option>
-                                                            <option value="urgent">Urgent (1h)</option>
-                                                            <option value="low">Pas urgent (24h)</option>
+                                                            <option value="normal">{t('form.fields.urgency.options.normal')}</option>
+                                                            <option value="urgent">{t('form.fields.urgency.options.urgent')}</option>
+                                                            <option value="low">{t('form.fields.urgency.options.low')}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -643,7 +645,7 @@ export default function ContactPage() {
                                                             className="mt-1 w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
                                                         />
                                                         <span className="text-sm text-gray-700">
-                                                            J'accepte que mes données soient utilisées pour traiter ma demande
+                                                            {t('form.terms.acceptData')}
                                                             <span className="text-red-500 ml-1">*</span>
                                                         </span>
                                                     </label>
@@ -659,7 +661,7 @@ export default function ContactPage() {
                                                             className="mt-1 w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
                                                         />
                                                         <span className="text-sm text-gray-700">
-                                                            Je souhaite recevoir la newsletter avec les offres et conseils
+                                                            {t('form.terms.newsletter')}
                                                         </span>
                                                     </label>
                                                 </div>
@@ -687,12 +689,12 @@ export default function ContactPage() {
                                                     {isSubmitting ? (
                                                         <div className="flex items-center space-x-2">
                                                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                            <span>Envoi en cours...</span>
+                                                            <span>{t('form.buttons.submitting')}</span>
                                                         </div>
                                                     ) : (
                                                         <div className="flex items-center space-x-2">
                                                             <Send className="w-5 h-5" />
-                                                            <span>Envoyer le message</span>
+                                                            <span>{t('form.buttons.submit')}</span>
                                                         </div>
                                                     )}
                                                 </Button>
@@ -711,7 +713,7 @@ export default function ContactPage() {
                                     {/* Informations pratiques */}
                                     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                                         <h3 className="text-xl font-bold text-gray-900 mb-6">
-                                            Informations Pratiques
+                                            {t('info.title')}
                                         </h3>
 
                                         <div className="space-y-6">
@@ -720,7 +722,7 @@ export default function ContactPage() {
                                                     <MapPin className="w-5 h-5 text-blue-600" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900 mb-1">Adresse</h4>
+                                                    <h4 className="font-semibold text-gray-900 mb-1">{t('info.address.title')}</h4>
                                                     <p className="text-gray-600 text-sm">
                                                         {fullAddress}
                                                     </p>
@@ -732,11 +734,11 @@ export default function ContactPage() {
                                                     <Clock className="w-5 h-5 text-green-600" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900 mb-1">Horaires</h4>
+                                                    <h4 className="font-semibold text-gray-900 mb-1">{t('info.hours.title')}</h4>
                                                     <div className="text-gray-600 text-sm space-y-1">
-                                                        <p>Lundi - Vendredi : 8h00 - 19h00</p>
-                                                        <p>Samedi : 8h00 - 12h00</p>
-                                                        <p>Dimanche : Fermé</p>
+                                                        <p>{t('info.hours.weekdays')}</p>
+                                                        <p>{t('info.hours.saturday')}</p>
+                                                        <p>{t('info.hours.sunday')}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -746,33 +748,33 @@ export default function ContactPage() {
                                                     <Phone className="w-5 h-5 text-purple-600" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900 mb-1">Urgences</h4>
+                                                    <h4 className="font-semibold text-gray-900 mb-1">{t('info.emergency.title')}</h4>
                                                     <p className="text-gray-600 text-sm">
-                                                        Hotline 24h/7j : 06 12 34 56 78<br />
-                                                        Pour les urgences livraison uniquement
+                                                        {t('info.emergency.hotline')}<br />
+                                                        {t('info.emergency.note')}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="mt-8 pt-6 border-t border-gray-100">
-                                            <h4 className="font-semibold text-gray-900 mb-4">Temps de réponse</h4>
+                                            <h4 className="font-semibold text-gray-900 mb-4">{t('info.responseTime.title')}</h4>
                                             <div className="grid grid-cols-2 gap-4 text-sm">
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Email : 2-4h</span>
+                                                    <span className="text-gray-600">{t('info.responseTime.email')}</span>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Téléphone : Immédiat</span>
+                                                    <span className="text-gray-600">{t('info.responseTime.phone')}</span>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Chat : &lt; 5min</span>
+                                                    <span className="text-gray-600">{t('info.responseTime.chat')}</span>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
                                                     <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Devis : 24h</span>
+                                                    <span className="text-gray-600">{t('info.responseTime.quote')}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -780,30 +782,30 @@ export default function ContactPage() {
                                     
                                     <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-8">
                                         <h3 className="text-xl font-bold text-gray-900 mb-4">
-                                            Questions Fréquentes
+                                            {t('faq.title')}
                                         </h3>
                                         <div className="space-y-4">
                                             <div>
-                                                <h4 className="font-medium text-gray-900 text-sm">Puis-je visiter votre entrepôt ?</h4>
+                                                <h4 className="font-medium text-gray-900 text-sm">{t('faq.items.visit.question')}</h4>
                                                 <p className="text-gray-600 text-sm mt-1">
-                                                    Oui, sur rendez-vous uniquement. Contactez-nous pour planifier une visite.
+                                                    {t('faq.items.visit.answer')}
                                                 </p>
                                             </div>
                                             <div>
-                                                <h4 className="font-medium text-gray-900 text-sm">Combien de temps pour un devis ?</h4>
+                                                <h4 className="font-medium text-gray-900 text-sm">{t('faq.items.quoteTime.question')}</h4>
                                                 <p className="text-gray-600 text-sm mt-1">
-                                                    Nous vous envoyons un devis détaillé sous 24h maximum.
+                                                    {t('faq.items.quoteTime.answer')}
                                                 </p>
                                             </div>
                                             <div>
-                                                <h4 className="font-medium text-gray-900 text-sm">Livrez-vous le weekend ?</h4>
+                                                <h4 className="font-medium text-gray-900 text-sm">{t('faq.items.weekendDelivery.question')}</h4>
                                                 <p className="text-gray-600 text-sm mt-1">
-                                                    Livraisons possibles le samedi matin sur demande et avec supplément.
+                                                    {t('faq.items.weekendDelivery.answer')}
                                                 </p>
                                             </div>
                                         </div>
                                         <Link href="/faq" className="inline-flex items-center text-amber-600 hover:text-amber-700 text-sm font-medium mt-4">
-                                            Voir toutes les FAQ
+                                            {t('faq.seeAll')}
                                             <Send className="w-3 h-3 ml-1" />
                                         </Link>
                                     </div>
@@ -821,11 +823,10 @@ export default function ContactPage() {
                                 viewport={{ once: true }}
                             >
                                 <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-                                    Prêt à Démarrer Votre Projet ?
+                                    {t('cta.title')}
                                 </h2>
                                 <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                                    Notre équipe d'experts est là pour vous accompagner.
-                                    Contactez-nous dès maintenant pour une réponse rapide.
+                                    {t('cta.subtitle')}
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -835,7 +836,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-amber-600 hover:bg-amber-700"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>Appel Whatsapp Gratuit : {contactPhone}</span>
+                                        <span>{t('cta.phoneButton', { phone: contactPhone })}</span>
                                     </Button>
 
                                     {/* <Link href="/devis">
@@ -855,24 +856,24 @@ export default function ContactPage() {
                                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Clock className="w-6 h-6 text-amber-400" />
                                         </div>
-                                        <h3 className="font-semibold mb-2">Réponse Rapide</h3>
-                                        <p className="text-gray-400 text-sm">Sous 2h en moyenne</p>
+                                        <h3 className="font-semibold mb-2">{t('cta.features.fastResponse.title')}</h3>
+                                        <p className="text-gray-400 text-sm">{t('cta.features.fastResponse.description')}</p>
                                     </div>
 
                                     <div>
                                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Users className="w-6 h-6 text-amber-400" />
                                         </div>
-                                        <h3 className="font-semibold mb-2">Équipe Experte</h3>
-                                        <p className="text-gray-400 text-sm">15 ans d'expérience</p>
+                                        <h3 className="font-semibold mb-2">{t('cta.features.expertTeam.title')}</h3>
+                                        <p className="text-gray-400 text-sm">{t('cta.features.expertTeam.description')}</p>
                                     </div>
 
                                     <div>
                                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <CheckCircle className="w-6 h-6 text-amber-400" />
                                         </div>
-                                        <h3 className="font-semibold mb-2">Service Garanti</h3>
-                                        <p className="text-gray-400 text-sm">Satisfaction 100%</p>
+                                        <h3 className="font-semibold mb-2">{t('cta.features.guarantee.title')}</h3>
+                                        <p className="text-gray-400 text-sm">{t('cta.features.guarantee.description')}</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -880,8 +881,31 @@ export default function ContactPage() {
                     </section>
                 {/* </motion.main> */}
 
-                <Footer />
-            </div>
-        </>
+            <Footer />
+        </div>
+    </>
     )
+}
+
+export async function getServerSideProps({ locale }) {
+    try {
+        // Charger les traductions
+        const translations = await loadTranslations(locale || 'en', ['common', 'contact'])
+        
+        return {
+            props: {
+                translations
+            }
+        }
+    } catch (error) {
+        console.error("Erreur lors du chargement des traductions:", error)
+        
+        const translations = await loadTranslations(locale || 'en', ['common', 'contact'])
+        
+        return {
+            props: {
+                translations
+            }
+        }
+    }
 }

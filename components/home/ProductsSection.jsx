@@ -7,161 +7,164 @@ import ProductCard from '../ui/ProductCard'
 import Button from '../ui/Button'
 import { containerVariants, itemVariants } from '@/utils/animations'
 import { useSettings } from '@/hooks/useSettings'
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function ProductsSection({ products = [] }) {
     const { siteName } = useSettings()
+    const { t } = useTranslation('home')
+    const { t: tProd } = useTranslation('products')
     const [activeFilter, setActiveFilter] = useState('all')
 
     const defaultProducts = [
         {
             _id: '1',
-            name: 'Chêne Premium Séché',
+            name: tProd('defaults.1.name'),
             slug: 'chene-premium-seche',
-            shortDescription: 'Bois de chêne séché < 18% d\'humidité',
+            shortDescription: tProd('defaults.1.shortDescription'),
             essence: 'chêne',
             price: 95,
             compareAtPrice: 110,
-            unit: 'stère',
-            images: [{ url: '/images/products/chene-premium.jpg', alt: 'Chêne Premium', isPrimary: true }],
+            unit: tProd('units.stere'),
+            images: [{ url: '/images/products/chene-premium.jpg', alt: tProd('defaults.1.alt'), isPrimary: true }],
             badges: ['premium', 'bestseller'],
             humidity: 16,
             calorificValue: 4.2,
             averageRating: 4.8,
             reviewCount: 156,
             specifications: [
-                { name: 'Humidité', value: '< 18', unit: '%' },
-                { name: 'Pouvoir calorifique', value: '4.2', unit: 'kWh/kg' },
-                { name: 'Densité', value: '650', unit: 'kg/m³' }
+                { name: tProd('defaults.1.specs.humidity'), value: '< 18', unit: '%' },
+                { name: tProd('defaults.1.specs.calorificValue'), value: '4.2', unit: 'kWh/kg' },
+                { name: tProd('defaults.1.specs.density'), value: '650', unit: 'kg/m³' }
             ]
         },
         {
             _id: '2',
-            name: 'Hêtre Traditionnel',
+            name: tProd('defaults.2.name'),
             slug: 'hetre-traditionnel',
-            shortDescription: 'Bois de hêtre pour chauffage continu',
+            shortDescription: tProd('defaults.2.shortDescription'),
             essence: 'hêtre',
             price: 89,
-            unit: 'stère',
-            images: [{ url: '/images/products/hetre-traditionnel.jpg', alt: 'Hêtre Traditionnel', isPrimary: true }],
+            unit: tProd('units.stere'),
+            images: [{ url: '/images/products/hetre-traditionnel.jpg', alt: tProd('defaults.2.alt'), isPrimary: true }],
             badges: ['populaire'],
             humidity: 17,
             calorificValue: 4.0,
             averageRating: 4.6,
             reviewCount: 89,
             specifications: [
-                { name: 'Humidité', value: '< 20', unit: '%' },
-                { name: 'Pouvoir calorifique', value: '4.0', unit: 'kWh/kg' }
+                { name: tProd('defaults.1.specs.humidity'), value: '< 20', unit: '%' },
+                { name: tProd('defaults.1.specs.calorificValue'), value: '4.0', unit: 'kWh/kg' }
             ]
         },
         {
             _id: '3',
-            name: 'Charme Excellence',
+            name: tProd('defaults.3.name'),
             slug: 'charme-excellence',
-            shortDescription: 'Bois de charme haute qualité',
+            shortDescription: tProd('defaults.3.shortDescription'),
             essence: 'charme',
             price: 92,
-            unit: 'stère',
-            images: [{ url: '/images/products/charme-excellence.jpg', alt: 'Charme Excellence', isPrimary: true }],
+            unit: tProd('units.stere'),
+            images: [{ url: '/images/products/charme-excellence.jpg', alt: tProd('defaults.3.alt'), isPrimary: true }],
             badges: ['premium'],
             humidity: 15,
             calorificValue: 4.1,
             averageRating: 4.7,
             reviewCount: 67,
             specifications: [
-                { name: 'Humidité', value: '< 18', unit: '%' },
-                { name: 'Pouvoir calorifique', value: '4.1', unit: 'kWh/kg' }
+                { name: tProd('defaults.1.specs.humidity'), value: '< 18', unit: '%' },
+                { name: tProd('defaults.1.specs.calorificValue'), value: '4.1', unit: 'kWh/kg' }
             ]
         },
         {
             _id: '4',
-            name: 'Mix Feuillus Premium',
+            name: tProd('defaults.4.name'),
             slug: 'mix-feuillus-premium',
-            shortDescription: 'Mélange chêne, hêtre, charme',
+            shortDescription: tProd('defaults.4.shortDescription'),
             essence: 'mix',
             price: 88,
-            unit: 'stère',
-            images: [{ url: '/images/products/mix-feuillus.jpg', alt: 'Mix Feuillus', isPrimary: true }],
+            unit: tProd('units.stere'),
+            images: [{ url: '/images/products/mix-feuillus.jpg', alt: tProd('defaults.4.alt'), isPrimary: true }],
             badges: ['bestseller'],
             humidity: 18,
             calorificValue: 4.0,
             averageRating: 4.5,
             reviewCount: 134,
             specifications: [
-                { name: 'Humidité', value: '< 20', unit: '%' },
-                { name: 'Pouvoir calorifique', value: '4.0', unit: 'kWh/kg' }
+                { name: tProd('defaults.1.specs.humidity'), value: '< 20', unit: '%' },
+                { name: tProd('defaults.1.specs.calorificValue'), value: '4.0', unit: 'kWh/kg' }
             ]
         },
         {
             _id: '5',
-            name: 'Granulés Haute Performance',
+            name: tProd('defaults.5.name'),
             slug: 'granules-haute-performance',
-            shortDescription: 'Pellets 100% résineux premium',
+            shortDescription: tProd('defaults.5.shortDescription'),
             essence: 'granulés',
             price: 320,
-            unit: 'tonne',
-            images: [{ url: '/images/products/granules-premium.jpg', alt: 'Granulés Premium', isPrimary: true }],
+            unit: tProd('units.tonne'),
+            images: [{ url: '/images/products/granules-premium.jpg', alt: tProd('defaults.5.alt'), isPrimary: true }],
             badges: ['nouveau', 'premium'],
             humidity: 8,
             calorificValue: 4.8,
             averageRating: 4.9,
             reviewCount: 78,
             specifications: [
-                { name: 'Humidité', value: '< 10', unit: '%' },
-                { name: 'Pouvoir calorifique', value: '4.8', unit: 'kWh/kg' }
+                { name: tProd('defaults.1.specs.humidity'), value: '< 10', unit: '%' },
+                { name: tProd('defaults.1.specs.calorificValue'), value: '4.8', unit: 'kWh/kg' }
             ]
         },
         {
             _id: '6',
-            name: 'Bûches Compressées',
+            name: tProd('defaults.6.name'),
             slug: 'buches-compressees',
-            shortDescription: 'Bûches densifiées longue durée',
+            shortDescription: tProd('defaults.6.shortDescription'),
             essence: 'compressé',
             price: 450,
-            unit: 'tonne',
-            images: [{ url: '/images/products/buches-compressees.jpg', alt: 'Bûches Compressées', isPrimary: true }],
+            unit: tProd('units.tonne'),
+            images: [{ url: '/images/products/buches-compressees.jpg', alt: tProd('defaults.6.alt'), isPrimary: true }],
             badges: ['innovation'],
             humidity: 10,
             calorificValue: 4.5,
             averageRating: 4.4,
             reviewCount: 45,
             specifications: [
-                { name: 'Humidité', value: '< 12', unit: '%' },
-                { name: 'Pouvoir calorifique', value: '4.5', unit: 'kWh/kg' }
+                { name: tProd('defaults.1.specs.humidity'), value: '< 12', unit: '%' },
+                { name: tProd('defaults.1.specs.calorificValue'), value: '4.5', unit: 'kWh/kg' }
             ]
         },
         {
             _id: '7',
-            name: 'Allume-Feu Écologique',
+            name: tProd('defaults.7.name'),
             slug: 'allume-feu-ecologique',
-            shortDescription: 'Allume-feu naturel en fibres de bois',
+            shortDescription: tProd('defaults.7.shortDescription'),
             essence: 'allume-feu',
             price: 12,
-            unit: 'pack de 50',
-            images: [{ url: '/images/products/allume-feu.jpg', alt: 'Allume-feu Écologique', isPrimary: true }],
+            unit: tProd('units.pack50'),
+            images: [{ url: '/images/products/allume-feu.jpg', alt: tProd('defaults.7.alt'), isPrimary: true }],
             badges: ['écologique'],
             averageRating: 4.3,
             reviewCount: 234,
             specifications: [
-                { name: 'Quantité', value: '50', unit: 'pièces' },
-                { name: 'Durée', value: '8-10', unit: 'min' }
+                { name: tProd('defaults.1.specs.quantity'), value: '50', unit: tProd('units.pieces') },
+                { name: tProd('defaults.1.specs.duration'), value: '8-10', unit: tProd('units.min') }
             ]
         },
         {
             _id: '8',
-            name: 'Pack Découverte',
+            name: tProd('defaults.8.name'),
             slug: 'pack-decouverte',
-            shortDescription: 'Assortiment de nos meilleures essences',
+            shortDescription: tProd('defaults.8.shortDescription'),
             essence: 'pack',
             price: 165,
             compareAtPrice: 185,
-            unit: '2 stères',
-            images: [{ url: '/images/products/pack-decouverte.jpg', alt: 'Pack Découverte', isPrimary: true }],
+            unit: tProd('units.2steres'),
+            images: [{ url: '/images/products/pack-decouverte.jpg', alt: tProd('defaults.8.alt'), isPrimary: true }],
             badges: ['offre', 'bestseller'],
             averageRating: 4.8,
             reviewCount: 98,
             specifications: [
-                { name: 'Contenu', value: '2', unit: 'stères' },
-                { name: 'Essences', value: '3', unit: 'types' }
+                { name: tProd('defaults.1.specs.content'), value: '2', unit: tProd('units.stere') },
+                { name: tProd('defaults.1.specs.essences'), value: '3', unit: tProd('units.types') }
             ]
         }
     ]
@@ -169,10 +172,10 @@ export default function ProductsSection({ products = [] }) {
     const displayProducts = products.length > 0 ? products : []
 
     const filters = [
-        { id: 'all', label: 'Tous les produits', icon: Filter },
-        { id: 'premium', label: 'Premium', icon: Award },
-        { id: 'bestseller', label: 'Meilleures ventes', icon: TrendingUp },
-        { id: 'nouveau', label: 'Nouveautés', icon: Sparkles }
+        { id: 'all', label: t('products.filters.all'), icon: Filter },
+        { id: 'premium', label: t('products.filters.premium'), icon: Award },
+        { id: 'bestseller', label: t('products.filters.bestseller'), icon: TrendingUp },
+        { id: 'nouveau', label: t('products.filters.new'), icon: Sparkles }
     ]
 
     const filteredProducts = activeFilter === 'all'
@@ -200,16 +203,15 @@ export default function ProductsSection({ products = [] }) {
                         className="inline-flex items-center px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-6"
                     >
                         <Star className="w-4 h-4 mr-2" />
-                        Nos Produits Populaires
+                        {t('products.badge')}
                     </motion.div>
 
                     <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                        Sélection Premium
+                        {t('products.title')}
                     </h2>
 
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-                        Découvrez notre gamme de bois de chauffage soigneusement sélectionnée.
-                        Chaque produit est contrôlé pour garantir une qualité exceptionnelle.
+                        {t('products.description')}
                     </p>
 
                     {/* Filtres */}
@@ -279,12 +281,12 @@ export default function ProductsSection({ products = [] }) {
                             className="flex items-center space-x-2"
                         >
                             <Eye className="w-5 h-5" />
-                            <span>Voir Tous Nos Produits</span>
+                            <span>{t('products.cta')}</span>
                         </Button>
                     </Link>
 
                     <p className="text-gray-600 mt-4">
-                        Plus de 50 références disponibles • Livraison 4/5j
+                        {t('products.ctaDesc')}
                     </p>
                 </motion.div>
 
@@ -298,10 +300,10 @@ export default function ProductsSection({ products = [] }) {
                 >
                     <div className="text-center mb-12">
                         <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                            Pourquoi Choisir {siteName} ?
+                            {t('products.advantages.title', { siteName })}
                         </h3>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            8 années d'expertise au service de votre confort
+                            {t('products.advantages.subtitle')}
                         </p>
                     </div>
 
@@ -309,18 +311,18 @@ export default function ProductsSection({ products = [] }) {
                         {[
                             {
                                 icon: Award,
-                                title: 'Qualité Garantie',
-                                description: 'Bois séché < 18% d\'humidité, contrôlé et certifié'
+                                title: t('products.advantages.items.quality.title'),
+                                description: t('products.advantages.items.quality.description')
                             },
                             {
                                 icon: TrendingUp,
-                                title: 'Livraison Express',
-                                description: 'Livraison 4/5j'
+                                title: t('products.advantages.items.delivery.title'),
+                                description: t('products.advantages.items.delivery.description')
                             },
                             {
                                 icon: Star,
-                                title: 'Prix Transparents',
-                                description: 'Tarifs clairs, sans surprise, devis gratuit'
+                                title: t('products.advantages.items.pricing.title'),
+                                description: t('products.advantages.items.pricing.description')
                             }
                         ].map((advantage, index) => {
                             const IconComponent = advantage.icon

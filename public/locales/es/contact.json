@@ -1,0 +1,211 @@
+{
+  "seo": {
+    "title": "Contacto | BoisChauffage Pro - Contacte a Nuestros Expertos",
+    "description": "Contacte a BoisChauffage Pro para sus preguntas, presupuestos personalizados y asesoramiento experto. Respuesta rápida garantizada. Teléfono, email, chat en línea.",
+    "keywords": "contacto leña, presupuesto gratuito, asesoramiento experto, servicio al cliente, teléfono, email"
+  },
+  "hero": {
+    "badge": "Servicio al Cliente Dedicado",
+    "title": "Contacte a Nuestros",
+    "titleHighlight": "Expertos en Madera",
+    "subtitle": "¿Una pregunta? ¿Un proyecto? Nuestro equipo de expertos está aquí para asesorarle y acompañarle en todas sus necesidades de leña.",
+    "phoneButton": "{{phone}}",
+    "appointmentButton": "Reservar Cita"
+  },
+  "contactMethods": {
+    "title": "¿Cómo Contactarnos?",
+    "subtitle": "Elija el método de contacto que más le convenga",
+    "urgentBadge": "Urgente",
+    "contactButton": "Contactar",
+    "methods": {
+      "phone": {
+        "title": "Teléfono",
+        "description": "Llámenos directamente",
+        "availability": "Lun-Sáb: 8h-19h"
+      },
+      "email": {
+        "title": "Email",
+        "description": "Escríbanos",
+        "availability": "Respuesta en 2-4h"
+      },
+      "chat": {
+        "title": "Chat en línea",
+        "description": "Conversación instantánea",
+        "value": "Chat disponible",
+        "availability": "Lun-Vie: 9h-18h"
+      },
+      "appointment": {
+        "title": "Cita",
+        "description": "Programar una visita",
+        "value": "Reservar cita",
+        "availability": "Con cita previa"
+      }
+    }
+  },
+  "form": {
+    "title": "Envíenos un mensaje",
+    "subtitle": "Complete el formulario a continuación y le responderemos rápidamente",
+    "success": {
+      "title": "¡Mensaje enviado con éxito!",
+      "message": "Gracias por su mensaje. Nuestro equipo se pondrá en contacto con usted en 2-4h.",
+      "button": "Enviar otro mensaje"
+    },
+    "fields": {
+      "firstName": {
+        "label": "Nombre",
+        "placeholder": "Juan"
+      },
+      "lastName": {
+        "label": "Apellido",
+        "placeholder": "García"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "juan@ejemplo.com"
+      },
+      "phone": {
+        "label": "Teléfono",
+        "placeholder": "+33 6 12 34 56 78"
+      },
+      "company": {
+        "label": "Empresa (opcional)",
+        "placeholder": "Nombre de su empresa"
+      },
+      "subject": {
+        "label": "Asunto de su solicitud"
+      },
+      "message": {
+        "label": "Su mensaje",
+        "placeholder": "Describa su solicitud en detalle...",
+        "charCount": "{{count}}/500 caracteres"
+      },
+      "preferredContact": {
+        "label": "Método de contacto preferido",
+        "options": {
+          "email": "Email",
+          "phone": "Teléfono",
+          "both": "Ambos"
+        }
+      },
+      "urgency": {
+        "label": "Urgencia",
+        "options": {
+          "normal": "Normal (2-4h)",
+          "urgent": "Urgente (1h)",
+          "low": "No urgente (24h)"
+        }
+      }
+    },
+    "subjects": {
+      "quote": {
+        "label": "Solicitud de presupuesto",
+        "description": "Para una estimación personalizada"
+      },
+      "delivery": {
+        "label": "Preguntas sobre entrega",
+        "description": "Plazos, zonas, modalidades"
+      },
+      "products": {
+        "label": "Información de productos",
+        "description": "Características, calidad, stock"
+      },
+      "order": {
+        "label": "Seguimiento de pedido",
+        "description": "Estado, modificación, problema"
+      },
+      "support": {
+        "label": "Soporte técnico",
+        "description": "Ayuda y asistencia"
+      },
+      "other": {
+        "label": "Otra solicitud",
+        "description": "Cualquier otra pregunta"
+      }
+    },
+    "terms": {
+      "acceptData": "Acepto que mis datos se utilicen para procesar mi solicitud",
+      "newsletter": "Deseo recibir el boletín con ofertas y consejos"
+    },
+    "buttons": {
+      "submit": "Enviar mensaje",
+      "submitting": "Enviando..."
+    }
+  },
+  "validation": {
+    "firstNameRequired": "Nombre requerido",
+    "lastNameRequired": "Apellido requerido",
+    "emailRequired": "Email requerido",
+    "emailInvalid": "Formato de email inválido",
+    "phoneRequired": "Teléfono requerido",
+    "phoneInvalid": "Número de teléfono inválido",
+    "subjectRequired": "Asunto requerido",
+    "messageRequired": "Mensaje requerido",
+    "messageTooShort": "Mensaje demasiado corto (mínimo 10 caracteres)",
+    "acceptTermsRequired": "Debe aceptar los términos",
+    "submitError": "Ocurrió un error. Por favor, inténtelo de nuevo.",
+    "sendError": "Error al enviar el mensaje"
+  },
+  "info": {
+    "title": "Información Práctica",
+    "address": {
+      "title": "Dirección"
+    },
+    "hours": {
+      "title": "Horarios",
+      "weekdays": "Lunes - Viernes: 8:00 - 19:00",
+      "saturday": "Sábado: 8:00 - 12:00",
+      "sunday": "Domingo: Cerrado"
+    },
+    "emergency": {
+      "title": "Emergencias",
+      "hotline": "Línea directa 24h/7d: 06 12 34 56 78",
+      "note": "Solo para emergencias de entrega"
+    },
+    "responseTime": {
+      "title": "Tiempo de Respuesta",
+      "email": "Email: 2-4h",
+      "phone": "Teléfono: Inmediato",
+      "chat": "Chat: < 5min",
+      "quote": "Presupuesto: 24h"
+    }
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "items": {
+      "visit": {
+        "question": "¿Puedo visitar su almacén?",
+        "answer": "Sí, solo con cita previa. Contáctenos para programar una visita."
+      },
+      "quoteTime": {
+        "question": "¿Cuánto tiempo para un presupuesto?",
+        "answer": "Le enviamos un presupuesto detallado en un máximo de 24 horas."
+      },
+      "weekendDelivery": {
+        "question": "¿Entregan los fines de semana?",
+        "answer": "Entregas posibles el sábado por la mañana bajo petición y con recargo."
+      }
+    },
+    "seeAll": "Ver todas las preguntas frecuentes"
+  },
+  "cta": {
+    "title": "¿Listo para Comenzar su Proyecto?",
+    "subtitle": "Nuestro equipo de expertos está aquí para apoyarle. Contáctenos ahora para una respuesta rápida.",
+    "phoneButton": "Llamada WhatsApp Gratuita: {{phone}}",
+    "quoteButton": "Presupuesto en Línea",
+    "features": {
+      "fastResponse": {
+        "title": "Respuesta Rápida",
+        "description": "En promedio 2h"
+      },
+      "expertTeam": {
+        "title": "Equipo Experto",
+        "description": "15 años de experiencia"
+      },
+      "guarantee": {
+        "title": "Servicio Garantizado",
+        "description": "100% Satisfacción"
+      }
+    }
+  }
+}
+

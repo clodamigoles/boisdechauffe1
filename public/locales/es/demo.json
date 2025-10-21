@@ -1,0 +1,48 @@
+{
+  "testimonials": [
+    {
+      "name": "Marie Dubois",
+      "location": "Lyon, Francia",
+      "comment": "¡Excelente servicio! La madera de roble entregada estaba perfectamente seca y de calidad excepcional. Entrega rápida y equipo muy profesional.",
+      "shortComment": "¡Calidad excepcional, entrega rápida!",
+      "productPurchased": "Roble Premium Seco"
+    },
+    {
+      "name": "Pierre Martin",
+      "location": "Toulouse, Francia",
+      "comment": "¡Pedido realizado el lunes, entregado el miércoles! La madera arde perfectamente, muy poca ceniza. Lo recomiendo encarecidamente.",
+      "shortComment": "¡Servicio impecable, muy satisfecho!",
+      "productPurchased": "Mix Premium de Madera Dura"
+    },
+    {
+      "name": "Sophie Laurent",
+      "location": "Marsella, Francia",
+      "comment": "Tercer pedido este año. La calidad es constante, precios justos y excelente servicio al cliente. ¡Mi proveedor de confianza!",
+      "shortComment": "Mi proveedor de confianza desde hace 3 años",
+      "productPurchased": "Haya Tradicional"
+    },
+    {
+      "name": "Jean-Claude Moreau",
+      "location": "Burdeos, Francia",
+      "comment": "Ex leñador, sé reconocer la calidad. Esta madera está perfectamente calibrada, seca y homogénea. ¡Felicitaciones por la profesionalidad!",
+      "shortComment": "Calidad profesional reconocida",
+      "productPurchased": "Carpe Excellence"
+    },
+    {
+      "name": "Isabelle Durand",
+      "location": "Nantes, Francia",
+      "comment": "Entrega impecable incluso en mi pueblo aislado. El repartidor fue muy amable e incluso apiló la madera ordenadamente. ¡Servicio de 5 estrellas!",
+      "shortComment": "Servicio de 5 estrellas, incluso en zonas remotas",
+      "productPurchased": "Pack Descubrimiento"
+    },
+    {
+      "name": "Michel Rousseau",
+      "location": "Estrasburgo, Francia",
+      "comment": "Los pellets son de calidad excepcional. Mi estufa nunca ha funcionado tan bien. Muy poco residuo y excelente rendimiento.",
+      "shortComment": "Pellets de calidad excepcional",
+      "productPurchased": "Pellets de Alto Rendimiento"
+    }
+  ]
+}
+
+

@@ -1,0 +1,159 @@
+{
+  "seo": {
+    "title": "Terms and Conditions of Sale - {{siteName}}",
+    "description": "General terms and conditions of sale and use"
+  },
+  "header": {
+    "title": "Terms and Conditions of Sale",
+    "subtitle": "Our sales terms and contractual conditions"
+  },
+  "lastUpdate": "Last update: {{date}}",
+  "content": {
+    "title": "Terms and Conditions of Sale",
+    "section1": {
+      "title": "1. Purpose",
+      "content": "These Terms and Conditions of Sale (T&C) govern the contractual relationship between {{companyName}} and its customers."
+    },
+    "section2": {
+      "title": "2. Products and Services",
+      "intro": "We offer premium quality firewood for sale:",
+      "items": [
+        "Dried hardwood logs",
+        "Various wood species available",
+        "Home delivery",
+        "Personalized customer service"
+      ]
+    },
+    "section3": {
+      "title": "3. Prices",
+      "intro": "Prices are indicated in euros (€) including all taxes.",
+      "delivery": {
+        "title": "Delivery:",
+        "items": [
+          "Delivery costs vary by region",
+          "Free delivery from €{{freeShippingThreshold}} purchase",
+          "Delivery rates are indicated during the order process"
+        ]
+      },
+      "outro": "We reserve the right to modify our prices at any time, orders being invoiced based on rates in effect at the time of order validation."
+    },
+    "section4": {
+      "title": "4. Order",
+      "subsection1": {
+        "title": "4.1 Order process",
+        "steps": [
+          "Product selection",
+          "Add to cart",
+          "Cart validation",
+          "Enter delivery information",
+          "Order validation"
+        ]
+      },
+      "subsection2": {
+        "title": "4.2 Confirmation",
+        "content": "An order confirmation is sent by email to the address provided during the order."
+      }
+    },
+    "section5": {
+      "title": "5. Payment",
+      "subsection1": {
+        "title": "5.1 Payment methods",
+        "intro": "We accept the following payment methods:",
+        "items": [
+          "Bank transfer",
+          "Other payment methods on request"
+        ]
+      },
+      "subsection2": {
+        "title": "5.2 Security",
+        "content": "All payments are secure. We do not store your banking information."
+      },
+      "subsection3": {
+        "title": "5.3 Payment deadline",
+        "content": "Payment must be made within 7 days following order validation."
+      }
+    },
+    "section6": {
+      "title": "6. Delivery",
+      "subsection1": {
+        "title": "6.1 Delivery area",
+        "content": "We deliver to mainland France, Belgium, Switzerland and Luxembourg."
+      },
+      "subsection2": {
+        "title": "6.2 Delivery time",
+        "items": [
+          "Delivery within 5-7 business days after payment receipt",
+          "Delays may vary depending on destination and availability"
+        ]
+      },
+      "subsection3": {
+        "title": "6.3 Delivery terms",
+        "items": [
+          "Delivery to roadside or location accessible by truck",
+          "Unloading by our staff",
+          "Presence required during delivery"
+        ]
+      }
+    },
+    "section7": {
+      "title": "7. Right of withdrawal",
+      "paragraph1": "In accordance with article L221-28 of the Consumer Code, the right of withdrawal cannot be exercised for contracts for the supply of goods manufactured according to consumer specifications or clearly personalized.",
+      "paragraph2": "For standard products, you have 14 days to exercise your right of withdrawal without having to provide reasons."
+    },
+    "section8": {
+      "title": "8. Warranties",
+      "subsection1": {
+        "title": "8.1 Product quality",
+        "intro": "We guarantee:",
+        "items": [
+          "Dried wood (moisture content < 20%)",
+          "Wood species conforming to description",
+          "Premium quality"
+        ]
+      },
+      "subsection2": {
+        "title": "8.2 Claims",
+        "content": "Any claim must be made within 48 hours following delivery by email to: {{contactEmail}}"
+      }
+    },
+    "section9": {
+      "title": "9. Liability",
+      "content": "Our liability is limited to the order amount. We cannot be held liable for indirect damages."
+    },
+    "section10": {
+      "title": "10. Force majeure",
+      "content": "We cannot be held liable in case of force majeure or events beyond our control (bad weather, strikes, etc.)."
+    },
+    "section11": {
+      "title": "11. Personal data protection",
+      "content": "Your personal data is processed in accordance with our [Privacy Policy](/politique-confidentialite)."
+    },
+    "section12": {
+      "title": "12. Intellectual property",
+      "content": "All site elements (texts, images, logos) are protected by copyright and remain our exclusive property."
+    },
+    "section13": {
+      "title": "13. Applicable law and jurisdiction",
+      "content": "These T&C are governed by French law. In case of dispute, French courts shall have sole jurisdiction."
+    },
+    "section14": {
+      "title": "14. Mediation",
+      "paragraph1": "In accordance with article L.612-1 of the Consumer Code, we offer a consumer mediation system.",
+      "paragraph2": "The selected mediation entity is:",
+      "mediatorTitle": "Consumer Mediator",
+      "mediatorNote": "[To be completed with mediator contact details]"
+    },
+    "section15": {
+      "title": "15. Contact",
+      "intro": "For any questions regarding our T&C:",
+      "email": "Email:",
+      "phone": "Phone:",
+      "address": "Address:"
+    },
+    "section16": {
+      "title": "16. Acceptance of T&C",
+      "content": "Validating your order implies full acceptance of these T&C."
+    }
+  }
+}
+

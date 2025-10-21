@@ -3,80 +3,27 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 import TestimonialCard from '../ui/TestimonialCard'
 import { useSettings } from '@/hooks/useSettings'
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function TestimonialsSection({ testimonials = [] }) {
     const { siteName } = useSettings()
+    const { t } = useTranslation('home')
+    const { t: tDemo } = useTranslation('demo')
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
-    const defaultTestimonials = [
-        {
-            _id: '1',
-            name: 'Marie Dubois',
-            location: 'Lyon, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Excellent service ! Le bois de chêne livré était parfaitement sec et de qualité exceptionnelle. Livraison rapide et équipe très professionnelle.',
-            shortComment: 'Qualité exceptionnelle, livraison rapide !',
-            productPurchased: 'Chêne Premium Séché',
-            verified: true
-        },
-        {
-            _id: '2',
-            name: 'Pierre Martin',
-            location: 'Toulouse, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: `Commande passée le lundi, livrée le mercredi ! Le bois brûle parfaitement, très peu de cendres. Je recommande vivement ${siteName}.`,
-            shortComment: 'Service impeccable, très satisfait !',
-            productPurchased: 'Mix Feuillus Premium',
-            verified: true
-        },
-        {
-            _id: '3',
-            name: 'Sophie Laurent',
-            location: 'Marseille, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Troisième commande cette année. La qualité est constante, les prix corrects et le service client au top. Mon fournisseur de confiance !',
-            shortComment: 'Mon fournisseur de confiance depuis 3 ans',
-            productPurchased: 'Hêtre Traditionnel',
-            verified: true
-        },
-        {
-            _id: '4',
-            name: 'Jean-Claude Moreau',
-            location: 'Bordeaux, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Ancien bûcheron, je sais reconnaître la qualité. Ce bois est parfaitement calibré, sec et homogène. Bravo pour le sérieux !',
-            shortComment: 'Qualité professionnelle reconnue',
-            productPurchased: 'Charme Excellence',
-            verified: true
-        },
-        {
-            _id: '5',
-            name: 'Isabelle Durand',
-            location: 'Nantes, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Livraison impeccable même dans mon village isolé. Le livreur était très sympa et a même rangé le bois proprement. Service 5 étoiles !',
-            shortComment: 'Service 5 étoiles, même en zone isolée',
-            productPurchased: 'Pack Découverte',
-            verified: true
-        },
-        {
-            _id: '6',
-            name: 'Michel Rousseau',
-            location: 'Strasbourg, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Les granulés sont de qualité exceptionnelle. Mon poêle n\'a jamais aussi bien fonctionné. Très peu de résidus et excellent rendement.',
-            shortComment: 'Granulés de qualité exceptionnelle',
-            productPurchased: 'Granulés Haute Performance',
-            verified: true
-        }
-    ]
+    // Générer les témoignages traduits depuis demo.json
+    const defaultTestimonials = Array.from({ length: 6 }, (_, i) => ({
+        _id: `${i + 1}`,
+        name: tDemo(`testimonials.${i}.name`),
+        location: tDemo(`testimonials.${i}.location`),
+        avatar: '/images/avatar.jpg',
+        rating: 5,
+        comment: tDemo(`testimonials.${i}.comment`),
+        shortComment: tDemo(`testimonials.${i}.shortComment`),
+        productPurchased: tDemo(`testimonials.${i}.productPurchased`),
+        verified: true
+    }))
 
     const displayTestimonials = testimonials.length > 0 ? testimonials : defaultTestimonials
 
@@ -128,19 +75,18 @@ export default function TestimonialsSection({ testimonials = [] }) {
                         className="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-4"
                     >
                         <span className="mr-2">💬</span>
-                        Témoignages Clients
+                        {t('testimonials.badge')}
                     </motion.div>
 
                     <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                        Ils Nous Font
+                        {t('testimonials.title')}
                         <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                            Confiance
+                            {t('testimonials.titleHighlight')}
                         </span>
                     </h2>
 
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                        Découvrez les retours de nos clients satisfaits. Leur confiance est notre plus belle récompense
-                        et la garantie de notre engagement qualité.
+                        {t('testimonials.description')}
                     </p>
                 </motion.div>
 
@@ -221,12 +167,12 @@ export default function TestimonialsSection({ testimonials = [] }) {
                             {isAutoPlaying ? (
                                 <>
                                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                    <span>Lecture automatique</span>
+                                    <span>{t('testimonials.autoplay.playing')}</span>
                                 </>
                             ) : (
                                 <>
                                     <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                                    <span>En pause</span>
+                                    <span>{t('testimonials.autoplay.paused')}</span>
                                 </>
                             )}
                         </motion.button>

@@ -1,11 +1,16 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { TreePine, Flame, Package, Zap, ArrowRight, TrendingUp } from 'lucide-react'
+import { useMemo } from 'react'
 
 import CategoryCard from '../ui/CategoryCard'
 import { containerVariants, itemVariants } from '@/utils/animations'
+import { useTranslation } from '@/lib/useTranslation'
+import { translateCategories } from '@/lib/translateCategory'
 
 export default function CategoriesSection({ categories = [] }) {
+    const { t } = useTranslation('home')
+    
     const iconMap = {
         'bois-feuillus-premium': TreePine,
         'bois-resineux-sec': TreePine,
@@ -13,46 +18,22 @@ export default function CategoriesSection({ categories = [] }) {
         'allume-feu-naturel': Flame
     }
 
-    const defaultCategories = [[
-        {
-            _id: '1',
-            name: 'Bois Feuillus Premium',
-            slug: 'bois-feuillus-premium',
-            shortDescription: 'Chêne, hêtre, charme - Excellence garantie',
-            image: '/images/categories/feuillus.jpg',
-            productCount: 24,
-            trending: true
-        },
-        {
-            _id: '2',
-            name: 'Bois Résineux Sec',
-            slug: 'bois-resineux-sec',
-            shortDescription: 'Pin, épicéa, sapin - Allumage facile',
-            image: '/images/categories/resineux.jpg',
-            productCount: 18,
-            trending: false
-        },
-        {
-            _id: '3',
-            name: 'Granulés Premium',
-            slug: 'granules-premium',
-            shortDescription: 'Pellets haute performance - Rendement optimal',
-            image: '/images/categories/granules.jpg',
-            productCount: 12,
-            trending: true
-        },
-        {
-            _id: '4',
-            name: 'Allume-Feu Naturel',
-            slug: 'allume-feu-naturel',
-            shortDescription: 'Écologique et efficace - Démarrage garanti',
-            image: '/images/categories/allume-feu.jpg',
-            productCount: 8,
-            trending: false
+    // Traduire les catégories avec fallback vers le texte original
+    const translatedCategories = useMemo(() => {
+        if (typeof window !== 'undefined' && window.__TRANSLATIONS__?.categories) {
+            return translateCategories(categories, window.__TRANSLATIONS__.categories)
         }
-    ]]
+        return categories
+    }, [categories])
 
-    const displayCategories = categories.length > 0 ? categories : []
+    const displayCategories = translatedCategories.length > 0 ? translatedCategories : []
+
+    const stats = [
+        { icon: Zap, value: t('categories.stats.humidity.value'), label: t('categories.stats.humidity.label') },
+        { icon: Package, value: t('categories.stats.products.value'), label: t('categories.stats.products.label') },
+        { icon: TrendingUp, value: t('categories.stats.delivery.value'), label: t('categories.stats.delivery.label') },
+        { icon: TrendingUp, value: t('categories.stats.rating.value'), label: t('categories.stats.rating.label') }
+    ]
 
     return (
         <section className="py-20 bg-gray-50">
@@ -73,19 +54,18 @@ export default function CategoriesSection({ categories = [] }) {
                         className="inline-flex items-center px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-6"
                     >
                         <Package className="w-4 h-4 mr-2" />
-                        Nos Catégories
+                        {t('categories.badge')}
                     </motion.div>
 
                     <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                        Trouvez le Bois Parfait
+                        {t('categories.title')}
                         <span className="block text-amber-600">
-                            pour Vos Besoins
+                            {t('categories.titleHighlight')}
                         </span>
                     </h2>
 
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                        Une sélection rigoureuse de bois de chauffage premium, classée par essence et usage.
-                        Chaque catégorie répond à des besoins spécifiques.
+                        {t('categories.description')}
                     </p>
                 </motion.div>
 
@@ -126,12 +106,7 @@ export default function CategoriesSection({ categories = [] }) {
                     transition={{ delay: 0.6, duration: 0.8 }}
                     className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
                 >
-                    {[
-                        { icon: Zap, value: '< 18%', label: 'Taux d\'humidité' },
-                        { icon: Package, value: '50+', label: 'Références produits' },
-                        { icon: TrendingUp, value: '24-48h', label: 'Délai livraison' },
-                        { icon: TrendingUp, value: '4.9/5', label: 'Note clients' }
-                    ].map((stat, index) => {
+                    {stats.map((stat, index) => {
                         const IconComponent = stat.icon
                         return (
                             <motion.div
@@ -166,11 +141,10 @@ export default function CategoriesSection({ categories = [] }) {
                     <div className="bg-amber-600 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden">
                         <div className="relative z-10">
                             <h3 className="text-2xl lg:text-3xl font-bold mb-4">
-                                Besoin d'aide pour choisir ?
+                                {t('categories.cta.title')}
                             </h3>
                             <p className="text-lg text-amber-100 mb-8 max-w-2xl mx-auto">
-                                Nos experts vous conseillent gratuitement pour trouver le bois de chauffage
-                                adapté à vos besoins et votre région.
+                                {t('categories.cta.description')}
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -180,7 +154,7 @@ export default function CategoriesSection({ categories = [] }) {
                                         whileTap={{ scale: 0.95 }}
                                         className="bg-white text-amber-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
                                     >
-                                        <span>Conseil Gratuit</span>
+                                        <span>{t('categories.cta.freeAdvice')}</span>
                                     </motion.button>
                                 </Link>
 
@@ -190,7 +164,7 @@ export default function CategoriesSection({ categories = [] }) {
                                         whileTap={{ scale: 0.95 }}
                                         className="bg-amber-700 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-800 transition-all duration-300 flex items-center space-x-2"
                                     >
-                                        <span>Voir Toutes les Catégories</span>
+                                        <span>{t('categories.cta.viewAll')}</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </motion.button>
                                 </Link>

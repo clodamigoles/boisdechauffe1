@@ -1,0 +1,64 @@
+{
+  "defaults": {
+    "1": {
+      "name": "Premium Dried Oak",
+      "shortDescription": "Oak wood dried < 18% moisture",
+      "alt": "Premium Oak",
+      "specs": {
+        "humidity": "Moisture",
+        "calorificValue": "Calorific value",
+        "density": "Density",
+        "quantity": "Quantity",
+        "duration": "Duration",
+        "content": "Content",
+        "essences": "Species"
+      }
+    },
+    "2": {
+      "name": "Traditional Beech",
+      "shortDescription": "Beech wood for continuous heating",
+      "alt": "Traditional Beech"
+    },
+    "3": {
+      "name": "Excellence Hornbeam",
+      "shortDescription": "High quality hornbeam wood",
+      "alt": "Excellence Hornbeam"
+    },
+    "4": {
+      "name": "Premium Hardwood Mix",
+      "shortDescription": "Oak, beech, hornbeam mix",
+      "alt": "Hardwood Mix"
+    },
+    "5": {
+      "name": "High Performance Pellets",
+      "shortDescription": "100% premium softwood pellets",
+      "alt": "Premium Pellets"
+    },
+    "6": {
+      "name": "Compressed Logs",
+      "shortDescription": "Long-lasting densified logs",
+      "alt": "Compressed Logs"
+    },
+    "7": {
+      "name": "Eco Firelighters",
+      "shortDescription": "Natural wood fiber firelighters",
+      "alt": "Eco Firelighters"
+    },
+    "8": {
+      "name": "Discovery Pack",
+      "shortDescription": "Assortment of our best species",
+      "alt": "Discovery Pack"
+    }
+  },
+  "units": {
+    "stere": "cord",
+    "tonne": "ton",
+    "pack50": "pack of 50",
+    "2steres": "2 cords",
+    "pieces": "pieces",
+    "min": "min",
+    "types": "types"
+  }
+}
+
+

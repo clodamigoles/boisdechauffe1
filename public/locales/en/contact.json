@@ -1,0 +1,211 @@
+{
+  "seo": {
+    "title": "Contact | BoisChauffage Pro - Contact Our Experts",
+    "description": "Contact BoisChauffage Pro for your questions, personalized quotes and expert advice. Fast response guaranteed. Phone, email, online chat.",
+    "keywords": "firewood contact, free quote, expert advice, customer service, phone, email"
+  },
+  "hero": {
+    "badge": "Dedicated Customer Service",
+    "title": "Contact Our",
+    "titleHighlight": "Wood Experts",
+    "subtitle": "A question? A project? Our team of experts is here to advise and support you in all your firewood needs.",
+    "phoneButton": "{{phone}}",
+    "appointmentButton": "Book Appointment"
+  },
+  "contactMethods": {
+    "title": "How to Contact Us?",
+    "subtitle": "Choose the contact method that suits you best",
+    "urgentBadge": "Urgent",
+    "contactButton": "Contact",
+    "methods": {
+      "phone": {
+        "title": "Phone",
+        "description": "Call us directly",
+        "availability": "Mon-Sat: 8am-7pm"
+      },
+      "email": {
+        "title": "Email",
+        "description": "Write to us",
+        "availability": "Response within 2-4h"
+      },
+      "chat": {
+        "title": "Online chat",
+        "description": "Instant discussion",
+        "value": "Chat available",
+        "availability": "Mon-Fri: 9am-6pm"
+      },
+      "appointment": {
+        "title": "Appointment",
+        "description": "Schedule a visit",
+        "value": "Book appointment",
+        "availability": "By appointment"
+      }
+    }
+  },
+  "form": {
+    "title": "Send us a message",
+    "subtitle": "Fill out the form below and we will respond quickly",
+    "success": {
+      "title": "Message sent successfully!",
+      "message": "Thank you for your message. Our team will contact you within 2-4h.",
+      "button": "Send another message"
+    },
+    "fields": {
+      "firstName": {
+        "label": "First name",
+        "placeholder": "John"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "Doe"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "john@example.com"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "+33 6 12 34 56 78"
+      },
+      "company": {
+        "label": "Company (optional)",
+        "placeholder": "Your company name"
+      },
+      "subject": {
+        "label": "Subject of your request"
+      },
+      "message": {
+        "label": "Your message",
+        "placeholder": "Describe your request in detail...",
+        "charCount": "{{count}}/500 characters"
+      },
+      "preferredContact": {
+        "label": "Preferred contact method",
+        "options": {
+          "email": "Email",
+          "phone": "Phone",
+          "both": "Both"
+        }
+      },
+      "urgency": {
+        "label": "Urgency",
+        "options": {
+          "normal": "Normal (2-4h)",
+          "urgent": "Urgent (1h)",
+          "low": "Not urgent (24h)"
+        }
+      }
+    },
+    "subjects": {
+      "quote": {
+        "label": "Quote request",
+        "description": "For a personalized estimate"
+      },
+      "delivery": {
+        "label": "Delivery questions",
+        "description": "Times, zones, terms"
+      },
+      "products": {
+        "label": "Product information",
+        "description": "Features, quality, stock"
+      },
+      "order": {
+        "label": "Order tracking",
+        "description": "Status, modification, issue"
+      },
+      "support": {
+        "label": "Technical support",
+        "description": "Help and assistance"
+      },
+      "other": {
+        "label": "Other request",
+        "description": "Any other question"
+      }
+    },
+    "terms": {
+      "acceptData": "I agree that my data will be used to process my request",
+      "newsletter": "I want to receive the newsletter with offers and advice"
+    },
+    "buttons": {
+      "submit": "Send message",
+      "submitting": "Sending..."
+    }
+  },
+  "validation": {
+    "firstNameRequired": "First name required",
+    "lastNameRequired": "Last name required",
+    "emailRequired": "Email required",
+    "emailInvalid": "Invalid email format",
+    "phoneRequired": "Phone required",
+    "phoneInvalid": "Invalid phone number",
+    "subjectRequired": "Subject required",
+    "messageRequired": "Message required",
+    "messageTooShort": "Message too short (minimum 10 characters)",
+    "acceptTermsRequired": "You must accept the terms",
+    "submitError": "An error occurred. Please try again.",
+    "sendError": "Error sending message"
+  },
+  "info": {
+    "title": "Practical Information",
+    "address": {
+      "title": "Address"
+    },
+    "hours": {
+      "title": "Opening Hours",
+      "weekdays": "Monday - Friday: 8:00 AM - 7:00 PM",
+      "saturday": "Saturday: 8:00 AM - 12:00 PM",
+      "sunday": "Sunday: Closed"
+    },
+    "emergency": {
+      "title": "Emergencies",
+      "hotline": "24/7 Hotline: 06 12 34 56 78",
+      "note": "For delivery emergencies only"
+    },
+    "responseTime": {
+      "title": "Response Time",
+      "email": "Email: 2-4h",
+      "phone": "Phone: Immediate",
+      "chat": "Chat: < 5min",
+      "quote": "Quote: 24h"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": {
+      "visit": {
+        "question": "Can I visit your warehouse?",
+        "answer": "Yes, by appointment only. Contact us to schedule a visit."
+      },
+      "quoteTime": {
+        "question": "How long for a quote?",
+        "answer": "We send you a detailed quote within 24 hours maximum."
+      },
+      "weekendDelivery": {
+        "question": "Do you deliver on weekends?",
+        "answer": "Saturday morning deliveries possible on request and with surcharge."
+      }
+    },
+    "seeAll": "See all FAQs"
+  },
+  "cta": {
+    "title": "Ready to Start Your Project?",
+    "subtitle": "Our team of experts is here to support you. Contact us now for a quick response.",
+    "phoneButton": "Free WhatsApp Call: {{phone}}",
+    "quoteButton": "Online Quote",
+    "features": {
+      "fastResponse": {
+        "title": "Fast Response",
+        "description": "Within 2h on average"
+      },
+      "expertTeam": {
+        "title": "Expert Team",
+        "description": "15 years of experience"
+      },
+      "guarantee": {
+        "title": "Guaranteed Service",
+        "description": "100% Satisfaction"
+      }
+    }
+  }
+}
+

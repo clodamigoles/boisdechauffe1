@@ -1,0 +1,137 @@
+{
+  "categories": {
+    "badge": "Nuestras categorías",
+    "title": "Encuentre la madera perfecta",
+    "titleHighlight": "para sus necesidades",
+    "description": "Una selección rigurosa de leña premium, clasificada por especie y uso. Cada categoría satisface necesidades específicas.",
+    "stats": {
+      "humidity": {
+        "value": "< 18%",
+        "label": "Contenido de humedad"
+      },
+      "products": {
+        "value": "50+",
+        "label": "Referencias de productos"
+      },
+      "delivery": {
+        "value": "24-48h",
+        "label": "Tiempo de entrega"
+      },
+      "rating": {
+        "value": "4.9/5",
+        "label": "Calificación del cliente"
+      }
+    },
+    "cta": {
+      "title": "¿Necesita ayuda para elegir?",
+      "description": "Nuestros expertos le asesoran de forma gratuita para encontrar la leña adaptada a sus necesidades y región.",
+      "freeAdvice": "Asesoramiento gratuito",
+      "viewAll": "Ver todas las categorías"
+    }
+  },
+  "hero": {
+    "badge": "Entrega 4/5 días en todas partes",
+    "title": "Premium",
+    "subtitle": "Descubra nuestra selección exclusiva de madera seca premium. Roble, Haya, Carpe - Entrega rápida, calidad garantizada",
+    "cta": "Pedir ahora",
+    "stats": {
+      "delivery": {
+        "value": "5d",
+        "label": "Entrega exprés"
+      },
+      "quality": {
+        "value": "99%",
+        "label": "Calidad garantizada"
+      }
+    },
+    "whyChoose": {
+      "title": "¿Por qué elegirnos?",
+      "reasons": {
+        "quality": {
+          "title": "Calidad Premium",
+          "desc": "Madera seca < 18% de humedad"
+        },
+        "delivery": {
+          "title": "Entrega rápida",
+          "desc": "24-48h en toda Francia"
+        },
+        "pricing": {
+          "title": "Precios transparentes",
+          "desc": "Presupuesto gratuito, sin sorpresas"
+        },
+        "service": {
+          "title": "Servicio al cliente",
+          "desc": "Equipo de expertos a su servicio"
+        }
+      }
+    },
+    "scroll": "Descubrir"
+  },
+  "products": {
+    "badge": "Nuestros productos populares",
+    "title": "Selección Premium",
+    "description": "Descubra nuestra gama de leña cuidadosamente seleccionada. Cada producto es inspeccionado para garantizar una calidad excepcional.",
+    "filters": {
+      "all": "Todos los productos",
+      "premium": "Premium",
+      "bestseller": "Más vendidos",
+      "new": "Novedades"
+    },
+    "cta": "Ver todos los productos",
+    "ctaDesc": "Más de 50 referencias disponibles • Entrega 4/5 días",
+    "advantages": {
+      "title": "¿Por qué elegir {{siteName}}?",
+      "subtitle": "8 años de experiencia al servicio de su confort",
+      "items": {
+        "quality": {
+          "title": "Calidad garantizada",
+          "description": "Madera seca < 18% de humedad, controlada y certificada"
+        },
+        "delivery": {
+          "title": "Entrega exprés",
+          "description": "Entrega 4/5 días"
+        },
+        "pricing": {
+          "title": "Precios transparentes",
+          "description": "Tarifas claras, sin sorpresas, presupuesto gratuito"
+        }
+      }
+    }
+  },
+  "testimonials": {
+    "badge": "Testimonios de clientes",
+    "title": "Confían en",
+    "titleHighlight": "Nosotros",
+    "description": "Descubra los comentarios de nuestros clientes satisfechos. Su confianza es nuestra mayor recompensa y la garantía de nuestro compromiso con la calidad.",
+    "autoplay": {
+      "playing": "Reproducción automática",
+      "paused": "En pausa"
+    }
+  },
+  "newsletter": {
+    "badge": "Boletín exclusivo",
+    "title": "Manténgase informado de nuestras",
+    "titleHighlight": "Mejores ofertas",
+    "description": "Suscríbase a nuestro boletín y reciba promociones exclusivas, novedades y consejos de expertos para optimizar su calefacción de leña.",
+    "form": {
+      "emailPlaceholder": "Su dirección de correo electrónico *",
+      "firstNamePlaceholder": "Su nombre (opcional)",
+      "interestsLabel": "¿Qué le gustaría recibir? (opcional)",
+      "interests": {
+        "promotions": "Promociones exclusivas",
+        "new": "Nuevos productos",
+        "tips": "Consejos de expertos",
+        "seasons": "Consejos de temporada"
+      },
+      "submit": "Suscribirse gratis",
+      "submitting": "Suscribiéndose...",
+      "required": "* Campo obligatorio. Cancelar suscripción en cualquier momento."
+    },
+    "success": {
+      "title": "¡Suscripción exitosa!",
+      "description": "¡Gracias! Pronto recibirá un correo electrónico de confirmación. Consulte su bandeja de entrada (y spam) para validar su suscripción."
+    }
+  },
+  "loading": "Cargando su experiencia premium..."
+}
+

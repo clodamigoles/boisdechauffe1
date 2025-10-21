@@ -1,0 +1,137 @@
+{
+  "categories": {
+    "badge": "Nos Catégories",
+    "title": "Trouvez le Bois Parfait",
+    "titleHighlight": "pour Vos Besoins",
+    "description": "Une sélection rigoureuse de bois de chauffage premium, classée par essence et usage. Chaque catégorie répond à des besoins spécifiques.",
+    "stats": {
+      "humidity": {
+        "value": "< 18%",
+        "label": "Taux d'humidité"
+      },
+      "products": {
+        "value": "50+",
+        "label": "Références produits"
+      },
+      "delivery": {
+        "value": "24-48h",
+        "label": "Délai livraison"
+      },
+      "rating": {
+        "value": "4.9/5",
+        "label": "Note clients"
+      }
+    },
+    "cta": {
+      "title": "Besoin d'aide pour choisir ?",
+      "description": "Nos experts vous conseillent gratuitement pour trouver le bois de chauffage adapté à vos besoins et votre région.",
+      "freeAdvice": "Conseil Gratuit",
+      "viewAll": "Voir Toutes les Catégories"
+    }
+  },
+  "hero": {
+    "badge": "Livraison 4/5j partout",
+    "title": "Premium",
+    "subtitle": "Découvrez notre sélection exclusive de bois séché premium. Chêne, Hêtre, Charme - Livraison rapide, qualité garantie",
+    "cta": "Commander Maintenant",
+    "stats": {
+      "delivery": {
+        "value": "5j",
+        "label": "Livraison express"
+      },
+      "quality": {
+        "value": "99%",
+        "label": "Qualité garantie"
+      }
+    },
+    "whyChoose": {
+      "title": "Pourquoi nous choisir ?",
+      "reasons": {
+        "quality": {
+          "title": "Qualité Premium",
+          "desc": "Bois séché < 18% d'humidité"
+        },
+        "delivery": {
+          "title": "Livraison Rapide",
+          "desc": "24-48h partout en France"
+        },
+        "pricing": {
+          "title": "Prix Transparents",
+          "desc": "Devis gratuit, sans surprise"
+        },
+        "service": {
+          "title": "Service Client",
+          "desc": "Équipe d'experts à votre écoute"
+        }
+      }
+    },
+    "scroll": "Découvrir"
+  },
+  "products": {
+    "badge": "Nos Produits Populaires",
+    "title": "Sélection Premium",
+    "description": "Découvrez notre gamme de bois de chauffage soigneusement sélectionnée. Chaque produit est contrôlé pour garantir une qualité exceptionnelle.",
+    "filters": {
+      "all": "Tous les produits",
+      "premium": "Premium",
+      "bestseller": "Meilleures ventes",
+      "new": "Nouveautés"
+    },
+    "cta": "Voir Tous Nos Produits",
+    "ctaDesc": "Plus de 50 références disponibles • Livraison 4/5j",
+    "advantages": {
+      "title": "Pourquoi Choisir {{siteName}} ?",
+      "subtitle": "8 années d'expertise au service de votre confort",
+      "items": {
+        "quality": {
+          "title": "Qualité Garantie",
+          "description": "Bois séché < 18% d'humidité, contrôlé et certifié"
+        },
+        "delivery": {
+          "title": "Livraison Express",
+          "description": "Livraison 4/5j"
+        },
+        "pricing": {
+          "title": "Prix Transparents",
+          "description": "Tarifs clairs, sans surprise, devis gratuit"
+        }
+      }
+    }
+  },
+  "testimonials": {
+    "badge": "Témoignages Clients",
+    "title": "Ils Nous Font",
+    "titleHighlight": "Confiance",
+    "description": "Découvrez les retours de nos clients satisfaits. Leur confiance est notre plus belle récompense et la garantie de notre engagement qualité.",
+    "autoplay": {
+      "playing": "Lecture automatique",
+      "paused": "En pause"
+    }
+  },
+  "newsletter": {
+    "badge": "Newsletter Exclusive",
+    "title": "Restez Informé des",
+    "titleHighlight": "Meilleures Offres",
+    "description": "Inscrivez-vous à notre newsletter et recevez en exclusivité nos promotions, nouveautés et conseils d'experts pour optimiser votre chauffage au bois.",
+    "form": {
+      "emailPlaceholder": "Votre adresse email *",
+      "firstNamePlaceholder": "Votre prénom (optionnel)",
+      "interestsLabel": "Que souhaitez-vous recevoir ? (optionnel)",
+      "interests": {
+        "promotions": "Promotions exclusives",
+        "new": "Nouveaux produits",
+        "tips": "Conseils d'experts",
+        "seasons": "Conseils saisonniers"
+      },
+      "submit": "S'inscrire Gratuitement",
+      "submitting": "Inscription...",
+      "required": "* Champ obligatoire. Désabonnement possible à tout moment."
+    },
+    "success": {
+      "title": "Inscription réussie !",
+      "description": "Merci ! Vous recevrez bientôt un email de confirmation. Consultez votre boîte mail (et vos spams) pour valider votre abonnement."
+    }
+  },
+  "loading": "Chargement de votre expérience premium..."
+}
+

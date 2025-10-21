@@ -1,0 +1,23 @@
+{
+  "newsletter": {
+    "error": {
+      "invalidEmail": "Ungültiges E-Mail-Format",
+      "alreadySubscribed": "Diese E-Mail-Adresse ist bereits für unseren Newsletter angemeldet",
+      "rateLimitExceeded": "Zu viele Versuche. Bitte versuchen Sie es später erneut",
+      "serverError": "Fehler bei der Anmeldung. Bitte versuchen Sie es erneut"
+    },
+    "success": {
+      "subscribed": "Erfolgreich abonniert! Überprüfen Sie Ihre E-Mail zur Bestätigung",
+      "confirmed": "Ihr Abonnement wurde erfolgreich bestätigt",
+      "unsubscribed": "Sie wurden erfolgreich abgemeldet"
+    }
+  },
+  "validation": {
+    "required": "Dieses Feld ist erforderlich",
+    "emailInvalid": "Ungültige E-Mail-Adresse",
+    "tooShort": "Das Feld muss mindestens {{min}} Zeichen enthalten",
+    "tooLong": "Das Feld darf {{max}} Zeichen nicht überschreiten"
+  }
+}
+
+

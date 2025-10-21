@@ -8,8 +8,10 @@ import { ShoppingCart, Heart, Star, Zap, Droplets, Flame } from "lucide-react"
 import { useCartStore } from "../../store/cartStore"
 import Button from "./Button"
 import CartToast from "./CartToast"
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function ProductCard({ product }) {
+    const { t } = useTranslation('common')
     const [isImageLoading, setIsImageLoading] = useState(true)
     const [imageError, setImageError] = useState(false)
     const [showToast, setShowToast] = useState(false)
@@ -92,7 +94,7 @@ export default function ProductCard({ product }) {
                                     whileHover={{ scale: 1, opacity: 1 }}
                                     className="text-white font-medium"
                                 >
-                                    Voir le produit
+                                    {t('product.viewProduct')}
                                 </motion.div>
                             </div>
 
@@ -190,13 +192,13 @@ export default function ProductCard({ product }) {
                                     className="flex-1 flex items-center justify-center space-x-2"
                                 >
                                     <ShoppingCart className="w-4 h-4" />
-                                    <span>Ajouter</span>
+                                    <span>{t('product.addToCart')}</span>
                                 </Button>
                                 <motion.button
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     className="p-2 border border-gray-200 rounded-lg hover:border-amber-400 hover:text-amber-600 transition-colors"
-                                    aria-label="Ajouter aux favoris"
+                                    aria-label={t('product.addToFavorites')}
                                 >
                                     <Heart className="w-4 h-4" />
                                 </motion.button>
@@ -207,11 +209,11 @@ export default function ProductCard({ product }) {
                                 <div className="flex items-center justify-between text-xs text-gray-500">
                                     <div className="flex items-center space-x-1">
                                         <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                        <span>En stock</span>
+                                        <span>{t('product.inStock')}</span>
                                     </div>
                                     <div className="flex items-center space-x-1">
                                         <Zap className="w-3 h-3" />
-                                        <span>Livraison 24-48h</span>
+                                        <span>{t('product.delivery')}</span>
                                     </div>
                                 </div>
                             </div>

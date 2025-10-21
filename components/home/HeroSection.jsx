@@ -6,9 +6,11 @@ import { ArrowRight, Clock, Shield } from 'lucide-react'
 import Button from '../ui/Button'
 import { heroVariants } from '@/utils/animations'
 import { useSettings } from '@/hooks/useSettings'
+import { useTranslation } from '@/lib/useTranslation'
 
 export default function HeroSection() {
     const { siteName } = useSettings()
+    const { t } = useTranslation('home')
     const [isVideoLoaded, setIsVideoLoaded] = useState(false)
     const videoRef = useRef(null)
 
@@ -22,8 +24,15 @@ export default function HeroSection() {
     }, [])
 
     const stats = [
-        { value: '5j', label: 'Livraison express', icon: Clock },
-        { value: '99%', label: 'Qualité garantie', icon: Shield }
+        { value: t('hero.stats.delivery.value'), label: t('hero.stats.delivery.label'), icon: Clock },
+        { value: t('hero.stats.quality.value'), label: t('hero.stats.quality.label'), icon: Shield }
+    ]
+
+    const whyChooseReasons = [
+        { title: t('hero.whyChoose.reasons.quality.title'), desc: t('hero.whyChoose.reasons.quality.desc') },
+        { title: t('hero.whyChoose.reasons.delivery.title'), desc: t('hero.whyChoose.reasons.delivery.desc') },
+        { title: t('hero.whyChoose.reasons.pricing.title'), desc: t('hero.whyChoose.reasons.pricing.desc') },
+        { title: t('hero.whyChoose.reasons.service.title'), desc: t('hero.whyChoose.reasons.service.desc') }
     ]
 
     return (
@@ -63,7 +72,7 @@ export default function HeroSection() {
                             className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
                         >
                             <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse" />
-                            Livraison 4/5j partout
+                            {t('hero.badge')}
                         </motion.div>
 
                         {/* Titre Principal */}
@@ -75,7 +84,7 @@ export default function HeroSection() {
                         >
                             {siteName}
                             <span className="block text-amber-400">
-                                Premium
+                                {t('hero.title')}
                             </span>
                         </motion.h1>
 
@@ -86,8 +95,7 @@ export default function HeroSection() {
                             transition={{ delay: 0.6, duration: 0.8 }}
                             className="text-xl text-gray-300 mb-8 max-w-lg leading-relaxed"
                         >
-                            Découvrez notre sélection exclusive de bois séché premium.
-                            Chêne, Hêtre, Charme - Livraison rapide, qualité garantie
+                            {t('hero.subtitle')}
                         </motion.p>
 
                         {/* Boutons d'Action */}
@@ -103,18 +111,10 @@ export default function HeroSection() {
                                     size="lg"
                                     className="flex items-center justify-center space-x-2"
                                 >
-                                    <span>Commander Maintenant</span>
+                                    <span>{t('hero.cta')}</span>
                                     <ArrowRight className="w-5 h-5" />
                                 </Button>
                             </Link>
-                            {/* <Button
-                                variant="secondary"
-                                size="lg"
-                                className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
-                            >
-                                <Play className="w-5 h-5" />
-                                <span>Voir la Vidéo</span>
-                            </Button> */}
                         </motion.div>
 
                         {/* Statistiques */}
@@ -161,15 +161,10 @@ export default function HeroSection() {
                     >
                         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
                             <h3 className="text-2xl font-bold text-white mb-6">
-                                Pourquoi nous choisir ?
+                                {t('hero.whyChoose.title')}
                             </h3>
                             <div className="space-y-4">
-                                {[
-                                    { title: 'Qualité Premium', desc: 'Bois séché < 18% d\'humidité' },
-                                    { title: 'Livraison Rapide', desc: '24-48h partout en France' },
-                                    { title: 'Prix Transparents', desc: 'Devis gratuit, sans surprise' },
-                                    { title: 'Service Client', desc: 'Équipe d\'experts à votre écoute' }
-                                ].map((item, index) => (
+                                {whyChooseReasons.map((item, index) => (
                                     <motion.div
                                         key={item.title}
                                         initial={{ opacity: 0, x: 20 }}
@@ -201,7 +196,7 @@ export default function HeroSection() {
                         transition={{ duration: 2, repeat: Infinity }}
                         className="flex flex-col items-center space-y-2 text-white/60"
                     >
-                        <span className="text-sm font-medium">Découvrir</span>
+                        <span className="text-sm font-medium">{t('hero.scroll')}</span>
                         <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
                             <motion.div
                                 animate={{ y: [0, 12, 0] }}

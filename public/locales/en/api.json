@@ -1,0 +1,23 @@
+{
+  "newsletter": {
+    "error": {
+      "invalidEmail": "Invalid email format",
+      "alreadySubscribed": "This email address is already subscribed to our newsletter",
+      "rateLimitExceeded": "Too many attempts. Please try again later",
+      "serverError": "Error during subscription. Please try again"
+    },
+    "success": {
+      "subscribed": "Successfully subscribed! Check your email to confirm",
+      "confirmed": "Your subscription has been successfully confirmed",
+      "unsubscribed": "You have been successfully unsubscribed"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "emailInvalid": "Invalid email address",
+    "tooShort": "The field must contain at least {{min}} characters",
+    "tooLong": "The field cannot exceed {{max}} characters"
+  }
+}
+
+

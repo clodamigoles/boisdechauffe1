@@ -1,0 +1,24 @@
+{
+  "bois-feuillus-premium": {
+    "name": "Madera Dura Premium",
+    "shortDescription": "Roble, haya, carpe - Excelencia garantizada",
+    "description": "Nuestra selección premium de madera dura, secada naturalmente bajo techo durante más de 2 años. Humedad garantizada inferior al 18%. Ideal para calefacción de calidad con excelente rendimiento calorífico."
+  },
+  "bois-resineux-sec": {
+    "name": "Madera Blanda Seca",
+    "shortDescription": "Pino, abeto, abeto - Fácil encendido",
+    "description": "Madera blanda perfecta para el encendido y el rápido aumento de temperatura. Secada naturalmente, bajo contenido de humedad. Ideal como complemento de la madera dura."
+  },
+  "granules-premium": {
+    "name": "Pellets Premium",
+    "shortDescription": "Pellets de alto rendimiento - Rendimiento óptimo",
+    "description": "Pellets de alto rendimiento 100% madera blanda. Valor calorífico excepcional y bajo contenido de cenizas. Certificado DIN Plus."
+  },
+  "allume-feu-naturel": {
+    "name": "Encendedores Naturales",
+    "shortDescription": "Ecológico y eficiente",
+    "description": "Encendedores naturales ecológicos hechos de fibras de madera y cera natural. Encendido rápido y sin olor."
+  }
+}
+
+

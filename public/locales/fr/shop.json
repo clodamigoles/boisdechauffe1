@@ -1,0 +1,112 @@
+{
+  "seo": {
+    "title": "Boutique - Tous nos Produits | BoisChauffage Pro",
+    "description": "Découvrez tous nos produits de bois de chauffage premium : chêne, hêtre, charme, granulés. Filtres avancés, livraison rapide.",
+    "keywords": "boutique, bois chauffage, chêne, hêtre, charme, granulés, acheter"
+  },
+  "breadcrumb": {
+    "home": "Accueil",
+    "shop": "Boutique"
+  },
+  "header": {
+    "title": "Notre Boutique",
+    "productsCount_one": "{{count}} produit disponible",
+    "productsCount_other": "{{count}} produits disponibles",
+    "searchPlaceholder": "Rechercher un produit..."
+  },
+  "toolbar": {
+    "filters": "Filtres",
+    "results_one": "{{count}} résultat",
+    "results_other": "{{count}} résultats",
+    "viewGrid": "Vue grille",
+    "viewList": "Vue liste"
+  },
+  "filters": {
+    "title": "Filtres",
+    "reset": "Réinitialiser",
+    "activeFilters": "Filtres actifs",
+    "removeFilter": "Retirer le filtre {{filter}}",
+    "sections": {
+      "categories": "Catégories",
+      "essences": "Essences",
+      "price": "Prix",
+      "features": "Caractéristiques"
+    },
+    "categories": {
+      "all": "Toutes les catégories"
+    },
+    "essences": {
+      "chene": "Chêne",
+      "hetre": "Hêtre",
+      "charme": "Charme",
+      "mix": "Mix Feuillus",
+      "granules": "Granulés",
+      "compresse": "Bûches Compressées",
+      "allume-feu": "Allume-feu"
+    },
+    "priceRanges": {
+      "all": "Tous les prix",
+      "0-50": "Moins de 50€",
+      "50-100": "50€ - 100€",
+      "100-200": "100€ - 200€",
+      "200-500": "200€ - 500€",
+      "500+": "Plus de 500€"
+    },
+    "features": {
+      "inStock": "En stock uniquement",
+      "premium": "Produits Premium",
+      "bestseller": "Meilleures ventes",
+      "new": "Nouveautés",
+      "promotion": "En promotion"
+    },
+    "badges": {
+      "premium": "Premium",
+      "bestseller": "Meilleures ventes",
+      "nouveau": "Nouveautés"
+    }
+  },
+  "sort": {
+    "label": "Trier par :",
+    "options": {
+      "name-asc": "Nom A-Z",
+      "name-desc": "Nom Z-A",
+      "price-asc": "Prix croissant",
+      "price-desc": "Prix décroissant",
+      "rating-desc": "Mieux notés",
+      "sales-desc": "Plus vendus",
+      "created-desc": "Plus récents",
+      "created-asc": "Plus anciens"
+    }
+  },
+  "search": {
+    "placeholder": "Rechercher...",
+    "clear": "Effacer la recherche"
+  },
+  "pagination": {
+    "page": "Page {{current}} sur {{total}}",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "goTo": "Aller à la page :",
+    "mobileInfo": "{{current}} / {{total}}"
+  },
+  "empty": {
+    "search": {
+      "title": "Aucun produit trouvé",
+      "description": "Essayez de modifier vos filtres ou votre recherche",
+      "action": "Réinitialiser les filtres"
+    },
+    "products": {
+      "title": "Aucun produit disponible",
+      "description": "Nous ajoutons régulièrement de nouveaux produits"
+    },
+    "filter": {
+      "title": "Aucun produit ne correspond",
+      "description": "Essayez de modifier vos critères de filtrage"
+    },
+    "default": {
+      "title": "Aucun élément trouvé",
+      "description": "Aucun contenu à afficher pour le moment"
+    }
+  }
+}
+

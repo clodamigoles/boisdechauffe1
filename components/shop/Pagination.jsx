@@ -1,6 +1,7 @@
 import { useMemo, memo } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { useTranslation } from '@/lib/useTranslation'
 
 const PageButton = memo(({ page, isActive = false, isDisabled = false, onClick, children }) => (
     <motion.button
@@ -27,6 +28,7 @@ const PageButton = memo(({ page, isActive = false, isDisabled = false, onClick, 
 PageButton.displayName = 'PageButton'
 
 export default function Pagination({ currentPage, totalPages, onPageChange, maxVisiblePages = 5 }) {
+    const { t } = useTranslation('shop')
     if (totalPages <= 1) return null
 
     const visiblePages = useMemo(() => {
@@ -92,8 +94,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
             {/* Info sur les résultats */}
             <div className="hidden sm:block">
                 <p className="text-sm text-gray-700">
-                    Page <span className="font-medium">{currentPage}</span> sur{' '}
-                    <span className="font-medium">{totalPages}</span>
+                    {t('pagination.page', { current: currentPage, total: totalPages })}
                 </p>
             </div>
 
@@ -105,7 +106,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
                     onClick={handlePrevious}
                 >
                     <ChevronLeft className="w-4 h-4" />
-                    <span className="hidden sm:inline ml-1">Précédent</span>
+                    <span className="hidden sm:inline ml-1">{t('pagination.previous')}</span>
                 </PageButton>
 
                 {/* Pages - Desktop */}
@@ -137,7 +138,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
                 {/* Pages mobiles (simplifiées) */}
                 <div className="sm:hidden flex items-center">
                     <span className="px-3 py-2 text-sm text-gray-700">
-                        {currentPage} / {totalPages}
+                        {t('pagination.mobileInfo', { current: currentPage, total: totalPages })}
                     </span>
                 </div>
 
@@ -146,7 +147,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
                     isDisabled={currentPage === totalPages}
                     onClick={handleNext}
                 >
-                    <span className="hidden sm:inline mr-1">Suivant</span>
+                    <span className="hidden sm:inline mr-1">{t('pagination.next')}</span>
                     <ChevronRight className="w-4 h-4" />
                 </PageButton>
             </div>
@@ -155,7 +156,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
             {totalPages > 10 && (
                 <div className="hidden lg:flex items-center gap-2">
                     <label htmlFor="goto-page" className="text-sm text-gray-700">
-                        Aller à la page :
+                        {t('pagination.goTo')}
                     </label>
                     <input
                         id="goto-page"

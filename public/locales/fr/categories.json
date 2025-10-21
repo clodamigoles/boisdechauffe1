@@ -1,0 +1,24 @@
+{
+  "bois-feuillus-premium": {
+    "name": "Bois Feuillus Premium",
+    "shortDescription": "Chêne, hêtre, charme - Excellence garantie",
+    "description": "Notre sélection premium de bois feuillus, séchés naturellement sous abri pendant plus de 2 ans. Humidité garantie inférieure à 18%. Idéal pour un chauffage de qualité avec un excellent rendement calorifique."
+  },
+  "bois-resineux-sec": {
+    "name": "Bois Résineux Sec",
+    "shortDescription": "Pin, épicéa, sapin - Allumage facile",
+    "description": "Bois résineux parfait pour l'allumage et la montée en température rapide. Séché naturellement, faible taux d'humidité. Idéal en complément des feuillus."
+  },
+  "granules-premium": {
+    "name": "Granulés Premium",
+    "shortDescription": "Pellets haute performance - Rendement optimal",
+    "description": "Granulés de bois haute performance 100% résineux. Pouvoir calorifique exceptionnel et faible taux de cendres. Certifiés DIN Plus."
+  },
+  "allume-feu-naturel": {
+    "name": "Allume-Feu Naturel",
+    "shortDescription": "Écologique et efficace",
+    "description": "Allume-feu naturels écologiques à base de fibres de bois et cire naturelle. Allumage rapide et sans odeur."
+  }
+}
+
+

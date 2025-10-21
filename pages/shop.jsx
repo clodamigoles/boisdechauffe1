@@ -16,9 +16,12 @@ import Breadcrumb from "../components/ui/Breadcrumb"
 import LoadingSpinner from "../components/ui/LoadingSpinner"
 import EmptyState from "../components/ui/EmptyState"
 import { pageVariants } from "../utils/animations"
+import { useTranslation } from "@/lib/useTranslation"
+import { translateCategories } from "@/lib/translateCategory"
 
 export default function ShopPage({ initialProducts, categories, totalProducts: initialTotal, totalPages: initialTotalPages }) {
     const router = useRouter()
+    const { t } = useTranslation('shop')
     const [products, setProducts] = useState(initialProducts || [])
     const [totalProducts, setTotalProducts] = useState(initialTotal || 0)
     const [totalPages, setTotalPages] = useState(initialTotalPages || 0)
@@ -124,22 +127,30 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
         router.push("/shop", undefined, { shallow: true })
     }, [router])
 
+    // Traduire les catégories
+    const translatedCategories = useMemo(() => {
+        if (typeof window !== 'undefined' && window.__TRANSLATIONS__?.categories) {
+            return translateCategories(categories, window.__TRANSLATIONS__.categories)
+        }
+        return categories
+    }, [categories])
+
     // Breadcrumb memoized
     const breadcrumbItems = useMemo(() => {
         const items = [
-            { label: "Accueil", href: "/" },
-            { label: "Boutique", href: "/shop" }
+            { label: t('breadcrumb.home'), href: "/" },
+            { label: t('breadcrumb.shop'), href: "/shop" }
         ]
         
         if (filters.category) {
-            const category = categories?.find((c) => c.slug === filters.category)
+            const category = translatedCategories?.find((c) => c.slug === filters.category)
             if (category) {
                 items.push({ label: category.name })
             }
         }
         
         return items
-    }, [filters.category, categories])
+    }, [filters.category, translatedCategories, t])
 
     // Compteur de filtres actifs
     const activeFiltersCount = useMemo(() => {
@@ -152,12 +163,12 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
     return (
         <>
             <Head>
-                <title>Boutique - Tous nos Produits | BoisChauffage Pro</title>
+                <title>{t('seo.title')}</title>
                 <meta
                     name="description"
-                    content="Découvrez tous nos produits de bois de chauffage premium : chêne, hêtre, charme, granulés. Filtres avancés, livraison rapide."
+                    content={t('seo.description')}
                 />
-                <meta name="keywords" content="boutique, bois chauffage, chêne, hêtre, charme, granulés, acheter" />
+                <meta name="keywords" content={t('seo.keywords')} />
             </Head>
 
             <div className="min-h-screen bg-gray-50">
@@ -181,9 +192,9 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                                 <div>
-                                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Notre Boutique</h1>
+                                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('header.title')}</h1>
                                     <p className="text-lg text-gray-600">
-                                        {totalProducts} produit{totalProducts > 1 ? "s" : ""} disponible{totalProducts > 1 ? "s" : ""}
+                                        {t('header.productsCount', { count: totalProducts })}
                                     </p>
                                 </div>
 
@@ -192,7 +203,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                     <ProductSearch
                                         value={filters.search}
                                         onChange={(value) => updateFilters("search", value)}
-                                        placeholder="Rechercher un produit..."
+                                        placeholder={t('header.searchPlaceholder')}
                                     />
                                 </div>
                             </div>
@@ -206,7 +217,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                 <div className="sticky top-24">
                                     <ProductFilters
                                         filters={filters}
-                                        categories={categories}
+                                        categories={translatedCategories}
                                         onChange={updateFilters}
                                         onReset={resetFilters}
                                     />
@@ -225,7 +236,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                                 className="lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                                             >
                                                 <SlidersHorizontal className="w-4 h-4" />
-                                                <span>Filtres</span>
+                                                <span>{t('toolbar.filters')}</span>
                                                 {activeFiltersCount > 0 && (
                                                     <span className="bg-amber-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
                                                         {activeFiltersCount}
@@ -234,7 +245,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                             </button>
 
                                             <div className="text-sm text-gray-600">
-                                                {products.length} résultat{products.length > 1 ? "s" : ""}
+                                                {t('toolbar.results', { count: products.length })}
                                             </div>
                                         </div>
 
@@ -249,7 +260,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                                             ? "bg-white text-gray-900 shadow-sm"
                                                             : "text-gray-600 hover:text-gray-900"
                                                     }`}
-                                                    aria-label="Vue grille"
+                                                    aria-label={t('toolbar.viewGrid')}
                                                 >
                                                     <Grid3X3 className="w-4 h-4" />
                                                 </button>
@@ -260,7 +271,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                                             ? "bg-white text-gray-900 shadow-sm"
                                                             : "text-gray-600 hover:text-gray-900"
                                                     }`}
-                                                    aria-label="Vue liste"
+                                                    aria-label={t('toolbar.viewList')}
                                                 >
                                                     <List className="w-4 h-4" />
                                                 </button>
@@ -286,7 +297,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                         >
                                             <ProductFilters
                                                 filters={filters}
-                                                categories={categories}
+                                                categories={translatedCategories}
                                                 onChange={updateFilters}
                                                 onReset={resetFilters}
                                                 mobile
@@ -315,9 +326,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                             exit={{ opacity: 0, y: -20 }}
                                         >
                                             <EmptyState
-                                                title="Aucun produit trouvé"
-                                                description="Essayez de modifier vos filtres ou votre recherche"
-                                                actionLabel="Réinitialiser les filtres"
+                                                type="search"
                                                 onAction={resetFilters}
                                             />
                                         </motion.div>
@@ -371,8 +380,13 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
     )
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, locale }) {
+    const { loadTranslations } = await import('../lib/i18n-server')
+    
     try {
+        // Charger les traductions
+        const translations = await loadTranslations(locale || 'en', ['common', 'shop', 'categories', 'products'])
+        
         const searchParams = new URLSearchParams()
         Object.entries(query).forEach(([key, value]) => {
             if (value && value !== "" && value !== "false") {
@@ -394,6 +408,7 @@ export async function getServerSideProps({ query }) {
 
         return {
             props: {
+                translations,
                 initialProducts: productsData.products || [],
                 categories: categoriesData.data || [],
                 totalProducts: productsData.total || 0,
@@ -403,8 +418,11 @@ export async function getServerSideProps({ query }) {
     } catch (error) {
         console.error("Erreur lors du chargement de la boutique:", error)
 
+        const translations = await loadTranslations(locale || 'en', ['common', 'shop', 'categories', 'products'])
+        
         return {
             props: {
+                translations,
                 initialProducts: [],
                 categories: [],
                 totalProducts: 0,

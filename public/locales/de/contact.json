@@ -1,0 +1,211 @@
+{
+  "seo": {
+    "title": "Kontakt | BoisChauffage Pro - Kontaktieren Sie Unsere Experten",
+    "description": "Kontaktieren Sie BoisChauffage Pro für Ihre Fragen, personalisierte Angebote und Expertenberatung. Schnelle Antwort garantiert. Telefon, E-Mail, Online-Chat.",
+    "keywords": "Brennholz Kontakt, kostenloses Angebot, Expertenberatung, Kundenservice, Telefon, E-Mail"
+  },
+  "hero": {
+    "badge": "Engagierter Kundenservice",
+    "title": "Kontaktieren Sie Unsere",
+    "titleHighlight": "Holz-Experten",
+    "subtitle": "Eine Frage? Ein Projekt? Unser Expertenteam steht Ihnen zur Verfügung, um Sie bei all Ihren Brennholz-Bedürfnissen zu beraten und zu unterstützen.",
+    "phoneButton": "{{phone}}",
+    "appointmentButton": "Termin vereinbaren"
+  },
+  "contactMethods": {
+    "title": "Wie Sie Uns Kontaktieren?",
+    "subtitle": "Wählen Sie die Kontaktmethode, die Ihnen am besten passt",
+    "urgentBadge": "Dringend",
+    "contactButton": "Kontaktieren",
+    "methods": {
+      "phone": {
+        "title": "Telefon",
+        "description": "Rufen Sie uns direkt an",
+        "availability": "Mo-Sa: 8-19 Uhr"
+      },
+      "email": {
+        "title": "E-Mail",
+        "description": "Schreiben Sie uns",
+        "availability": "Antwort innerhalb von 2-4h"
+      },
+      "chat": {
+        "title": "Online-Chat",
+        "description": "Sofortige Diskussion",
+        "value": "Chat verfügbar",
+        "availability": "Mo-Fr: 9-18 Uhr"
+      },
+      "appointment": {
+        "title": "Termin",
+        "description": "Besuch planen",
+        "value": "Terminvereinbarung",
+        "availability": "Nach Vereinbarung"
+      }
+    }
+  },
+  "form": {
+    "title": "Senden Sie uns eine Nachricht",
+    "subtitle": "Füllen Sie das Formular aus und wir antworten Ihnen schnell",
+    "success": {
+      "title": "Nachricht erfolgreich gesendet!",
+      "message": "Vielen Dank für Ihre Nachricht. Unser Team wird Sie innerhalb von 2-4h kontaktieren.",
+      "button": "Eine weitere Nachricht senden"
+    },
+    "fields": {
+      "firstName": {
+        "label": "Vorname",
+        "placeholder": "Max"
+      },
+      "lastName": {
+        "label": "Nachname",
+        "placeholder": "Mustermann"
+      },
+      "email": {
+        "label": "E-Mail",
+        "placeholder": "max@beispiel.de"
+      },
+      "phone": {
+        "label": "Telefon",
+        "placeholder": "+33 6 12 34 56 78"
+      },
+      "company": {
+        "label": "Firma (optional)",
+        "placeholder": "Ihr Firmenname"
+      },
+      "subject": {
+        "label": "Betreff Ihrer Anfrage"
+      },
+      "message": {
+        "label": "Ihre Nachricht",
+        "placeholder": "Beschreiben Sie Ihre Anfrage im Detail...",
+        "charCount": "{{count}}/500 Zeichen"
+      },
+      "preferredContact": {
+        "label": "Bevorzugte Kontaktmethode",
+        "options": {
+          "email": "E-Mail",
+          "phone": "Telefon",
+          "both": "Beide"
+        }
+      },
+      "urgency": {
+        "label": "Dringlichkeit",
+        "options": {
+          "normal": "Normal (2-4h)",
+          "urgent": "Dringend (1h)",
+          "low": "Nicht dringend (24h)"
+        }
+      }
+    },
+    "subjects": {
+      "quote": {
+        "label": "Angebotsanfrage",
+        "description": "Für ein personalisiertes Angebot"
+      },
+      "delivery": {
+        "label": "Lieferungsfragen",
+        "description": "Zeiten, Zonen, Bedingungen"
+      },
+      "products": {
+        "label": "Produktinformationen",
+        "description": "Merkmale, Qualität, Lagerbestand"
+      },
+      "order": {
+        "label": "Bestellverfolgung",
+        "description": "Status, Änderung, Problem"
+      },
+      "support": {
+        "label": "Technischer Support",
+        "description": "Hilfe und Unterstützung"
+      },
+      "other": {
+        "label": "Andere Anfrage",
+        "description": "Jede andere Frage"
+      }
+    },
+    "terms": {
+      "acceptData": "Ich akzeptiere, dass meine Daten zur Bearbeitung meiner Anfrage verwendet werden",
+      "newsletter": "Ich möchte den Newsletter mit Angeboten und Tipps erhalten"
+    },
+    "buttons": {
+      "submit": "Nachricht senden",
+      "submitting": "Wird gesendet..."
+    }
+  },
+  "validation": {
+    "firstNameRequired": "Vorname erforderlich",
+    "lastNameRequired": "Nachname erforderlich",
+    "emailRequired": "E-Mail erforderlich",
+    "emailInvalid": "Ungültiges E-Mail-Format",
+    "phoneRequired": "Telefon erforderlich",
+    "phoneInvalid": "Ungültige Telefonnummer",
+    "subjectRequired": "Betreff erforderlich",
+    "messageRequired": "Nachricht erforderlich",
+    "messageTooShort": "Nachricht zu kurz (mindestens 10 Zeichen)",
+    "acceptTermsRequired": "Sie müssen die Bedingungen akzeptieren",
+    "submitError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "sendError": "Fehler beim Senden der Nachricht"
+  },
+  "info": {
+    "title": "Praktische Informationen",
+    "address": {
+      "title": "Adresse"
+    },
+    "hours": {
+      "title": "Öffnungszeiten",
+      "weekdays": "Montag - Freitag: 8:00 - 19:00 Uhr",
+      "saturday": "Samstag: 8:00 - 12:00 Uhr",
+      "sunday": "Sonntag: Geschlossen"
+    },
+    "emergency": {
+      "title": "Notfälle",
+      "hotline": "24/7 Hotline: 06 12 34 56 78",
+      "note": "Nur für Liefernotfälle"
+    },
+    "responseTime": {
+      "title": "Antwortzeit",
+      "email": "E-Mail: 2-4h",
+      "phone": "Telefon: Sofort",
+      "chat": "Chat: < 5min",
+      "quote": "Angebot: 24h"
+    }
+  },
+  "faq": {
+    "title": "Häufig Gestellte Fragen",
+    "items": {
+      "visit": {
+        "question": "Kann ich Ihr Lager besuchen?",
+        "answer": "Ja, nur nach Vereinbarung. Kontaktieren Sie uns, um einen Besuch zu planen."
+      },
+      "quoteTime": {
+        "question": "Wie lange dauert ein Angebot?",
+        "answer": "Wir senden Ihnen innerhalb von maximal 24 Stunden ein detailliertes Angebot."
+      },
+      "weekendDelivery": {
+        "question": "Liefern Sie am Wochenende?",
+        "answer": "Samstagmorgenlieferungen auf Anfrage und gegen Aufpreis möglich."
+      }
+    },
+    "seeAll": "Alle FAQs ansehen"
+  },
+  "cta": {
+    "title": "Bereit, Ihr Projekt zu Starten?",
+    "subtitle": "Unser Expertenteam steht Ihnen zur Verfügung. Kontaktieren Sie uns jetzt für eine schnelle Antwort.",
+    "phoneButton": "Kostenloser WhatsApp-Anruf: {{phone}}",
+    "quoteButton": "Online-Angebot",
+    "features": {
+      "fastResponse": {
+        "title": "Schnelle Antwort",
+        "description": "Durchschnittlich innerhalb von 2h"
+      },
+      "expertTeam": {
+        "title": "Expertenteam",
+        "description": "15 Jahre Erfahrung"
+      },
+      "guarantee": {
+        "title": "Garantierter Service",
+        "description": "100% Zufriedenheit"
+      }
+    }
+  }
+}
+

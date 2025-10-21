@@ -1,0 +1,159 @@
+{
+  "seo": {
+    "title": "Conditions Générales de Vente - {{siteName}}",
+    "description": "Conditions générales de vente et conditions d'utilisation"
+  },
+  "header": {
+    "title": "Conditions Générales de Vente",
+    "subtitle": "Nos conditions de vente et modalités contractuelles"
+  },
+  "lastUpdate": "Dernière mise à jour : {{date}}",
+  "content": {
+    "title": "Conditions Générales de Vente",
+    "section1": {
+      "title": "1. Objet",
+      "content": "Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre {{companyName}} et ses clients."
+    },
+    "section2": {
+      "title": "2. Produits et Services",
+      "intro": "Nous proposons à la vente du bois de chauffage de qualité premium :",
+      "items": [
+        "Bûches de bois dur séchées",
+        "Différentes essences disponibles",
+        "Livraison à domicile",
+        "Service client personnalisé"
+      ]
+    },
+    "section3": {
+      "title": "3. Prix",
+      "intro": "Les prix sont indiqués en euros (€) TTC, incluant la TVA applicable.",
+      "delivery": {
+        "title": "Livraison :",
+        "items": [
+          "Les frais de livraison varient selon la région",
+          "Livraison gratuite à partir de {{freeShippingThreshold}}€ d'achat",
+          "Les tarifs de livraison sont indiqués lors du processus de commande"
+        ]
+      },
+      "outro": "Nous nous réservons le droit de modifier nos prix à tout moment, les commandes étant facturées sur la base des tarifs en vigueur au moment de la validation de la commande."
+    },
+    "section4": {
+      "title": "4. Commande",
+      "subsection1": {
+        "title": "4.1 Processus de commande",
+        "steps": [
+          "Sélection des produits",
+          "Ajout au panier",
+          "Validation du panier",
+          "Renseignement des informations de livraison",
+          "Validation de la commande"
+        ]
+      },
+      "subsection2": {
+        "title": "4.2 Confirmation",
+        "content": "Une confirmation de commande est envoyée par email à l'adresse indiquée lors de la commande."
+      }
+    },
+    "section5": {
+      "title": "5. Paiement",
+      "subsection1": {
+        "title": "5.1 Modalités de paiement",
+        "intro": "Nous acceptons les modes de paiement suivants :",
+        "items": [
+          "Virement bancaire",
+          "Autres moyens de paiement sur demande"
+        ]
+      },
+      "subsection2": {
+        "title": "5.2 Sécurité",
+        "content": "Tous les paiements sont sécurisés. Nous ne conservons pas vos informations bancaires."
+      },
+      "subsection3": {
+        "title": "5.3 Délai de paiement",
+        "content": "Le paiement doit être effectué dans les 7 jours suivant la validation de la commande."
+      }
+    },
+    "section6": {
+      "title": "6. Livraison",
+      "subsection1": {
+        "title": "6.1 Zone de livraison",
+        "content": "Nous livrons en France métropolitaine, Belgique, Suisse et Luxembourg."
+      },
+      "subsection2": {
+        "title": "6.2 Délais de livraison",
+        "items": [
+          "Livraison sous 5-7 jours ouvrés après réception du paiement",
+          "Les délais peuvent varier selon la destination et la disponibilité"
+        ]
+      },
+      "subsection3": {
+        "title": "6.3 Modalités de livraison",
+        "items": [
+          "Livraison en bordure de route ou lieu accessible au camion",
+          "Déchargement par nos soins",
+          "Présence obligatoire lors de la livraison"
+        ]
+      }
+    },
+    "section7": {
+      "title": "7. Droit de rétractation",
+      "paragraph1": "Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation ne peut être exercé pour les contrats de fourniture de biens confectionnés selon les spécifications du consommateur ou nettement personnalisés.",
+      "paragraph2": "Pour les produits standards, vous disposez d'un délai de 14 jours pour exercer votre droit de rétractation sans avoir à justifier de motifs."
+    },
+    "section8": {
+      "title": "8. Garanties",
+      "subsection1": {
+        "title": "8.1 Qualité des produits",
+        "intro": "Nous garantissons :",
+        "items": [
+          "Bois séché (taux d'humidité < 20%)",
+          "Essences conformes à la description",
+          "Qualité premium"
+        ]
+      },
+      "subsection2": {
+        "title": "8.2 Réclamations",
+        "content": "Toute réclamation doit être formulée dans les 48h suivant la livraison par email à : {{contactEmail}}"
+      }
+    },
+    "section9": {
+      "title": "9. Responsabilité",
+      "content": "Notre responsabilité est limitée au montant de la commande. Nous ne saurions être tenus responsables des dommages indirects."
+    },
+    "section10": {
+      "title": "10. Force majeure",
+      "content": "Nous ne saurions être tenus responsables en cas de force majeure ou d'événements indépendants de notre volonté (intempéries, grèves, etc.)."
+    },
+    "section11": {
+      "title": "11. Protection des données personnelles",
+      "content": "Vos données personnelles sont traitées conformément à notre [Politique de confidentialité](/politique-confidentialite)."
+    },
+    "section12": {
+      "title": "12. Propriété intellectuelle",
+      "content": "Tous les éléments du site (textes, images, logos) sont protégés par le droit d'auteur et restent notre propriété exclusive."
+    },
+    "section13": {
+      "title": "13. Droit applicable et juridiction",
+      "content": "Les présentes CGV sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents."
+    },
+    "section14": {
+      "title": "14. Médiation",
+      "paragraph1": "Conformément à l'article L.612-1 du Code de la consommation, nous proposons un dispositif de médiation de la consommation.",
+      "paragraph2": "L'entité de médiation retenue est :",
+      "mediatorTitle": "Médiateur de la consommation",
+      "mediatorNote": "[À compléter avec les coordonnées du médiateur]"
+    },
+    "section15": {
+      "title": "15. Contact",
+      "intro": "Pour toute question concernant nos CGV :",
+      "email": "Email :",
+      "phone": "Téléphone :",
+      "address": "Adresse :"
+    },
+    "section16": {
+      "title": "16. Acceptation des CGV",
+      "content": "La validation de votre commande implique l'acceptation pleine et entière des présentes CGV."
+    }
+  }
+}
+

@@ -1,0 +1,88 @@
+{
+  "header": {
+    "nav": {
+      "home": "Startseite",
+      "catalog": "Katalog",
+      "faq": "FAQ",
+      "contact": "Kontakt",
+      "shop": "Shop"
+    },
+    "submenu": {
+      "firewood": "Brennholz",
+      "pellets": "Pellets und Granulat",
+      "logs": "Briketts",
+      "heating": "Heizkessel, Öfen und Herde"
+    },
+    "search": {
+      "placeholder": "Produkte suchen..."
+    },
+    "cart": "Warenkorb",
+    "quality": "Premium-Qualität"
+  },
+  "footer": {
+    "sections": {
+      "products": "Produkte",
+      "services": "Support & Dienstleistungen"
+    },
+    "links": {
+      "firewood": "Brennholz",
+      "pellets": "Pellets und Granulat",
+      "logs": "Briketts",
+      "faq": "FAQ",
+      "contact": "Kontakt",
+      "delivery": "Express-Lieferung",
+      "tracking": "Bestellung verfolgen"
+    },
+    "certifications": {
+      "pefc": "PEFC-zertifiziert",
+      "origin": "Hergestellt in Frankreich",
+      "quality": "Qualitätskontrolliert",
+      "delivery": "24-48h Lieferung"
+    },
+    "about": {
+      "description": "Premium-Brennholzspezialist seit 15 Jahren. Wir wählen unsere Holzarten sorgfältig aus, um eine optimale und nachhaltige Heizung zu gewährleisten."
+    },
+    "newsletter": {
+      "title": "Newsletter",
+      "description": "Erhalten Sie exklusive Angebote und Expertenrat",
+      "placeholder": "Ihre E-Mail",
+      "submit": "Abonnieren",
+      "success": "Erfolgreich abonniert!"
+    },
+    "legal": {
+      "copyright": "© 2025 BoisChauffage Pro. Alle Rechte vorbehalten.",
+      "terms": "Impressum",
+      "privacy": "Datenschutz",
+      "cgv": "AGB",
+      "cookies": "Cookies"
+    },
+    "payment": {
+      "secure": "Sichere Zahlung"
+    }
+  },
+  "buttons": {
+    "orderNow": "Jetzt bestellen",
+    "seeMore": "Mehr sehen",
+    "seeAll": "Alle Produkte anzeigen",
+    "shopNow": "Shop",
+    "discover": "Entdecken",
+    "subscribe": "Abonnieren",
+    "continue": "Weiter einkaufen"
+  },
+  "product": {
+    "viewProduct": "Produkt ansehen",
+    "addToCart": "Hinzufügen",
+    "addToFavorites": "Zu Favoriten hinzufügen",
+    "inStock": "Auf Lager",
+    "delivery": "Lieferung 24-48h",
+    "purchased": "Gekauft:",
+    "productPurchased": "Gekauftes Produkt:",
+    "verifiedPurchase": "Verifizierter Kauf"
+  },
+  "category": {
+    "trending": "Im Trend",
+    "products": "Produkte",
+    "discover": "Entdecken"
+  }
+}
+

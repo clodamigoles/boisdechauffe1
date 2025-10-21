@@ -1,0 +1,23 @@
+{
+  "newsletter": {
+    "error": {
+      "invalidEmail": "Format d'email invalide",
+      "alreadySubscribed": "Cette adresse email est déjà inscrite à notre newsletter",
+      "rateLimitExceeded": "Trop de tentatives. Veuillez réessayer plus tard",
+      "serverError": "Erreur lors de l'inscription. Veuillez réessayer"
+    },
+    "success": {
+      "subscribed": "Inscription réussie ! Vérifiez votre email pour confirmer",
+      "confirmed": "Votre inscription a été confirmée avec succès",
+      "unsubscribed": "Vous avez été désinscrit avec succès"
+    }
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "emailInvalid": "Adresse email invalide",
+    "tooShort": "Le champ doit contenir au moins {{min}} caractères",
+    "tooLong": "Le champ ne peut pas dépasser {{max}} caractères"
+  }
+}
+
+

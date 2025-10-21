@@ -1,0 +1,112 @@
+{
+  "seo": {
+    "title": "Shop - All Our Products | BoisChauffage Pro",
+    "description": "Discover all our premium firewood products: oak, beech, hornbeam, pellets. Advanced filters, fast delivery.",
+    "keywords": "shop, firewood, oak, beech, hornbeam, pellets, buy"
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "shop": "Shop"
+  },
+  "header": {
+    "title": "Our Shop",
+    "productsCount_one": "{{count}} product available",
+    "productsCount_other": "{{count}} products available",
+    "searchPlaceholder": "Search for a product..."
+  },
+  "toolbar": {
+    "filters": "Filters",
+    "results_one": "{{count}} result",
+    "results_other": "{{count}} results",
+    "viewGrid": "Grid view",
+    "viewList": "List view"
+  },
+  "filters": {
+    "title": "Filters",
+    "reset": "Reset",
+    "activeFilters": "Active filters",
+    "removeFilter": "Remove filter {{filter}}",
+    "sections": {
+      "categories": "Categories",
+      "essences": "Species",
+      "price": "Price",
+      "features": "Features"
+    },
+    "categories": {
+      "all": "All categories"
+    },
+    "essences": {
+      "chene": "Oak",
+      "hetre": "Beech",
+      "charme": "Hornbeam",
+      "mix": "Hardwood Mix",
+      "granules": "Pellets",
+      "compresse": "Compressed Logs",
+      "allume-feu": "Firelighters"
+    },
+    "priceRanges": {
+      "all": "All prices",
+      "0-50": "Under €50",
+      "50-100": "€50 - €100",
+      "100-200": "€100 - €200",
+      "200-500": "€200 - €500",
+      "500+": "Over €500"
+    },
+    "features": {
+      "inStock": "In stock only",
+      "premium": "Premium Products",
+      "bestseller": "Best Sellers",
+      "new": "New Arrivals",
+      "promotion": "On Sale"
+    },
+    "badges": {
+      "premium": "Premium",
+      "bestseller": "Best Sellers",
+      "nouveau": "New Arrivals"
+    }
+  },
+  "sort": {
+    "label": "Sort by:",
+    "options": {
+      "name-asc": "Name A-Z",
+      "name-desc": "Name Z-A",
+      "price-asc": "Price: Low to High",
+      "price-desc": "Price: High to Low",
+      "rating-desc": "Highest Rated",
+      "sales-desc": "Best Selling",
+      "created-desc": "Newest",
+      "created-asc": "Oldest"
+    }
+  },
+  "search": {
+    "placeholder": "Search...",
+    "clear": "Clear search"
+  },
+  "pagination": {
+    "page": "Page {{current}} of {{total}}",
+    "previous": "Previous",
+    "next": "Next",
+    "goTo": "Go to page:",
+    "mobileInfo": "{{current}} / {{total}}"
+  },
+  "empty": {
+    "search": {
+      "title": "No products found",
+      "description": "Try adjusting your filters or search",
+      "action": "Reset filters"
+    },
+    "products": {
+      "title": "No products available",
+      "description": "We regularly add new products"
+    },
+    "filter": {
+      "title": "No matching products",
+      "description": "Try adjusting your filter criteria"
+    },
+    "default": {
+      "title": "Nothing found",
+      "description": "No content to display at the moment"
+    }
+  }
+}
+

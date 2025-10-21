@@ -1,0 +1,48 @@
+{
+  "testimonials": [
+    {
+      "name": "Marie Dubois",
+      "location": "Lyon, France",
+      "comment": "Excellent service ! Le bois de chêne livré était parfaitement sec et de qualité exceptionnelle. Livraison rapide et équipe très professionnelle.",
+      "shortComment": "Qualité exceptionnelle, livraison rapide !",
+      "productPurchased": "Chêne Premium Séché"
+    },
+    {
+      "name": "Pierre Martin",
+      "location": "Toulouse, France",
+      "comment": "Commande passée le lundi, livrée le mercredi ! Le bois brûle parfaitement, très peu de cendres. Je recommande vivement.",
+      "shortComment": "Service impeccable, très satisfait !",
+      "productPurchased": "Mix Feuillus Premium"
+    },
+    {
+      "name": "Sophie Laurent",
+      "location": "Marseille, France",
+      "comment": "Troisième commande cette année. La qualité est constante, les prix corrects et le service client au top. Mon fournisseur de confiance !",
+      "shortComment": "Mon fournisseur de confiance depuis 3 ans",
+      "productPurchased": "Hêtre Traditionnel"
+    },
+    {
+      "name": "Jean-Claude Moreau",
+      "location": "Bordeaux, France",
+      "comment": "Ancien bûcheron, je sais reconnaître la qualité. Ce bois est parfaitement calibré, sec et homogène. Bravo pour le sérieux !",
+      "shortComment": "Qualité professionnelle reconnue",
+      "productPurchased": "Charme Excellence"
+    },
+    {
+      "name": "Isabelle Durand",
+      "location": "Nantes, France",
+      "comment": "Livraison impeccable même dans mon village isolé. Le livreur était très sympa et a même rangé le bois proprement. Service 5 étoiles !",
+      "shortComment": "Service 5 étoiles, même en zone isolée",
+      "productPurchased": "Pack Découverte"
+    },
+    {
+      "name": "Michel Rousseau",
+      "location": "Strasbourg, France",
+      "comment": "Les granulés sont de qualité exceptionnelle. Mon poêle n'a jamais aussi bien fonctionné. Très peu de résidus et excellent rendement.",
+      "shortComment": "Granulés de qualité exceptionnelle",
+      "productPurchased": "Granulés Haute Performance"
+    }
+  ]
+}
+
+

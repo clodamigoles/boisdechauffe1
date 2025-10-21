@@ -1,0 +1,48 @@
+{
+  "testimonials": [
+    {
+      "name": "Marie Dubois",
+      "location": "Lyon, France",
+      "comment": "Excellent service! The oak wood delivered was perfectly dry and of exceptional quality. Fast delivery and very professional team.",
+      "shortComment": "Exceptional quality, fast delivery!",
+      "productPurchased": "Premium Dried Oak"
+    },
+    {
+      "name": "Pierre Martin",
+      "location": "Toulouse, France",
+      "comment": "Order placed on Monday, delivered on Wednesday! The wood burns perfectly, very little ash. I highly recommend it.",
+      "shortComment": "Impeccable service, very satisfied!",
+      "productPurchased": "Premium Hardwood Mix"
+    },
+    {
+      "name": "Sophie Laurent",
+      "location": "Marseille, France",
+      "comment": "Third order this year. The quality is consistent, fair prices and excellent customer service. My trusted supplier!",
+      "shortComment": "My trusted supplier for 3 years",
+      "productPurchased": "Traditional Beech"
+    },
+    {
+      "name": "Jean-Claude Moreau",
+      "location": "Bordeaux, France",
+      "comment": "Former lumberjack, I know how to recognize quality. This wood is perfectly calibrated, dry and homogeneous. Well done for the professionalism!",
+      "shortComment": "Recognized professional quality",
+      "productPurchased": "Excellence Hornbeam"
+    },
+    {
+      "name": "Isabelle Durand",
+      "location": "Nantes, France",
+      "comment": "Impeccable delivery even to my isolated village. The delivery person was very nice and even stacked the wood neatly. 5-star service!",
+      "shortComment": "5-star service, even in remote areas",
+      "productPurchased": "Discovery Pack"
+    },
+    {
+      "name": "Michel Rousseau",
+      "location": "Strasbourg, France",
+      "comment": "The pellets are of exceptional quality. My stove has never worked so well. Very little residue and excellent efficiency.",
+      "shortComment": "Exceptional quality pellets",
+      "productPurchased": "High Performance Pellets"
+    }
+  ]
+}
+
+
