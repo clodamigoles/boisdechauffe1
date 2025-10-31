@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { Menu, X, Search, ShoppingCart, Phone, ChevronDown, ShoppingBag, ShoppingBagIcon } from 'lucide-react'
@@ -62,8 +63,14 @@ export default function Header() {
                             className="flex-shrink-0"
                         >
                             <Link href="/" className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center">
-                                    <div className="w-6 h-6 bg-white rounded-sm transform rotate-45"></div>
+                                <div className="relative w-10 h-10 lg:w-12 lg:h-12">
+                                    <Image
+                                        src="/images/logo.svg"
+                                        alt={`${siteName} Logo`}
+                                        fill
+                                        className="object-contain"
+                                        priority
+                                    />
                                 </div>
                                 <div className="hidden sm:block">
                                     <span className={`text-lg font-bold ${!isScrolled && router.pathname === '/' ? 'text-white' : 'text-gray-900'
