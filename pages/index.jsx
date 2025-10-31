@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 
@@ -98,10 +99,16 @@ export default function HomePage({
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
                                     transition={{ duration: 0.6 }}
-                                    className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                                    className="w-24 h-24 mx-auto mb-4"
                                 >
-                                    <div className="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center">
-                                        <div className="w-6 h-6 bg-white rounded-sm transform rotate-45"></div>
+                                    <div className="relative w-full h-full">
+                                        <Image
+                                            src="/images/logo.svg"
+                                            alt={`${siteName} Logo`}
+                                            fill
+                                            className="object-contain"
+                                            priority
+                                        />
                                     </div>
                                 </motion.div>
                             </div>

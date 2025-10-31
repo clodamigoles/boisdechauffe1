@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
     MapPin,
@@ -143,8 +144,13 @@ export default function Footer() {
                         >
                             {/* Logo */}
                             <Link href="/" className="flex items-center space-x-3 mb-6">
-                                <div className="w-10 h-10 bg-amber-600 rounded-lg flex items-center justify-center">
-                                    <div className="w-6 h-6 bg-white rounded-sm transform rotate-45"></div>
+                                <div className="relative w-10 h-10">
+                                    <Image
+                                        src="/images/logo.svg"
+                                        alt={`${siteName} Logo`}
+                                        fill
+                                        className="object-contain"
+                                    />
                                 </div>
                                 <div>
                                     <span className="text-xl font-bold text-white">
