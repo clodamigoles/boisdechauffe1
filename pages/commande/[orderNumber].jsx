@@ -46,6 +46,7 @@ export default function OrderTrackingPage() {
     const { orderNumber } = router.query
     const [orderData, setOrderData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [conversionSent, setConversionSent] = useState(false)
 
     const loadOrderData = async () => {
         if (!orderNumber) return
@@ -103,6 +104,23 @@ export default function OrderTrackingPage() {
     useEffect(() => {
         loadOrderData()
     }, [orderNumber])
+
+    // Événement de conversion Google Ads
+    useEffect(() => {
+        if (!orderData || conversionSent) return
+
+        // Envoyer l'événement de conversion une seule fois
+        if (window.gtag) {
+            window.gtag('event', 'conversion', {
+                'send_to': 'AW-17674405589/2jpnCJSCrLsbENWN6OtB',
+                'value': orderData.totals.total,
+                'currency': 'EUR',
+                'transaction_id': orderData.orderNumber
+            })
+            setConversionSent(true)
+            console.log('Conversion Google Ads envoyée:', orderData.orderNumber)
+        }
+    }, [orderData, conversionSent])
 
     // Polling automatique si pas d'informations bancaires
     useEffect(() => {
