@@ -275,7 +275,7 @@ export default function CheckoutPage() {
                                         <Input
                                             type="tel"
                                             label="Téléphone"
-                                            placeholder="06 12 34 56 78"
+                                            placeholder="01 23 45 67 89"
                                             value={formData.phone}
                                             onChange={(e) => handleInputChange("phone", e.target.value)}
                                             error={errors.phone}
@@ -284,7 +284,7 @@ export default function CheckoutPage() {
                                         <Input
                                             type="text"
                                             label="Prénom"
-                                            placeholder="Jean"
+                                            placeholder="John"
                                             value={formData.firstName}
                                             onChange={(e) => handleInputChange("firstName", e.target.value)}
                                             error={errors.firstName}
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
                                         <Input
                                             type="text"
                                             label="Nom"
-                                            placeholder="Dupont"
+                                            placeholder="Doe"
                                             value={formData.lastName}
                                             onChange={(e) => handleInputChange("lastName", e.target.value)}
                                             error={errors.lastName}
@@ -327,7 +327,7 @@ export default function CheckoutPage() {
                                         <Input
                                             type="text"
                                             label="Adresse"
-                                            placeholder="123 rue de la République"
+                                            placeholder="123 rue de la grande"
                                             value={formData.address1}
                                             onChange={(e) => handleInputChange("address1", e.target.value)}
                                             error={errors.address1}

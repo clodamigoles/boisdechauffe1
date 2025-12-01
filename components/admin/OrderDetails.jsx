@@ -4,12 +4,22 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { FileText, Download, Eye, Calendar, Mail } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { FileText, Download, Eye, Calendar, Mail, Edit2, Save, X } from "lucide-react"
 import { useState } from "react"
 
-export default function OrderDetails({ order, onClose }) {
+export default function OrderDetails({ order, onClose, onUpdate }) {
     const [isSendingEmail, setIsSendingEmail] = useState(false)
     const [emailStatus, setEmailStatus] = useState(null)
+    const [isEditingBankDetails, setIsEditingBankDetails] = useState(false)
+    const [bankDetails, setBankDetails] = useState({
+        iban: order.bankDetails?.iban || "",
+        bic: order.bankDetails?.bic || "",
+        accountName: order.bankDetails?.accountName || "",
+        amountToPay: order.bankDetails?.amountToPay || order.total,
+    })
+    const [isSavingBankDetails, setIsSavingBankDetails] = useState(false)
 
     const handleSendBankDetails = async () => {
         setIsSendingEmail(true)
@@ -36,6 +46,57 @@ export default function OrderDetails({ order, onClose }) {
         } finally {
             setIsSendingEmail(false)
         }
+    }
+
+    const handleSaveBankDetails = async () => {
+        setIsSavingBankDetails(true)
+
+        try {
+            const response = await fetch(`/api/orders/${order.orderNumber}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    bankDetails: {
+                        iban: bankDetails.iban.trim().toUpperCase(),
+                        bic: bankDetails.bic.trim().toUpperCase(),
+                        accountName: bankDetails.accountName.trim(),
+                        amountToPay: parseFloat(bankDetails.amountToPay),
+                    },
+                }),
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                setIsEditingBankDetails(false)
+                // Mettre à jour l'ordre localement
+                const updatedOrder = { ...order, bankDetails: data.data.bankDetails }
+                setEmailStatus({ type: "success", message: "Coordonnées bancaires mises à jour avec succès !" })
+                // Appeler le callback pour mettre à jour la liste parente
+                if (onUpdate) {
+                    onUpdate(updatedOrder)
+                }
+            } else {
+                setEmailStatus({ type: "error", message: data.message || "Erreur lors de la mise à jour" })
+            }
+        } catch (error) {
+            console.error("Erreur:", error)
+            setEmailStatus({ type: "error", message: "Erreur de connexion" })
+        } finally {
+            setIsSavingBankDetails(false)
+        }
+    }
+
+    const handleCancelEdit = () => {
+        setIsEditingBankDetails(false)
+        setBankDetails({
+            iban: order.bankDetails?.iban || "",
+            bic: order.bankDetails?.bic || "",
+            accountName: order.bankDetails?.accountName || "",
+            amountToPay: order.bankDetails?.amountToPay || order.total,
+        })
     }
 
     const getStatusBadge = (status) => {
@@ -136,60 +197,150 @@ export default function OrderDetails({ order, onClose }) {
             </div>
 
             {/* Bank Details */}
-            {order.bankDetails && order.bankDetails.iban && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center justify-between">
-                            <span>Informations bancaires</span>
-                            <Button
-                                onClick={handleSendBankDetails}
-                                disabled={isSendingEmail}
-                                size="sm"
-                                className="bg-blue-600 hover:bg-blue-700"
-                            >
-                                <Mail className="w-4 h-4 mr-2" />
-                                {isSendingEmail ? "Envoi en cours..." : "Envoyer par email"}
-                            </Button>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {emailStatus && (
-                            <div
-                                className={`mb-4 p-3 rounded ${emailStatus.type === "success"
-                                        ? "bg-green-50 text-green-800 border border-green-200"
-                                        : "bg-red-50 text-red-800 border border-red-200"
-                                    }`}
-                            >
-                                {emailStatus.message}
-                            </div>
-                        )}
-                        <div className="space-y-2">
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">IBAN:</span>
-                                <span className="font-mono">{order.bankDetails.iban}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">BIC:</span>
-                                <span className="font-mono">{order.bankDetails.bic}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">Bénéficiaire:</span>
-                                <span>{order.bankDetails.accountName}</span>
-                            </div>
-                            {order.bankDetails.amountToPay && (
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Montant à payer:</span>
-                                    <span className="font-semibold">{order.bankDetails.amountToPay}€</span>
-                                </div>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                        <span>Informations bancaires</span>
+                        <div className="flex gap-2">
+                            {!isEditingBankDetails ? (
+                                <>
+                                    {order.bankDetails && order.bankDetails.iban && (
+                                        <Button
+                                            onClick={handleSendBankDetails}
+                                            disabled={isSendingEmail}
+                                            size="sm"
+                                            className="bg-blue-600 hover:bg-blue-700"
+                                        >
+                                            <Mail className="w-4 h-4 mr-2" />
+                                            {isSendingEmail ? "Envoi en cours..." : "Envoyer par email"}
+                                        </Button>
+                                    )}
+                                    <Button
+                                        onClick={() => setIsEditingBankDetails(true)}
+                                        variant="outline"
+                                        size="sm"
+                                    >
+                                        <Edit2 className="w-4 h-4 mr-2" />
+                                        {order.bankDetails && order.bankDetails.iban ? "Modifier" : "Ajouter"}
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button
+                                        onClick={handleSaveBankDetails}
+                                        disabled={isSavingBankDetails}
+                                        size="sm"
+                                        className="bg-green-600 hover:bg-green-700"
+                                    >
+                                        <Save className="w-4 h-4 mr-2" />
+                                        {isSavingBankDetails ? "Enregistrement..." : "Enregistrer"}
+                                    </Button>
+                                    <Button
+                                        onClick={handleCancelEdit}
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={isSavingBankDetails}
+                                    >
+                                        <X className="w-4 h-4 mr-2" />
+                                        Annuler
+                                    </Button>
+                                </>
                             )}
-                            <div className="flex justify-between text-sm text-muted-foreground">
-                                <span>Mis à jour le:</span>
-                                <span>{formatDate(order.bankDetails.updatedAt)}</span>
+                        </div>
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {emailStatus && (
+                        <div
+                            className={`mb-4 p-3 rounded ${emailStatus.type === "success"
+                                    ? "bg-green-50 text-green-800 border border-green-200"
+                                    : "bg-red-50 text-red-800 border border-red-200"
+                                }`}
+                        >
+                            {emailStatus.message}
+                        </div>
+                    )}
+
+                    {isEditingBankDetails ? (
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-iban">IBAN</Label>
+                                <Input
+                                    id="edit-iban"
+                                    value={bankDetails.iban}
+                                    onChange={(e) => setBankDetails({ ...bankDetails, iban: e.target.value })}
+                                    placeholder="FR76 1234 5678 9012 3456 7890 123"
+                                    className="font-mono"
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-bic">BIC</Label>
+                                    <Input
+                                        id="edit-bic"
+                                        value={bankDetails.bic}
+                                        onChange={(e) => setBankDetails({ ...bankDetails, bic: e.target.value })}
+                                        placeholder="ABCDEFGH"
+                                        className="font-mono"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-accountName">Bénéficiaire</Label>
+                                    <Input
+                                        id="edit-accountName"
+                                        value={bankDetails.accountName}
+                                        onChange={(e) => setBankDetails({ ...bankDetails, accountName: e.target.value })}
+                                        placeholder="Nom du bénéficiaire"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-amountToPay">Montant à payer (€)</Label>
+                                <Input
+                                    id="edit-amountToPay"
+                                    type="number"
+                                    step="0.01"
+                                    value={bankDetails.amountToPay}
+                                    onChange={(e) => setBankDetails({ ...bankDetails, amountToPay: parseFloat(e.target.value) || 0 })}
+                                    placeholder={order.total.toString()}
+                                />
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
-            )}
+                    ) : (
+                        order.bankDetails && order.bankDetails.iban ? (
+                            <div className="space-y-2">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">IBAN:</span>
+                                    <span className="font-mono">{order.bankDetails.iban}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">BIC:</span>
+                                    <span className="font-mono">{order.bankDetails.bic}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Bénéficiaire:</span>
+                                    <span>{order.bankDetails.accountName}</span>
+                                </div>
+                                {order.bankDetails.amountToPay && (
+                                    <div className="flex justify-between">
+                                        <span className="text-muted-foreground">Montant à payer:</span>
+                                        <span className="font-semibold">{order.bankDetails.amountToPay}€</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-sm text-muted-foreground">
+                                    <span>Mis à jour le:</span>
+                                    <span>{formatDate(order.bankDetails.updatedAt)}</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 text-muted-foreground">
+                                <p>Aucune coordonnée bancaire définie pour cette commande.</p>
+                                <p className="text-sm mt-2">Cliquez sur "Ajouter" pour définir les coordonnées bancaires.</p>
+                            </div>
+                        )
+                    )}
+                </CardContent>
+            </Card>
 
             {order.paymentReceipts && order.paymentReceipts.length > 0 && (
                 <Card>

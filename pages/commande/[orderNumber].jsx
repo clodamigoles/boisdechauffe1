@@ -378,10 +378,6 @@ export default function OrderTrackingPage() {
                                                 <h4 className="font-medium text-blue-900 mb-2">Instructions importantes</h4>
                                                 <ul className="text-sm text-blue-800 space-y-1">
                                                     <li>
-                                                        • Indiquez obligatoirement la référence <strong>{orderData.orderNumber}</strong> dans le
-                                                        libellé
-                                                    </li>
-                                                    <li>
                                                         • Le montant exact à virer est de{" "}
                                                         <strong>
                                                             {formatPrice(

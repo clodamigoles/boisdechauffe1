@@ -187,6 +187,22 @@ const siteSettingsSchema = new mongoose.Schema(
             },
         },
 
+        // Coordonnées bancaires par défaut
+        bankDetails: {
+            iban: {
+                type: String,
+                trim: true,
+            },
+            bic: {
+                type: String,
+                trim: true,
+            },
+            accountName: {
+                type: String,
+                trim: true,
+            },
+        },
+
         // Horaires d'ouverture
         businessHours: {
             monday: { open: String, close: String, closed: Boolean },

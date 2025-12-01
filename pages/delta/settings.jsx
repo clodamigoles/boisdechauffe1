@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Save, Plus, Trash2, Globe, Mail, Phone, MapPin, Building2, Truck, Clock, FileText } from "lucide-react"
+import { Save, Plus, Trash2, Globe, Mail, Phone, MapPin, Building2, Truck, Clock, FileText, CreditCard } from "lucide-react"
 import toast from "react-hot-toast"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -501,6 +501,60 @@ export default function SettingsPage() {
                             <p className="text-xs text-muted-foreground">
                                 Laissez vide pour utiliser le contenu par défaut généré automatiquement
                             </p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Coordonnées bancaires */}
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center gap-2">
+                            <CreditCard className="h-5 w-5 text-primary" />
+                            <div>
+                                <CardTitle>Coordonnées bancaires</CardTitle>
+                                <CardDescription>
+                                    Coordonnées bancaires par défaut utilisées pour les commandes (IBAN, BIC, Bénéficiaire)
+                                </CardDescription>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <p className="text-sm text-blue-800">
+                                <strong>Note :</strong> Ces coordonnées seront automatiquement utilisées pour toutes les nouvelles commandes. 
+                                Vous pouvez toujours les modifier individuellement pour chaque commande si nécessaire.
+                            </p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="bankIban">IBAN</Label>
+                            <Input
+                                id="bankIban"
+                                value={settings.bankDetails?.iban || ""}
+                                onChange={(e) => handleNestedInputChange("bankDetails", "iban", e.target.value.toUpperCase())}
+                                placeholder="FR76 1234 5678 9012 3456 7890 123"
+                                className="font-mono"
+                            />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="bankBic">BIC</Label>
+                                <Input
+                                    id="bankBic"
+                                    value={settings.bankDetails?.bic || ""}
+                                    onChange={(e) => handleNestedInputChange("bankDetails", "bic", e.target.value.toUpperCase())}
+                                    placeholder="ABCDEFGH"
+                                    className="font-mono"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="bankAccountName">Nom du bénéficiaire</Label>
+                                <Input
+                                    id="bankAccountName"
+                                    value={settings.bankDetails?.accountName || ""}
+                                    onChange={(e) => handleNestedInputChange("bankDetails", "accountName", e.target.value)}
+                                    placeholder="Nom de l'entreprise"
+                                />
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

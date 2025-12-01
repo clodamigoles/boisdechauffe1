@@ -1,6 +1,8 @@
 import { Order, Product } from "@/models/index"
+import { SiteSettings } from "@/models/SiteSettings"
 import connectDB from "@/lib/mongoose"
 import { validateOrderData } from "@/lib/validation"
+import { sendOrderConfirmationEmail, sendAdminNewOrderNotification } from "@/lib/email"
 
 export default async function handler(req, res) {
     await connectDB()
@@ -83,7 +85,11 @@ export default async function handler(req, res) {
             // Génération du numéro de commande
             const orderNumber = await Order.generateOrderNumber()
 
-            // Création de la commande
+            // Récupération des coordonnées bancaires par défaut depuis les settings
+            const siteSettings = await SiteSettings.getActiveSettings()
+            const defaultBankDetails = siteSettings.bankDetails || {}
+
+            // Création de la commande avec les coordonnées bancaires par défaut
             const order = new Order({
                 orderNumber,
                 customer,
@@ -93,6 +99,15 @@ export default async function handler(req, res) {
                 shippingCost,
                 total,
                 notes,
+                bankDetails: defaultBankDetails.iban && defaultBankDetails.bic && defaultBankDetails.accountName
+                    ? {
+                          iban: defaultBankDetails.iban,
+                          bic: defaultBankDetails.bic,
+                          accountName: defaultBankDetails.accountName,
+                          amountToPay: total,
+                          updatedAt: new Date(),
+                      }
+                    : null,
                 statusHistory: [
                     {
                         status: "pending",
@@ -108,6 +123,18 @@ export default async function handler(req, res) {
             for (const item of items) {
                 await Product.findByIdAndUpdate(item.productId, { $inc: { stock: -item.quantity } })
             }
+
+            // Envoi des emails (en arrière-plan, ne pas bloquer la réponse)
+            Promise.all([
+                sendOrderConfirmationEmail(order).catch((err) => {
+                    console.error("Erreur envoi email confirmation client:", err)
+                }),
+                sendAdminNewOrderNotification(order).catch((err) => {
+                    console.error("Erreur envoi email notification admin:", err)
+                }),
+            ]).catch((err) => {
+                console.error("Erreur envoi emails:", err)
+            })
 
             res.status(201).json({
                 success: true,

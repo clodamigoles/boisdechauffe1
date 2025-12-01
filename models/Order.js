@@ -206,6 +206,24 @@ const orderSchema = new mongoose.Schema(
             },
         ],
 
+        // Rappels de paiement
+        reminderCount: {
+            type: Number,
+            default: 0,
+        },
+        reminderHistory: [
+            {
+                sentAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+                sentBy: {
+                    type: String,
+                    trim: true,
+                },
+            },
+        ],
+
         // Dates
         createdAt: {
             type: Date,

@@ -66,10 +66,10 @@ export default async function handler(req, res) {
             // Mise à jour des informations bancaires
             if (bankDetails) {
                 order.bankDetails = {
-                    iban: bankDetails.iban || order.bankDetails?.iban,
-                    bic: bankDetails.bic || order.bankDetails?.bic,
-                    accountName: bankDetails.accountName || order.bankDetails?.accountName,
-                    amountToPay: bankDetails.amountToPay !== undefined ? bankDetails.amountToPay : order.bankDetails?.amountToPay,
+                    iban: bankDetails.iban ? bankDetails.iban.trim().toUpperCase() : (order.bankDetails?.iban || null),
+                    bic: bankDetails.bic ? bankDetails.bic.trim().toUpperCase() : (order.bankDetails?.bic || null),
+                    accountName: bankDetails.accountName ? bankDetails.accountName.trim() : (order.bankDetails?.accountName || null),
+                    amountToPay: bankDetails.amountToPay !== undefined ? bankDetails.amountToPay : (order.bankDetails?.amountToPay || order.total),
                     updatedAt: new Date(),
                 }
             }

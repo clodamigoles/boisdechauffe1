@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Search, Eye, Send, ShoppingCart, FileText } from "lucide-react"
+import { Search, Eye, Send, ShoppingCart, FileText, CheckCircle, XCircle, Package, Truck, Circle, Bell } from "lucide-react"
+import toast from "react-hot-toast"
 import OrderDetails from "@/components/admin/OrderDetails"
 import QuoteForm from "@/components/admin/QuoteForm"
 
@@ -22,6 +23,8 @@ export default function OrdersPage() {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false)
     const [isQuoteOpen, setIsQuoteOpen] = useState(false)
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, pages: 0 })
+    const [updatingOrders, setUpdatingOrders] = useState(new Set())
+    const [sendingReminder, setSendingReminder] = useState(new Set())
 
     const statusOptions = [
         { value: "pending", label: "En attente" },
@@ -106,6 +109,114 @@ export default function OrdersPage() {
         fetchOrders()
     }
 
+    const isNewOrder = (order) => {
+        const orderDate = new Date(order.createdAt)
+        const now = new Date()
+        const hoursDiff = (now - orderDate) / (1000 * 60 * 60)
+        return hoursDiff < 24 && order.status === "pending"
+    }
+
+    const handleStatusUpdate = async (orderId, status, paymentStatus = null) => {
+        setUpdatingOrders((prev) => new Set(prev).add(orderId))
+
+        try {
+            const response = await fetch(`/api/admin/orders/${orderId}/update-status`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    status,
+                    paymentStatus,
+                    note: `Statut mis à jour depuis l'interface admin`,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                // Mettre à jour la commande dans la liste
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
+                        order._id === orderId
+                            ? {
+                                  ...order,
+                                  status: data.data.order.status,
+                                  paymentStatus: data.data.order.paymentStatus,
+                                  statusHistory: data.data.order.statusHistory,
+                              }
+                            : order,
+                    ),
+                )
+            } else {
+                alert(data.message || "Erreur lors de la mise à jour")
+            }
+        } catch (error) {
+            console.error("Erreur mise à jour statut:", error)
+            alert("Erreur lors de la mise à jour du statut")
+        } finally {
+            setUpdatingOrders((prev) => {
+                const newSet = new Set(prev)
+                newSet.delete(orderId)
+                return newSet
+            })
+        }
+    }
+
+    const handleSendReminder = async (orderId) => {
+        setSendingReminder((prev) => new Set(prev).add(orderId))
+
+        try {
+            const response = await fetch(`/api/admin/orders/${orderId}/send-reminder`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+
+            const data = await response.json()
+
+            if (data.success) {
+                toast.success(data.message)
+                // Mettre à jour la commande dans la liste
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
+                        order._id === orderId
+                            ? {
+                                  ...order,
+                                  reminderCount: data.data.reminderCount,
+                                  reminderHistory: data.data.reminderHistory,
+                              }
+                            : order,
+                    ),
+                )
+            } else {
+                toast.error(data.message || "Erreur lors de l'envoi du rappel")
+            }
+        } catch (error) {
+            console.error("Erreur envoi rappel:", error)
+            toast.error("Erreur lors de l'envoi du rappel")
+        } finally {
+            setSendingReminder((prev) => {
+                const newSet = new Set(prev)
+                newSet.delete(orderId)
+                return newSet
+            })
+        }
+    }
+
+    const getStatusIcon = (status) => {
+        const icons = {
+            pending: Circle,
+            confirmed: CheckCircle,
+            processing: Package,
+            shipped: Truck,
+            delivered: CheckCircle,
+            cancelled: XCircle,
+        }
+        return icons[status] || Circle
+    }
+
     return (
         <AdminLayout>
             <div className="space-y-6">
@@ -174,20 +285,37 @@ export default function OrdersPage() {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {orders.map((order) => (
-                                    <div key={order._id} className="flex items-center justify-between p-4 border rounded-lg">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-4 mb-2">
-                                                <h3 className="font-medium">{order.orderNumber}</h3>
-                                                {getStatusBadge(order.status)}
-                                                {getPaymentStatusBadge(order.paymentStatus)}
-                                                {order.paymentReceipts && order.paymentReceipts.length > 0 && (
-                                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
-                                                        <FileText className="w-3 h-3 mr-1" />
-                                                        {order.paymentReceipts.length} récépissé{order.paymentReceipts.length > 1 ? "s" : ""}
-                                                    </Badge>
-                                                )}
-                                            </div>
+                                {orders.map((order) => {
+                                    const isNew = isNewOrder(order)
+                                    const StatusIcon = getStatusIcon(order.status)
+                                    const isUpdating = updatingOrders.has(order._id)
+
+                                    return (
+                                        <div
+                                            key={order._id}
+                                            className={`flex items-center justify-between p-4 border rounded-lg transition-all ${
+                                                isNew ? "bg-amber-50 border-amber-200 shadow-sm" : ""
+                                            } ${isUpdating ? "opacity-50" : ""}`}
+                                        >
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-4 mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <h3 className="font-medium">{order.orderNumber}</h3>
+                                                        {isNew && (
+                                                            <Badge variant="outline" className="bg-amber-500 text-white border-amber-600 animate-pulse">
+                                                                Nouveau
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                    {getStatusBadge(order.status)}
+                                                    {getPaymentStatusBadge(order.paymentStatus)}
+                                                    {order.paymentReceipts && order.paymentReceipts.length > 0 && (
+                                                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                                                            <FileText className="w-3 h-3 mr-1" />
+                                                            {order.paymentReceipts.length} récépissé{order.paymentReceipts.length > 1 ? "s" : ""}
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
                                                 <div>
                                                     <p className="font-medium text-foreground">
@@ -218,26 +346,79 @@ export default function OrdersPage() {
                                                     </p>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div className="flex items-center space-x-2">
-                                            <Button variant="ghost" size="sm" onClick={() => openDetails(order)}>
-                                                <Eye className="h-4 w-4 mr-2" />
-                                                Voir
-                                            </Button>
+                                            <div className="flex items-center space-x-2 flex-wrap gap-2">
+                                                    <Button variant="ghost" size="sm" onClick={() => openDetails(order)} disabled={isUpdating}>
+                                                        <Eye className="h-4 w-4 mr-2" />
+                                                        Voir
+                                                    </Button>
 
-                                            <Button
-                                                variant="default"
-                                                size="sm"
-                                                onClick={() => openQuoteForm(order)}
-                                                disabled={order.status === "cancelled"}
-                                            >
-                                                <Send className="h-4 w-4 mr-2" />
-                                                Devis
-                                            </Button>
+                                                    <Button
+                                                        variant="default"
+                                                        size="sm"
+                                                        onClick={() => openQuoteForm(order)}
+                                                        disabled={order.status === "cancelled" || isUpdating}
+                                                    >
+                                                        <Send className="h-4 w-4 mr-2" />
+                                                        Devis
+                                                    </Button>
+
+                                                    {order.paymentStatus === "pending" && (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => handleSendReminder(order._id)}
+                                                            disabled={sendingReminder.has(order._id) || isUpdating}
+                                                            className="bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100"
+                                                        >
+                                                            <Bell className="h-4 w-4 mr-2" />
+                                                            {sendingReminder.has(order._id) ? "Envoi..." : "Rappel"}
+                                                            {order.reminderCount > 0 && (
+                                                                <Badge variant="secondary" className="ml-2 bg-amber-200 text-amber-800">
+                                                                    {order.reminderCount}
+                                                                </Badge>
+                                                            )}
+                                                        </Button>
+                                                    )}
+
+                                                    <Select
+                                                        value={order.status}
+                                                        onValueChange={(value) => handleStatusUpdate(order._id, value)}
+                                                        disabled={isUpdating}
+                                                    >
+                                                        <SelectTrigger className="w-40">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {statusOptions.map((status) => (
+                                                                <SelectItem key={status.value} value={status.value}>
+                                                                    {status.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+
+                                                    <Select
+                                                        value={order.paymentStatus}
+                                                        onValueChange={(value) => handleStatusUpdate(order._id, null, value)}
+                                                        disabled={isUpdating}
+                                                    >
+                                                        <SelectTrigger className="w-40">
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {paymentStatusOptions.map((status) => (
+                                                                <SelectItem key={status.value} value={status.value}>
+                                                                    {status.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         )}
 
@@ -276,7 +457,20 @@ export default function OrdersPage() {
                         <DialogHeader>
                             <DialogTitle>Détails de la commande {selectedOrder?.orderNumber}</DialogTitle>
                         </DialogHeader>
-                        {selectedOrder && <OrderDetails order={selectedOrder} onClose={() => setIsDetailsOpen(false)} />}
+                        {selectedOrder && (
+                            <OrderDetails
+                                order={selectedOrder}
+                                onClose={() => setIsDetailsOpen(false)}
+                                onUpdate={(updatedOrder) => {
+                                    // Mettre à jour la commande dans la liste
+                                    setOrders((prevOrders) =>
+                                        prevOrders.map((o) => (o._id === updatedOrder._id ? updatedOrder : o))
+                                    )
+                                    setSelectedOrder(updatedOrder)
+                                    fetchOrders() // Rafraîchir la liste complète
+                                }}
+                            />
+                        )}
                     </DialogContent>
                 </Dialog>
 
