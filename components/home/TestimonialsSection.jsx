@@ -1,315 +1,291 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 
-import TestimonialCard from '../ui/TestimonialCard'
-import { useSettings } from '@/hooks/useSettings'
+const TOTAL_TESTIMONIALS = 234
+const VISIBLE_COUNT = 5
 
-export default function TestimonialsSection({ testimonials = [] }) {
-    const { siteName } = useSettings()
-    const [currentIndex, setCurrentIndex] = useState(0)
-    const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+const defaultTestimonials = [
+    {
+        _id: 'g1',
+        name: 'Gilles C.',
+        rating: 1,
+        comment: `déjà client j'ai fait une nouvelle commande mais la livraison s'est avérée non conforme aux bûches commandées en 50 cm, 10% du volume livré est constitué de chute de coupe et de déchets de bois de toute sorte y compris d'écorce ! pour le service client contacté avec photos à l'appui c'est un taux de perte normal je ne recommande pas ce fournisseur qui n'a aucun égard pour ses clients renouvelants. annoncé comme bois sec prêt à brûler il prend très mal dans mon insert, du coup je dois le stocker pour l'année prochaine. sur ce coup là j'ai perdu du temps et de l'argent, mais je n'ai pas perdu la leçon`,
+        date: '2026-03-30',
+        verified: true
+    },
+    {
+        _id: 'c1',
+        name: 'Cyril V.',
+        rating: 5,
+        comment: `très bonne qualité merci`,
+        date: '2026-03-02',
+        verified: true
+    },
+    {
+        _id: 't1',
+        name: 'Thomas C.',
+        rating: 1,
+        comment: `Une très très mauvaise expérience d'achat de buches densifiées. Dès les premiers feux, je constate que les bûches brûlent extrêmement mal et génèrent un tas de cendre gigantesque qui finit par étouffer le feu. De plus les buches sont friables à la main et se cassent dès la sortie du plastique d'emballage. J'en fais part au service client et après un grand nombre d'échanges qui s'étale sur plusieurs mois, on m'a proposé un dédommagement de 80€ sur une pallette à plus de 400€. on m'a répondu que tout était conforme sans autre justificatifs. Je suis très frustré de cette situation car il n'y a aucun moyen pour prouver sa bonne foi`,
+        date: '2026-02-27',
+        verified: true
+    },
+    {
+        _id: 'j1',
+        name: 'Jacques B.',
+        rating: 5,
+        comment: `Nous avons toujours qqles difficultés pour la conclusion et le paiement sinon tout va bien`,
+        date: '2026-02-27',
+        verified: true
+    },
+    {
+        _id: 's1',
+        name: 'Sophie L.',
+        rating: 5,
+        comment: `3eme commande chez eux. je ne cherche plus ailleurs, la qualité est la même à chaque fois et le prix reste correct. rien à redire`,
+        date: '2026-02-10',
+        verified: true
+    },
+    {
+        _id: 'p1',
+        name: 'Pierre M.',
+        rating: 4,
+        comment: `bois de bonne qualité, bien calibré. la livraison a pris un jour de plus que prévu ce qui m'a un peu contraint côté organisation mais le service client m'a prévenu. rien de rédhibitoire, je reviendrai`,
+        date: '2026-01-18',
+        verified: true
+    },
+    {
+        _id: 'm1',
+        name: 'Michel R.',
+        rating: 4,
+        comment: `granulés corrects, mon poêle tourne bien depuis. deux sacs sur la palette avaient le plastique déchiré à la livraison mais le contenu était intact. j'ai contacté le SAV, ils ont répondu le même jour. positif dans l'ensemble`,
+        date: '2026-01-05',
+        verified: true
+    },
+    {
+        _id: 'i1',
+        name: 'Isabelle D.',
+        rating: 5,
+        comment: `je suis en zone rurale et j'avais un peu peur pour la livraison. tout s'est passé sans souci, le livreur a mis le bois directement dans l'abri comme je le souhaitais. bien.`,
+        date: '2025-12-14',
+        verified: true
+    },
+    {
+        _id: 'jc1',
+        name: 'Jean-Claude M.',
+        rating: 3,
+        comment: `le bois en lui-même est bon, sec et bien coupé. par contre pour la livraison j'ai eu du mal à savoir quand exactement ils allaient passer — j'ai attendu toute la matinée, ils sont venus l'après-midi. ce genre de détail mérite d'être amélioré`,
+        date: '2025-12-03',
+        verified: true
+    },
+    {
+        _id: 'f1',
+        name: 'Françoise B.',
+        rating: 4,
+        comment: `commande rapide et bois bien emballé. quelques bûches un peu courtes par rapport aux 50cm annoncés mais dans l'ensemble ça chauffe bien. je referai une commande l'hiver prochain`,
+        date: '2025-11-21',
+        verified: true
+    },
+    {
+        _id: 'r1',
+        name: 'Romain T.',
+        rating: 5,
+        comment: `nickel. 2eme commande, toujours pareil, bois sec, livraison propre, chauffagiste qui m'a confirmé la bonne qualité du bois. rien à dire`,
+        date: '2025-11-14',
+        verified: true
+    },
+    {
+        _id: 'n1',
+        name: 'Nathalie G.',
+        rating: 3,
+        comment: `le bois est correct mais j'ai eu un souci avec le créneau de livraison, on m'a livré sans prévenir alors que j'étais pas là. le voisin a signé à ma place heureusement. pour le bois en lui même pas de problème particulier`,
+        date: '2025-11-08',
+        verified: true
+    },
+    {
+        _id: 'o1',
+        name: 'Olivier K.',
+        rating: 5,
+        comment: `très satisfait. j'avais hésité à commander en ligne du bois de chauffage mais franchement c'est pratique et la qualité est là. le chêne est vraiment bien sec, s'allume facilement et tient toute la nuit dans le poêle`,
+        date: '2025-10-29',
+        verified: true
+    },
+]
 
-    const defaultTestimonials = [
-        {
-            _id: '1',
-            name: 'Marie Dubois',
-            location: 'Lyon, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Excellent service ! Le bois de chêne livré était parfaitement sec et de qualité exceptionnelle. Livraison rapide et équipe très professionnelle.',
-            shortComment: 'Qualité exceptionnelle, livraison rapide !',
-            productPurchased: 'Chêne Premium Séché',
-            verified: true
-        },
-        {
-            _id: '2',
-            name: 'Pierre Martin',
-            location: 'Toulouse, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: `Commande passée le lundi, livrée le mercredi ! Le bois brûle parfaitement, très peu de cendres. Je recommande vivement ${siteName}.`,
-            shortComment: 'Service impeccable, très satisfait !',
-            productPurchased: 'Mix Feuillus Premium',
-            verified: true
-        },
-        {
-            _id: '3',
-            name: 'Sophie Laurent',
-            location: 'Marseille, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Troisième commande cette année. La qualité est constante, les prix corrects et le service client au top. Mon fournisseur de confiance !',
-            shortComment: 'Mon fournisseur de confiance depuis 3 ans',
-            productPurchased: 'Hêtre Traditionnel',
-            verified: true
-        },
-        {
-            _id: '4',
-            name: 'Jean-Claude Moreau',
-            location: 'Bordeaux, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Ancien bûcheron, je sais reconnaître la qualité. Ce bois est parfaitement calibré, sec et homogène. Bravo pour le sérieux !',
-            shortComment: 'Qualité professionnelle reconnue',
-            productPurchased: 'Charme Excellence',
-            verified: true
-        },
-        {
-            _id: '5',
-            name: 'Isabelle Durand',
-            location: 'Nantes, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Livraison impeccable même dans mon village isolé. Le livreur était très sympa et a même rangé le bois proprement. Service 5 étoiles !',
-            shortComment: 'Service 5 étoiles, même en zone isolée',
-            productPurchased: 'Pack Découverte',
-            verified: true
-        },
-        {
-            _id: '6',
-            name: 'Michel Rousseau',
-            location: 'Strasbourg, France',
-            avatar: '/images/avatar.jpg',
-            rating: 5,
-            comment: 'Les granulés sont de qualité exceptionnelle. Mon poêle n\'a jamais aussi bien fonctionné. Très peu de résidus et excellent rendement.',
-            shortComment: 'Granulés de qualité exceptionnelle',
-            productPurchased: 'Granulés Haute Performance',
-            verified: true
-        }
-    ]
+function StarRating({ rating }) {
+    return (
+        <div className="flex items-center gap-1">
+            {[...Array(5)].map((_, i) => (
+                <svg
+                    key={i}
+                    className={`w-4 h-4 ${i < rating ? 'text-amber-400' : 'text-gray-200'}`}
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+            ))}
+            <span className="ml-1 text-sm text-gray-500">{rating} sur 5</span>
+        </div>
+    )
+}
 
-    const displayTestimonials = testimonials.length > 0 ? testimonials : defaultTestimonials
-
-    useEffect(() => {
-        if (isAutoPlaying && displayTestimonials.length > 1) {
-            const interval = setInterval(() => {
-                setCurrentIndex((prev) => (prev + 1) % displayTestimonials.length)
-            }, 4000)
-            return () => clearInterval(interval)
-        }
-    }, [isAutoPlaying, displayTestimonials.length])
-
-    const goToSlide = (index) => {
-        setCurrentIndex(index)
-        setIsAutoPlaying(false)
-        setTimeout(() => setIsAutoPlaying(true), 8000)
-    }
-
-    const nextSlide = () => {
-        setCurrentIndex((prev) => (prev + 1) % displayTestimonials.length)
-        setIsAutoPlaying(false)
-        setTimeout(() => setIsAutoPlaying(true), 8000)
-    }
-
-    const prevSlide = () => {
-        setCurrentIndex((prev) => (prev - 1 + displayTestimonials.length) % displayTestimonials.length)
-        setIsAutoPlaying(false)
-        setTimeout(() => setIsAutoPlaying(true), 8000)
-    }
-
-    if (displayTestimonials.length === 0) return null
+function ReviewItem({ testimonial }) {
+    const date = new Date(testimonial.date).toLocaleDateString('fr-FR', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    })
 
     return (
-        <section className="py-20 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* En-tête Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
-                >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                        className="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-4"
-                    >
-                        <span className="mr-2">💬</span>
-                        Témoignages Clients
-                    </motion.div>
+        <div className="py-5 border-b border-gray-100 last:border-0">
+            <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+                <span className="font-semibold text-gray-900 text-sm">{testimonial.name}</span>
+                {testimonial.verified && (
+                    <span className="text-xs text-gray-400 flex items-center gap-1">
+                        <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Achat vérifié
+                    </span>
+                )}
+            </div>
+            <StarRating rating={testimonial.rating} />
+            <p className="mt-2 text-gray-700 text-sm leading-relaxed">{testimonial.comment}</p>
+            <p className="mt-2 text-xs text-gray-400">Publié le {date}</p>
+        </div>
+    )
+}
 
-                    <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                        Ils Nous Font
-                        <span className="block bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                            Confiance
-                        </span>
-                    </h2>
+export default function TestimonialsSection({ testimonials = [] }) {
+    const [showAll, setShowAll] = useState(false)
+    const [formState, setFormState] = useState({ name: '', comment: '' })
+    const [formStatus, setFormStatus] = useState(null)
+    const [formError, setFormError] = useState('')
 
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                        Découvrez les retours de nos clients satisfaits. Leur confiance est notre plus belle récompense
-                        et la garantie de notre engagement qualité.
-                    </p>
-                </motion.div>
+    const list = testimonials.length > 0 ? testimonials : defaultTestimonials
+    const visible = showAll ? list : list.slice(0, VISIBLE_COUNT)
 
-                {/* Carousel Principal */}
-                <div className="relative max-w-5xl mx-auto">
-                    <div className="overflow-hidden rounded-3xl">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentIndex}
-                                initial={{ opacity: 0, x: 100 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -100 }}
-                                transition={{ duration: 0.5, ease: "easeInOut" }}
-                                className="bg-white rounded-3xl shadow-2xl p-8 md:p-12"
-                            >
-                                <TestimonialCard
-                                    testimonial={displayTestimonials[currentIndex]}
-                                    featured={true}
-                                />
-                            </motion.div>
-                        </AnimatePresence>
-                    </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setFormError('')
+        setFormStatus('loading')
 
-                    {/* Contrôles de Navigation */}
-                    <div className="flex items-center justify-center mt-8 space-x-4">
-                        {/* Bouton Précédent */}
-                        <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={prevSlide}
-                            className="p-3 rounded-full bg-white shadow-lg text-gray-600 hover:text-amber-600 transition-colors duration-300"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </motion.button>
+        try {
+            const res = await fetch('/api/testimonials/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formState)
+            })
+            const data = await res.json()
 
-                        {/* Indicateurs */}
-                        <div className="flex space-x-2">
-                            {displayTestimonials.map((_, index) => (
-                                <motion.button
-                                    key={index}
-                                    whileHover={{ scale: 1.2 }}
-                                    whileTap={{ scale: 0.8 }}
-                                    onClick={() => goToSlide(index)}
-                                    className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
-                                            ? 'bg-amber-600 w-8'
-                                            : 'bg-gray-300 hover:bg-gray-400'
-                                        }`}
-                                />
-                            ))}
-                        </div>
+            if (!res.ok) {
+                setFormError(data.message || 'Une erreur est survenue.')
+                setFormStatus('error')
+            } else {
+                setFormStatus('success')
+                setFormState({ name: '', comment: '' })
+            }
+        } catch {
+            setFormError('Erreur réseau, veuillez réessayer.')
+            setFormStatus('error')
+        }
+    }
 
-                        {/* Bouton Suivant */}
-                        <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={nextSlide}
-                            className="p-3 rounded-full bg-white shadow-lg text-gray-600 hover:text-amber-600 transition-colors duration-300"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </motion.button>
-                    </div>
+    return (
+        <section className="py-16 bg-white">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
-                    {/* Indicateur Auto-play */}
-                    <div className="flex items-center justify-center mt-4">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                            className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${isAutoPlaying
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-gray-100 text-gray-600'
-                                }`}
-                        >
-                            {isAutoPlaying ? (
-                                <>
-                                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                    <span>Lecture automatique</span>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                                    <span>En pause</span>
-                                </>
-                            )}
-                        </motion.button>
-                    </div>
+                {/* En-tête */}
+                <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">Avis clients</h2>
+                    <p className="text-sm text-gray-500">{TOTAL_TESTIMONIALS} avis déposés</p>
                 </div>
 
-                {/* Grille de témoignages secondaires
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.6, duration: 0.8 }}
-                    className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
-                >
-                    {displayTestimonials.slice(0, 3).map((testimonial, index) => (
+                {/* Liste d'avis */}
+                <div className="divide-y divide-gray-100">
+                    {visible.map((t, i) => (
                         <motion.div
-                            key={testimonial._id}
-                            initial={{ opacity: 0, y: 20 }}
+                            key={t._id}
+                            initial={{ opacity: 0, y: 10 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.8 + index * 0.1 }}
-                            whileHover={{ y: -5 }}
-                            className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+                            transition={{ delay: i * 0.05 }}
                         >
-                            <TestimonialCard testimonial={testimonial} compact={true} />
+                            <ReviewItem testimonial={t} />
                         </motion.div>
                     ))}
-                </motion.div>
- */}
-                {/* Statistiques Sociales
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 1, duration: 0.8 }}
-                    className="mt-16 text-center"
-                >
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl p-8 md:p-12 text-white">
-                        <h3 className="text-3xl font-bold mb-8">Rejoignez nos clients satisfaits</h3>
+                </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                            {[
-                                { value: '50k+', label: 'Clients satisfaits', icon: '😊' },
-                                { value: '4.9/5', label: 'Note moyenne', icon: '⭐' },
-                                { value: '98%', label: 'Recommandent', icon: '👍' },
-                                { value: '15+', label: 'Années d\'expérience', icon: '🏆' }
-                            ].map((stat, index) => (
-                                <motion.div
-                                    key={stat.label}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 1.2 + index * 0.1 }}
-                                    whileHover={{ scale: 1.05 }}
-                                    className="text-center"
-                                >
-                                    <div className="text-3xl mb-2">{stat.icon}</div>
-                                    <div className="text-3xl font-bold mb-1">{stat.value}</div>
-                                    <div className="text-white/90 text-sm">{stat.label}</div>
-                                </motion.div>
-                            ))}
+                {/* Voir plus */}
+                {!showAll && list.length > VISIBLE_COUNT && (
+                    <button
+                        onClick={() => setShowAll(true)}
+                        className="mt-6 w-full py-3 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+                    >
+                        Voir tous les avis ({list.length})
+                    </button>
+                )}
+
+                {/* Formulaire */}
+                <div className="mt-12 pt-8 border-t border-gray-100">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Laisser un avis</h3>
+                    <p className="text-xs text-gray-400 mb-6">Les avis sont vérifiés avant publication.</p>
+
+                    {formStatus === 'success' ? (
+                        <div className="flex items-center gap-3 py-4 px-4 rounded-xl bg-green-50 text-green-700 text-sm">
+                            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Merci. Votre avis sera publié après validation.
                         </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label htmlFor="t-name" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Nom <span className="text-red-400">*</span>
+                                </label>
+                                <input
+                                    id="t-name"
+                                    type="text"
+                                    value={formState.name}
+                                    onChange={(e) => setFormState(p => ({ ...p, name: e.target.value }))}
+                                    placeholder="Prénom N."
+                                    maxLength={100}
+                                    required
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100 outline-none text-sm text-gray-900 placeholder-gray-400 transition"
+                                />
+                            </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 1.6 }}
-                            className="mt-8"
-                        >
-                            <p className="text-lg text-white/90 mb-6">
-                                Vous aussi, découvrez pourquoi nos clients nous font confiance
-                            </p>
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                            <div>
+                                <label htmlFor="t-comment" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Commentaire <span className="text-red-400">*</span>
+                                </label>
+                                <textarea
+                                    id="t-comment"
+                                    value={formState.comment}
+                                    onChange={(e) => setFormState(p => ({ ...p, comment: e.target.value }))}
+                                    placeholder="Votre expérience..."
+                                    rows={4}
+                                    maxLength={1000}
+                                    required
+                                    className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100 outline-none text-sm text-gray-900 placeholder-gray-400 resize-none transition"
+                                />
+                                <p className="text-xs text-gray-400 mt-1 text-right">{formState.comment.length}/1000</p>
+                            </div>
+
+                            {formStatus === 'error' && (
+                                <p className="text-red-500 text-sm">{formError}</p>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={formStatus === 'loading'}
+                                className="w-full py-2.5 px-4 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                💬 Lire Plus de Témoignages
-                            </motion.button>
-                        </motion.div>
-                    </div>
-                </motion.div> */}
+                                {formStatus === 'loading' ? 'Envoi...' : 'Envoyer'}
+                            </button>
+                        </form>
+                    )}
+                </div>
+
             </div>
         </section>
     )

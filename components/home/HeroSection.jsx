@@ -1,4 +1,3 @@
-import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight, Clock, Shield } from 'lucide-react'
@@ -9,17 +8,6 @@ import { useSettings } from '@/hooks/useSettings'
 
 export default function HeroSection() {
     const { siteName } = useSettings()
-    const [isVideoLoaded, setIsVideoLoaded] = useState(false)
-    const videoRef = useRef(null)
-
-    useEffect(() => {
-        const video = videoRef.current
-        if (video) {
-            const handleLoadedData = () => setIsVideoLoaded(true)
-            video.addEventListener('loadeddata', handleLoadedData)
-            return () => video.removeEventListener('loadeddata', handleLoadedData)
-        }
-    }, [])
 
     const stats = [
         { value: '5j', label: 'Livraison express', icon: Clock },
@@ -28,21 +16,13 @@ export default function HeroSection() {
 
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900">
-            {/* Vidéo Background */}
+            {/* Image Background */}
             <div className="absolute inset-0 z-0">
-                <video
-                    ref={videoRef}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
+                <img
+                    src="/images/hero-poster.png"
+                    alt=""
                     className="w-full h-full object-cover opacity-60"
-                    poster="/images/hero-poster.png"
-                >
-                    <source src="/videos/hero-background.mp4" type="video/mp4" />
-                </video>
-
-                {/* Overlay */}
+                />
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-transparent" />
             </div>
 

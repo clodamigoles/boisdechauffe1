@@ -9,6 +9,7 @@ import Footer from '@/components/layout/Footer'
 import HeroSection from '@/components/home/HeroSection'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import ProductsSection from '@/components/home/ProductsSection'
+import DeliverySection from '@/components/home/DeliverySection'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
 import NewsletterSection from '@/components/home/NewsletterSection'
 import { pageVariants } from '@/utils/animations'
@@ -155,6 +156,8 @@ export default function HomePage({
                                 products={products}
                                 fallbackMessage={hasErrors ? "Chargement des produits..." : null}
                             />
+
+                            <DeliverySection />
 
                             <TestimonialsSection
                                 testimonials={testimonials}

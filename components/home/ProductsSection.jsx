@@ -1,7 +1,6 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Filter, Star, TrendingUp, Award, Sparkles, Eye } from 'lucide-react'
+import { Star, TrendingUp, Award, Eye } from 'lucide-react'
 
 import ProductCard from '../ui/ProductCard'
 import Button from '../ui/Button'
@@ -10,7 +9,6 @@ import { useSettings } from '@/hooks/useSettings'
 
 export default function ProductsSection({ products = [] }) {
     const { siteName } = useSettings()
-    const [activeFilter, setActiveFilter] = useState('all')
 
     const defaultProducts = [
         {
@@ -168,19 +166,6 @@ export default function ProductsSection({ products = [] }) {
 
     const displayProducts = products.length > 0 ? products : []
 
-    const filters = [
-        { id: 'all', label: 'Tous les produits', icon: Filter },
-        { id: 'premium', label: 'Premium', icon: Award },
-        { id: 'bestseller', label: 'Meilleures ventes', icon: TrendingUp },
-        { id: 'nouveau', label: 'Nouveautés', icon: Sparkles }
-    ]
-
-    const filteredProducts = activeFilter === 'all'
-        ? displayProducts
-        : displayProducts.filter(product =>
-            product.badges && product.badges.includes(activeFilter)
-        )
-
     return (
         <section className="py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -203,66 +188,28 @@ export default function ProductsSection({ products = [] }) {
                         Nos Produits Populaires
                     </motion.div>
 
-                    <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
+                    <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
                         Sélection Premium
                     </h2>
-
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-                        Découvrez notre gamme de bois de chauffage soigneusement sélectionnée.
-                        Chaque produit est contrôlé pour garantir une qualité exceptionnelle.
-                    </p>
-
-                    {/* Filtres */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.4 }}
-                        className="flex flex-wrap justify-center gap-3"
-                    >
-                        {filters.map((filter) => {
-                            const IconComponent = filter.icon
-                            return (
-                                <motion.button
-                                    key={filter.id}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setActiveFilter(filter.id)}
-                                    className={`flex items-center space-x-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeFilter === filter.id
-                                            ? 'bg-amber-600 text-white shadow-lg'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    <IconComponent className="w-4 h-4" />
-                                    <span>{filter.label}</span>
-                                </motion.button>
-                            )
-                        })}
-                    </motion.div>
                 </motion.div>
 
                 {/* Grille des Produits */}
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeFilter}
-                        variants={containerVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
-                    >
-                        {filteredProducts.slice(0, 8).map((product, index) => (
-                            <motion.div
-                                key={product._id}
-                                variants={itemVariants}
-                                custom={index}
-                                layout
-                            >
-                                <ProductCard product={product} />
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </AnimatePresence>
+                <motion.div
+                    variants={containerVariants}
+                    initial="initial"
+                    animate="animate"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+                >
+                    {displayProducts.slice(0, 8).map((product, index) => (
+                        <motion.div
+                            key={product._id}
+                            variants={itemVariants}
+                            custom={index}
+                        >
+                            <ProductCard product={product} />
+                        </motion.div>
+                    ))}
+                </motion.div>
 
                 {/* CTA Voir Tous les Produits */}
                 <motion.div

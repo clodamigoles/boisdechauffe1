@@ -16,7 +16,9 @@
     "db:migrate": "node scripts/migrate-database.js",
     "db:migrate:check": "node scripts/migrate-database.js --check",
     "settings:init": "node scripts/init-settings.js",
-    "seed": "node scripts/seed"
+    "seed": "node scripts/seed",
+    "prices:up": "node scripts/update-prices.js --percent=25",
+    "prices:dry": "node scripts/update-prices.js --percent=25 --dry-run"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",

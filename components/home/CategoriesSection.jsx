@@ -163,7 +163,16 @@ export default function CategoriesSection({ categories = [] }) {
                     transition={{ delay: 1, duration: 0.8 }}
                     className="text-center"
                 >
-                    <div className="bg-amber-600 rounded-2xl p-8 md:p-12 text-white relative overflow-hidden">
+                    <div className="rounded-2xl p-8 md:p-12 text-white relative overflow-hidden">
+                        {/* Image de fond */}
+                        <div className="absolute inset-0 z-0">
+                            <img
+                                src="/images/mbdc.jpg"
+                                alt=""
+                                className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gray-900/65" />
+                        </div>
                         <div className="relative z-10">
                             <h3 className="text-2xl lg:text-3xl font-bold mb-4">
                                 Besoin d'aide pour choisir ?
