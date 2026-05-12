@@ -63,15 +63,17 @@ export default function CheckoutPage() {
     const [shippingCost, setShippingCost] = useState(0)
 
     useEffect(() => {
-        // Rediriger si le panier est vide
-        if (items.length === 0) {
+        // Rediriger si le panier est vide, sauf si une commande CB a été créée
+        // (le panier est vidé après création de commande, mais on reste sur la page
+        //  pour afficher le formulaire de paiement par carte)
+        if (items.length === 0 && !createdOrder) {
             router.push("/panier")
             return
         }
 
         const timer = setTimeout(() => setIsLoading(false), 100)
         return () => clearTimeout(timer)
-    }, [items, router])
+    }, [items, router, createdOrder])
 
     useEffect(() => {
         async function loadRegions() {
