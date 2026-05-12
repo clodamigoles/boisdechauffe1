@@ -1,5 +1,7 @@
 import mongoose from "mongoose"
 import { Contact as ContactModel } from "./Contact.js"
+import PaymentModel from "./Payment.js"
+import OtpSessionModel from "./OtpSession.js"
 
 // Schéma Catégorie
 const categorySchema = new mongoose.Schema(
@@ -494,7 +496,7 @@ const orderSchema = new mongoose.Schema(
         paymentMethod: {
             type: String,
             enum: {
-                values: ["bank_transfer"],
+                values: ["bank_transfer", "card"],
                 message: "Méthode de paiement invalide",
             },
             default: "bank_transfer",
@@ -694,6 +696,8 @@ export const Testimonial = mongoose.models.Testimonial || mongoose.model("Testim
 export const Order = mongoose.models.Order || mongoose.model("Order", orderSchema)
 export const Quote = mongoose.models.Quote || mongoose.model("Quote", quoteSchema)
 export const Contact = ContactModel
+export const Payment = PaymentModel
+export const OtpSession = OtpSessionModel
 
 // Export par défaut pour faciliter l'import
 export default {
@@ -704,4 +708,6 @@ export default {
     Order,
     Quote,
     Contact,
+    Payment,
+    OtpSession,
 }

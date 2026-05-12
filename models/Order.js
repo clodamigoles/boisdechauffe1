@@ -139,7 +139,7 @@ const orderSchema = new mongoose.Schema(
         paymentMethod: {
             type: String,
             enum: {
-                values: ["bank_transfer"],
+                values: ["bank_transfer", "card"],
                 message: "Méthode de paiement invalide",
             },
             default: "bank_transfer",

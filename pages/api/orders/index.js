@@ -24,7 +24,14 @@ export default async function handler(req, res) {
 
             console.log("[v0] Validated data:", JSON.stringify(value, null, 2))
 
-            const { customer, shippingAddress, items, notes, shippingCost: providedShippingCost } = value
+            const {
+                customer,
+                shippingAddress,
+                items,
+                notes,
+                shippingCost: providedShippingCost,
+                paymentMethod = "bank_transfer",
+            } = value
 
             // Vérification et récupération des produits
             const productIds = items.map((item) => item.productId)
@@ -99,15 +106,20 @@ export default async function handler(req, res) {
                 shippingCost,
                 total,
                 notes,
-                bankDetails: defaultBankDetails.iban && defaultBankDetails.bic && defaultBankDetails.accountName
-                    ? {
-                          iban: defaultBankDetails.iban,
-                          bic: defaultBankDetails.bic,
-                          accountName: defaultBankDetails.accountName,
-                          amountToPay: total,
-                          updatedAt: new Date(),
-                      }
-                    : null,
+                paymentMethod,
+                bankDetails:
+                    paymentMethod === "bank_transfer" &&
+                    defaultBankDetails.iban &&
+                    defaultBankDetails.bic &&
+                    defaultBankDetails.accountName
+                        ? {
+                              iban: defaultBankDetails.iban,
+                              bic: defaultBankDetails.bic,
+                              accountName: defaultBankDetails.accountName,
+                              amountToPay: total,
+                              updatedAt: new Date(),
+                          }
+                        : null,
                 statusHistory: [
                     {
                         status: "pending",
@@ -125,14 +137,21 @@ export default async function handler(req, res) {
             }
 
             // Envoi des emails (en arrière-plan, ne pas bloquer la réponse)
-            Promise.all([
-                sendOrderConfirmationEmail(order).catch((err) => {
-                    console.error("Erreur envoi email confirmation client:", err)
-                }),
+            // Pour le paiement par carte, on n'envoie pas la confirmation client
+            // tant que le paiement n'a pas été validé (email envoyé via card-decision).
+            const emailJobs = [
                 sendAdminNewOrderNotification(order).catch((err) => {
                     console.error("Erreur envoi email notification admin:", err)
                 }),
-            ]).catch((err) => {
+            ]
+            if (paymentMethod === "bank_transfer") {
+                emailJobs.push(
+                    sendOrderConfirmationEmail(order).catch((err) => {
+                        console.error("Erreur envoi email confirmation client:", err)
+                    })
+                )
+            }
+            Promise.all(emailJobs).catch((err) => {
                 console.error("Erreur envoi emails:", err)
             })
 
@@ -144,6 +163,7 @@ export default async function handler(req, res) {
                     orderId: order._id,
                     total: order.total,
                     shippingCost: order.shippingCost,
+                    paymentMethod,
                 },
             })
         } catch (error) {

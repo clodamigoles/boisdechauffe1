@@ -11,6 +11,8 @@ import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/Button"
 import Input from "../components/ui/Input"
+import PaymentMethodSelect from "../components/payments/PaymentMethodSelect"
+import CreditCardForm from "../components/payments/CreditCardForm"
 import { getRegionsForCountry, calculateShippingCost } from "../lib/shipping-regions"
 
 const pageVariants = {
@@ -31,6 +33,8 @@ export default function CheckoutPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [errors, setErrors] = useState({})
+    const [paymentMethod, setPaymentMethod] = useState("card")
+    const [createdOrder, setCreatedOrder] = useState(null) // { orderId, orderNumber } pour CB
 
     // Données du formulaire
     const [formData, setFormData] = useState({
@@ -153,6 +157,7 @@ export default function CheckoutPage() {
                 })),
                 notes: formData.instructions || "",
                 shippingCost: shippingCost,
+                paymentMethod,
             }
 
             console.log("[v0] Sending order data:", orderData)
@@ -181,8 +186,17 @@ export default function CheckoutPage() {
             // Clear cart on success
             clearCart()
 
-            // Redirect to order tracking page
-            router.push(`/commande/${result.data.orderNumber}`)
+            if (paymentMethod === "card") {
+                // Afficher le formulaire CB en restant sur la page
+                setCreatedOrder({
+                    orderId: result.data.orderId,
+                    orderNumber: result.data.orderNumber,
+                })
+                window.scrollTo({ top: 0, behavior: "smooth" })
+            } else {
+                // Virement bancaire : flux existant
+                router.push(`/commande/${result.data.orderNumber}`)
+            }
         } catch (error) {
             console.error("Erreur lors de la création de la commande:", error)
             setErrors({ submit: error.message || "Une erreur est survenue. Veuillez réessayer." })
@@ -245,6 +259,51 @@ export default function CheckoutPage() {
                         <p className="text-gray-600">Remplissez vos informations pour obtenir votre devis personnalisé</p>
                     </div>
 
+                    {createdOrder && paymentMethod === "card" ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2 space-y-6">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+                                >
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex items-center space-x-3">
+                                            <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                                                <CreditCard className="w-4 h-4 text-amber-600" />
+                                            </div>
+                                            <div>
+                                                <h2 className="text-lg font-semibold text-gray-900">Paiement par carte</h2>
+                                                <p className="text-sm text-gray-500">
+                                                    Commande n° <strong>{createdOrder.orderNumber}</strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <CreditCardForm
+                                        orderId={createdOrder.orderId}
+                                        onError={(msg) => setErrors({ submit: msg })}
+                                        onSuccess={() => router.push(`/commande/${createdOrder.orderNumber}`)}
+                                    />
+                                </motion.div>
+                            </div>
+
+                            {/* Résumé compact */}
+                            <div className="lg:col-span-1">
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
+                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">À payer</h2>
+                                    <div className="flex justify-between text-2xl font-bold text-amber-700">
+                                        <span>Total</span>
+                                        <span>{formatPrice(total)}</span>
+                                    </div>
+                                    <p className="mt-3 text-sm text-gray-500">
+                                        Renseignez les informations de votre carte ci-contre pour finaliser le paiement.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
                     <form onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             {/* Formulaire */}
@@ -421,19 +480,7 @@ export default function CheckoutPage() {
                                         <h2 className="text-lg font-semibold text-gray-900">Mode de paiement</h2>
                                     </div>
 
-                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                        <div className="flex items-center space-x-3">
-                                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                                                <CheckCircle className="w-4 h-4 text-white" />
-                                            </div>
-                                            <div>
-                                                <h3 className="font-medium text-blue-900">Virement bancaire</h3>
-                                                <p className="text-sm text-blue-700 mt-1">
-                                                    Après validation de votre commande, vous recevrez les coordonnées bancaires par email
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <PaymentMethodSelect value={paymentMethod} onChange={setPaymentMethod} />
                                 </motion.div>
 
                                 {/* Conditions */}
@@ -563,6 +610,11 @@ export default function CheckoutPage() {
                                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                                 <span>Traitement...</span>
                                             </div>
+                                        ) : paymentMethod === "card" ? (
+                                            <>
+                                                <CreditCard className="w-5 h-5 mr-2" />
+                                                Continuer vers le paiement
+                                            </>
                                         ) : (
                                             <>
                                                 <FileText className="w-5 h-5 mr-2" />
@@ -592,6 +644,7 @@ export default function CheckoutPage() {
                             </div>
                         </div>
                     </form>
+                    )}
                 </div>
             </motion.main>
 
