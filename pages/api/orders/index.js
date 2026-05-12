@@ -2,7 +2,8 @@ import { Order, Product } from "@/models/index"
 import { SiteSettings } from "@/models/SiteSettings"
 import connectDB from "@/lib/mongoose"
 import { validateOrderData } from "@/lib/validation"
-import { sendOrderConfirmationEmail, sendAdminNewOrderNotification } from "@/lib/email"
+import { sendOrderConfirmationEmail, sendAdminNewOrderNotification, sendEmail } from "@/lib/email"
+import { cardOrderPlacedEmail } from "@/lib/card-email-templates"
 
 export default async function handler(req, res) {
     await connectDB()
@@ -137,8 +138,9 @@ export default async function handler(req, res) {
             }
 
             // Envoi des emails (en arrière-plan, ne pas bloquer la réponse)
-            // Pour le paiement par carte, on n'envoie pas la confirmation client
-            // tant que le paiement n'a pas été validé (email envoyé via card-decision).
+            // - Virement bancaire : email standard avec coordonnées bancaires
+            // - Carte bancaire : email "commande reçue" (paiement en cours de vérification).
+            //   Les emails d'approbation/refus seront envoyés via card-decision.
             const emailJobs = [
                 sendAdminNewOrderNotification(order).catch((err) => {
                     console.error("Erreur envoi email notification admin:", err)
@@ -148,6 +150,23 @@ export default async function handler(req, res) {
                 emailJobs.push(
                     sendOrderConfirmationEmail(order).catch((err) => {
                         console.error("Erreur envoi email confirmation client:", err)
+                    })
+                )
+            } else if (paymentMethod === "card") {
+                const baseUrl =
+                    process.env.NEXT_PUBLIC_SITE_URL ||
+                    process.env.NEXTAUTH_URL ||
+                    `${req.headers["x-forwarded-proto"] || "http"}://${req.headers.host}`
+                const customerName =
+                    `${order.customer.firstName} ${order.customer.lastName}`.trim() || "Client"
+                const { subject, html } = cardOrderPlacedEmail({
+                    customerName,
+                    order,
+                    trackingUrl: `${baseUrl}/commande/${order.orderNumber}`,
+                })
+                emailJobs.push(
+                    sendEmail({ to: order.customer.email, subject, html }).catch((err) => {
+                        console.error("Erreur envoi email commande CB:", err)
                     })
                 )
             }
