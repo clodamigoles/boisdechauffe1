@@ -6,7 +6,7 @@ import { useRouter } from "next/router"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { LayoutDashboard, Package, Users, ShoppingCart, Menu, Home, Settings } from "lucide-react"
+import { LayoutDashboard, Package, Users, ShoppingCart, Menu, Home, Settings, LogOut } from "lucide-react"
 
 const navigation = [
     {
@@ -40,6 +40,11 @@ export default function AdminLayout({ children }) {
     const router = useRouter()
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
+    const handleLogout = async () => {
+        await fetch("/api/admin/auth", { method: "DELETE" })
+        router.push("/delta/login")
+    }
+
     const Sidebar = ({ className }) => (
         <div className={cn("flex flex-col h-full", className)}>
             <div className="flex items-center gap-2 px-6 py-4 border-b">
@@ -69,7 +74,7 @@ export default function AdminLayout({ children }) {
                 })}
             </nav>
 
-            <div className="px-4 py-4 border-t">
+            <div className="px-4 py-4 border-t space-y-1">
                 <Link
                     href="/"
                     className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -77,6 +82,13 @@ export default function AdminLayout({ children }) {
                     <Home className="h-4 w-4" />
                     Retour au site
                 </Link>
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-muted transition-colors"
+                >
+                    <LogOut className="h-4 w-4" />
+                    Déconnexion
+                </button>
             </div>
         </div>
     )
