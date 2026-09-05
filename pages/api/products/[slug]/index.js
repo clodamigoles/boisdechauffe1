@@ -51,8 +51,10 @@ async function handler(req, res) {
             economyPerStere: product.compareAtPrice
                 ? Math.round(product.compareAtPrice - product.price)
                 : 0,
-            deliveryEstimate: '24-48h', // À calculer selon la région
-            carbonFootprint: product.essence === 'granulés' ? 'Faible' : 'Très faible'
+            // `deliveryEstimate: '24-48h'` et `carbonFootprint: 'Très faible'`
+            // étaient calculés ici. Aucun composant ne les lisait, le premier
+            // annonçait un délai que le site ne tient pas, et le second était
+            // une affirmation environnementale sans mesure derrière.
         }
 
         // Récupérer des produits similaires

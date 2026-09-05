@@ -109,7 +109,7 @@ export default function Input({
                     className="mt-2 text-sm text-red-600"
                 >
                     {error || (
-                        !isValid && required && !value ? 'Ce champ est requis' :
+                        !isValid && required && !value ? t('common.fieldRequired') :
                             !isValid && type === 'email' ? 'Format d\'email invalide' :
                                 t('common.invalidValue')
                     )}
@@ -132,11 +132,12 @@ export default function Input({
                         />
                     </div>
                     <div className="mt-1 text-xs text-gray-500">
-                        Force du mot de passe : {
-                            value.length < 6 ? 'Faible' :
-                                value.length < 8 ? 'Moyenne' :
-                                    'Forte'
-                        }
+                        {t('common.passwordStrength', {
+                            level:
+                                value.length < 6 ? t('common.passwordWeak') :
+                                    value.length < 8 ? t('common.passwordMedium') :
+                                        t('common.passwordStrong'),
+                        })}
                     </div>
                 </motion.div>
             )}

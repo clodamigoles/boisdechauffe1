@@ -5,8 +5,8 @@ import { useT } from '@/lib/i18n'
 export default function ProductBreadcrumb({ product }) {
     const t = useT()
     const breadcrumbs = [
-        { name: "Accueil", href: "/", icon: Home },
-        { name: "Boutique", href: "/shop" },
+        { name: t('nav.home'), href: "/", icon: Home },
+        { name: t('nav.shopShort'), href: "/shop" },
         // { name: product.category?.name || "Produits", href: `/shop?category=${product.category?.slug}` },
         { name: product.name, href: `/produits/${product.slug}`, current: true },
     ]

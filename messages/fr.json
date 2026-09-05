@@ -18,7 +18,15 @@
     "seeAll": "Tout voir",
     "readMore": "Lire la suite",
     "networkError": "Erreur réseau. Veuillez réessayer.",
-    "invalidValue": "Valeur invalide"
+    "invalidValue": "Valeur invalide",
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "fieldRequired": "Ce champ est obligatoire",
+    "signupError": "Inscription impossible.",
+    "passwordStrength": "Force du mot de passe : {level}",
+    "passwordWeak": "faible",
+    "passwordMedium": "moyenne",
+    "passwordStrong": "forte",
+    "charCount": "{count}/{max} caractères"
   },
   "nav": {
     "home": "Accueil",
@@ -38,7 +46,8 @@
     "skipToContent": "Aller au contenu principal",
     "mainNavigation": "Navigation principale",
     "cartCount_one": "{count} article dans le panier",
-    "cartCount_other": "{count} articles dans le panier"
+    "cartCount_other": "{count} articles dans le panier",
+    "shopShort": "Boutique"
   },
   "home": {
     "heroBadge": "Livraison en 4 à 5 jours ouvrés",
@@ -125,7 +134,9 @@
     "reviewsAfterOrder": "à la suite d'une commande du {date}",
     "statProducts": "produits au catalogue",
     "statRating": "note des clients",
-    "statRatingValue": "{average} / 5"
+    "statRatingValue": "{average} / 5",
+    "whyTitle": "Pourquoi acheter chez {name} ?",
+    "whySubtitle": "Du bois que nous fendons et séchons nous-mêmes — et dont nous mesurons l'humidité avant expédition."
   },
   "footer": {
     "tagline": "Bois de chauffage sec issu des forêts allemandes, livré en Allemagne et dans l'Union européenne.",
@@ -210,7 +221,9 @@
     "pagination": "Pagination",
     "sortBy": "Trier par :",
     "searchShort": "Rechercher…",
-    "viewProduct": "Voir le produit"
+    "viewProduct": "Voir le produit",
+    "available_one": "{count} produit disponible",
+    "available_other": "{count} produits disponibles"
   },
   "product": {
     "addToCart": "Ajouter au panier",
@@ -251,7 +264,16 @@
     "techSpecs": "Caractéristiques techniques",
     "ecoBenefits": "Avantages écologiques",
     "usageTips": "Conseils d'utilisation",
-    "breadcrumb": "Fil d'Ariane"
+    "breadcrumb": "Fil d'Ariane",
+    "tipsTitle": "Conseils d'utilisation",
+    "tipStorage": "Stocker au sec, à l'air, à l'abri de la pluie",
+    "tipLength": "Choisir des bûches adaptées à la largeur du foyer",
+    "tipTopDown": "Allumer par le haut — moins de fumée, combustion plus propre",
+    "deliveryLeadTime": "Livraison en 4 à 5 jours ouvrés",
+    "deliveryFree": "Gratuite à partir de {amount}",
+    "deliveryFreeUnknown": "Frais de port selon le Land, visibles avant le paiement",
+    "deliveryPallet": "Sur palette, déchargée au hayon",
+    "tipMoisture": "Rendement optimal sous 20 % d'humidité"
   },
   "species": {
     "chêne": "Chêne",
@@ -306,7 +328,9 @@
     "goToCart": "Voir le panier",
     "keepShopping": "Continuer",
     "itemsTitle": "Articles",
-    "summaryTitle": "Récapitulatif"
+    "summaryTitle": "Récapitulatif",
+    "itemsInCart_one": "{count} article dans votre panier",
+    "itemsInCart_other": "{count} articles dans votre panier"
   },
   "checkout": {
     "title": "Votre commande",
@@ -413,7 +437,9 @@
     "feature2": "Notifications",
     "feature2Text": "Nous vous écrivons à la réception du paiement et à l'expédition.",
     "feature3": "Historique complet",
-    "feature3Text": "Chaque étape datée, de l'enregistrement à la livraison."
+    "feature3Text": "Chaque étape datée, de l'enregistrement à la livraison.",
+    "notFoundError": "Commande introuvable. Vérifiez votre numéro de commande.",
+    "emailMismatch": "L'adresse e-mail ne correspond pas à cette commande."
   },
   "contact": {
     "title": "Contact",
@@ -496,7 +522,8 @@
     "trustWoodText": "Nous le fendons et le séchons nous-mêmes",
     "trustPrice": "Des prix clairs",
     "trustPriceText": "Frais de port visibles avant le paiement",
-    "reach": "Contacter"
+    "reach": "Contacter",
+    "heroSubtitle": "Une question sur un produit, une livraison ou une commande en cours — écrivez-nous."
   },
   "regions": {
     "Baden-Württemberg": "Bade-Wurtemberg",
@@ -592,7 +619,12 @@
     "receiptFormats": "Formats acceptés : JPG, PNG, PDF (10 Mo maximum)",
     "receiptSend": "Envoyer le justificatif",
     "cancel": "Annuler",
-    "securePayment": "Paiement sécurisé"
+    "securePayment": "Paiement sécurisé",
+    "cardHolderPlaceholder": "TEL QU'IL APPARAÎT SUR LA CARTE",
+    "bankAppNotice": "Ouvrez l'application de votre banque et approuvez la demande de paiement qui vous a été envoyée.",
+    "receiptIntro": "Une fois votre virement effectué, vous pouvez nous envoyer le justificatif — cela accélère le traitement de votre commande.",
+    "otpRequired": "Veuillez saisir le code reçu",
+    "approvedShort": "Paiement validé"
   },
   "empty": {
     "searchTitle": "Aucun résultat",
@@ -626,7 +658,12 @@
     "preparingTitle": "En préparation",
     "preparingText": "Votre commande est en cours de préparation",
     "shippedText": "Votre commande est en route",
-    "deliveredText": "Votre commande a été livrée"
+    "deliveredText": "Votre commande a été livrée",
+    "notFoundText": "Le numéro de commande {orderNumber} n'existe pas.",
+    "transferAmount": "Montant à virer : {amount}",
+    "processingNote": "Votre commande est traitée dès réception du paiement (un à deux jours ouvrés).",
+    "bankPendingText": "Nous préparons vos coordonnées bancaires. Vous les recevrez par e-mail dès qu'elles seront prêtes — en général quelques minutes.",
+    "loadError": "La commande n'a pas pu être chargée."
   },
   "faq": {
     "badge": "Aide",
@@ -651,7 +688,9 @@
     "resourceContact": "Poser une question",
     "resourceContactText": "Décrivez votre appareil et la surface à chauffer — nous vous dirons ce qui convient.",
     "resourceContactCta": "Nous écrire",
-    "learnMore": "En savoir plus"
+    "learnMore": "En savoir plus",
+    "heroIntro": "Commander, payer, la livraison, le séchage du bois — les réponses à ce qu'on nous demande le plus.",
+    "helpText": "Ce qui ne figure pas ici, nous y répondons par écrit, sous 48 heures. Pour une commande en cours, indiquez son numéro."
   },
   "delivery": {
     "badge": "Livraison dans toute l'Allemagne",
@@ -706,5 +745,51 @@
     "privacyIntro": "Quelles données nous collectons, pourquoi, et combien de temps nous les gardons.",
     "cookiesTitle": "Politique de cookies",
     "cookiesIntro": "Ce que la boutique stocke dans votre navigateur — et ce qu'elle n'y stocke pas."
+  },
+  "api": {
+    "firstNameRequired": "Merci d'indiquer votre prénom.",
+    "firstNameShort": "Le prénom doit contenir au moins 2 caractères.",
+    "firstNameLong": "Le prénom ne peut dépasser 50 caractères.",
+    "lastNameRequired": "Merci d'indiquer votre nom.",
+    "lastNameShort": "Le nom doit contenir au moins 2 caractères.",
+    "emailRequired": "Merci d'indiquer votre adresse e-mail.",
+    "emailInvalid": "Cette adresse e-mail est invalide.",
+    "phoneRequired": "Merci d'indiquer votre numéro de téléphone.",
+    "phoneInvalid": "Ce numéro de téléphone est invalide.",
+    "subjectRequired": "Merci de choisir un objet.",
+    "messageRequired": "Merci d'écrire votre message.",
+    "messageShort": "Le message doit contenir au moins 10 caractères.",
+    "messageLong": "Le message ne peut dépasser 2000 caractères.",
+    "termsRequired": "Vous devez accepter les conditions.",
+    "contactSent": "Message reçu. Nous répondons sous 48 heures.",
+    "reviewNameRequired": "Merci d'indiquer un nom (2 caractères minimum).",
+    "reviewNameLong": "Le nom ne peut dépasser 100 caractères.",
+    "reviewCommentRequired": "Merci d'écrire un commentaire (10 caractères minimum).",
+    "reviewCommentLong": "Le commentaire ne peut dépasser 1000 caractères.",
+    "reviewRatingInvalid": "La note doit être comprise entre 1 et 5.",
+    "reviewSent": "Votre avis a été transmis et sera publié après vérification.",
+    "newsletterReactivated": "Votre inscription a été réactivée.",
+    "newsletterSent": "Presque terminé : confirmez depuis l'e-mail que nous venons de vous envoyer.",
+    "newsletterAlready": "Cette adresse e-mail est déjà inscrite.",
+    "newsletterConfirmed": "Inscription confirmée. Bienvenue.",
+    "newsletterAlreadyConfirmed": "Cette adresse e-mail était déjà confirmée.",
+    "newsletterNotFound": "Cette adresse e-mail ne figure pas sur notre liste.",
+    "newsletterAlreadyOut": "Cette adresse e-mail était déjà désinscrite.",
+    "newsletterOut": "Désinscription effectuée.",
+    "orderNotFound": "Commande introuvable.",
+    "orderLoadFailed": "La commande n'a pas pu être chargée.",
+    "orderUpdated": "Commande mise à jour.",
+    "orderUpdateFailed": "La commande n'a pas pu être mise à jour.",
+    "receiptUploaded": "Justificatif de paiement transmis.",
+    "receiptFailed": "Le justificatif n'a pas pu être transmis.",
+    "outOfStock": "Stock insuffisant pour {name}.",
+    "productNotFound": "Produit {id} introuvable.",
+    "orderNotPayable": "Commande introuvable ou déjà payée.",
+    "otpMissing": "La session et le code sont requis.",
+    "orderCreated": "Commande enregistrée.",
+    "orderCreateFailed": "La commande n'a pas pu être enregistrée.",
+    "invalidData": "Données invalides.",
+    "productsMissing": "Certains produits sont introuvables.",
+    "serverError": "Erreur serveur."
   }
 }

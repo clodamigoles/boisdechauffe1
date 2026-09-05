@@ -2,6 +2,7 @@ import { withPublicAPI, createResponse } from '@/middleware/api'
 import { Quote } from '@/models'
 import Joi from 'joi'
 import { localizeDoc, resolveLocale } from '@/lib/localize-doc'
+import { PHONE_PATTERN } from '@/lib/phone'
 
 // Schéma de validation pour les demandes de devis
 const quoteRequestSchema = Joi.object({
@@ -25,7 +26,7 @@ const quoteRequestSchema = Joi.object({
             'string.empty': 'L\'email est requis'
         }),
 
-    phone: Joi.string().pattern(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/).required()
+    phone: Joi.string().pattern(PHONE_PATTERN).required()
         .messages({
             'string.pattern.base': 'Numéro de téléphone français invalide',
             'string.empty': 'Le téléphone est requis'

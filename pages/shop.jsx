@@ -17,6 +17,7 @@ import EmptyState from "../components/ui/EmptyState"
 import { pageVariants } from "../utils/animations"
 import SeoHead from "@/components/layout/SeoHead"
 import { useT } from "@/lib/i18n"
+import { withLocale } from "@/lib/api"
 
 export default function ShopPage({ initialProducts, categories, totalProducts: initialTotal, totalPages: initialTotalPages }) {
     const t = useT()
@@ -56,7 +57,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                 }
             })
 
-            const response = await fetch(`/api/products/search?${searchParams.toString()}`)
+            const response = await fetch(withLocale(`/api/products/search?${searchParams.toString()}`))
             const data = await response.json()
 
             if (data.success) {
@@ -129,8 +130,8 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
     // Breadcrumb memoized
     const breadcrumbItems = useMemo(() => {
         const items = [
-            { label: "Accueil", href: "/" },
-            { label: "Boutique", href: "/shop" }
+            { label: t('nav.home'), href: "/" },
+            { label: t('nav.shopShort'), href: "/shop" }
         ]
         
         if (filters.category) {
@@ -181,7 +182,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                 <div>
                                     <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('shop.title')}</h1>
                                     <p className="text-lg text-gray-600">
-                                        {totalProducts} produit{totalProducts > 1 ? "s" : ""} disponible{totalProducts > 1 ? "s" : ""}
+                                        {t.plural('shop.available', totalProducts, { count: totalProducts })}
                                     </p>
                                 </div>
 
@@ -369,7 +370,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
     )
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ query, locale }) {
     try {
         const searchParams = new URLSearchParams()
         Object.entries(query).forEach(([key, value]) => {
@@ -381,8 +382,8 @@ export async function getServerSideProps({ query }) {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
         
         const [productsRes, categoriesRes] = await Promise.all([
-            fetch(`${baseUrl}/api/products/search?${searchParams.toString()}`),
-            fetch(`${baseUrl}/api/categories`)
+            fetch(withLocale(`${baseUrl}/api/products/search?${searchParams.toString()}`, locale)),
+            fetch(withLocale(`${baseUrl}/api/categories`, locale))
         ])
 
         const [productsData, categoriesData] = await Promise.all([

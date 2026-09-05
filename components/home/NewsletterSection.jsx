@@ -24,7 +24,7 @@ export default function NewsletterSection() {
             const data = await response.json()
 
             if (!response.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'inscription')
+                throw new Error(data.message || t('common.signupError'))
             }
 
             setIsSuccess(true)

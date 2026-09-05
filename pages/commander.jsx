@@ -15,6 +15,7 @@ import PaymentMethodSelect from "../components/payments/PaymentMethodSelect"
 import CreditCardForm from "../components/payments/CreditCardForm"
 import { getRegionsForCountry, getShippingCountries, calculateShippingCost } from "../lib/shipping-regions"
 import { useSettings } from "@/hooks/useSettings"
+import { withLocale } from "@/lib/api"
 import { useT } from "@/lib/i18n"
 
 const pageVariants = {
@@ -177,7 +178,9 @@ export default function CheckoutPage() {
             console.log("[v0] Sending order data:", orderData)
 
             // Call the new API endpoint
-            const response = await fetch("/api/orders", {
+            // La langue accompagne la commande : c'est elle qui fige le nom
+            // des produits dans la capture enregistrée, et donc sur la facture.
+            const response = await fetch(withLocale("/api/orders"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -190,11 +193,11 @@ export default function CheckoutPage() {
             console.log("[v0] API response:", result)
 
             if (!response.ok) {
-                throw new Error(result.message || "Erreur lors de la création de la commande")
+                throw new Error(result.message || t('checkout.submitError'))
             }
 
             if (!result.success) {
-                throw new Error(result.message || "Erreur lors de la création de la commande")
+                throw new Error(result.message || t('checkout.submitError'))
             }
 
             // Clear cart on success

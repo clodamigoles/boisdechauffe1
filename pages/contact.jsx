@@ -160,11 +160,11 @@ export default function ContactPage() {
             const result = await response.json()
 
             if (!response.ok) {
-                throw new Error(result.message || 'Erreur lors de l\'envoi du message')
+                throw new Error(result.message || t('contact.error'))
             }
 
             if (!result.success) {
-                throw new Error(result.message || 'Erreur lors de l\'envoi du message')
+                throw new Error(result.message || t('contact.error'))
             }
 
             // Succès
@@ -191,7 +191,7 @@ export default function ContactPage() {
 
         } catch (error) {
             console.error('Erreur lors de l\'envoi:', error)
-            setErrors({ submit: error.message || 'Une erreur est survenue. Veuillez réessayer.' })
+            setErrors({ submit: error.message || t('common.genericError') })
         } finally {
             setIsSubmitting(false)
         }
@@ -261,8 +261,7 @@ export default function ContactPage() {
                                 </h1>
 
                                 <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                                    Une question ? Un projet ? Notre équipe d'experts est là pour vous conseiller
-                                    et vous accompagner dans tous vos besoins en bois de chauffage.
+                                    {t('contact.heroSubtitle')}
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -505,7 +504,7 @@ export default function ContactPage() {
                                                             <p className="text-sm text-red-600">{errors.message}</p>
                                                         )}
                                                         <p className="text-xs text-gray-500 ml-auto">
-                                                            {formData.message.length}/500 caractères
+                                                            {t('common.charCount', { count: formData.message.length, max: 500 })}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -729,7 +728,7 @@ export default function ContactPage() {
                                             <Users className="w-6 h-6 text-amber-400" />
                                         </div>
                                         <h3 className="font-semibold mb-2">{t('contact.trustWood')}</h3>
-                                        <p className="text-gray-400 text-sm">15 ans d'expérience</p>
+                                        <p className="text-gray-400 text-sm">{t('contact.trustWoodText')}</p>
                                     </div>
 
                                     <div>

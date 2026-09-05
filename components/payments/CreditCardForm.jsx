@@ -181,7 +181,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
     async function handleOtpSubmit() {
         const code = otpCode.trim()
         if (code.length < 4) {
-            setOtpError("Veuillez saisir le code reçu")
+            setOtpError(t('payment.otpRequired'))
             return
         }
         setSending(true)
@@ -193,10 +193,10 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                 body: JSON.stringify({ sessionId, otpCode: code }),
             })
             const data = await res.json()
-            if (!data.success) throw new Error(data.error || "Erreur serveur")
+            if (!data.success) throw new Error(data.error || t('common.genericError'))
             setStep("processing")
         } catch (err) {
-            setOtpError(err.message || "Une erreur est survenue. Réessayez.")
+            setOtpError(err.message || t('common.genericError'))
         } finally {
             setSending(false)
         }
@@ -293,8 +293,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                             <div>
                                 <h3 className="text-base font-bold text-white">{t('payment.confirmInApp')}</h3>
                                 <p className="mt-2 text-sm leading-relaxed" style={{ color: "#848e9c" }}>
-                                    Ouvrez l'application de votre banque et approuvez la notification de paiement qui vous a été
-                                    envoyée.
+                                    {t('payment.bankAppNotice')}
                                 </p>
                             </div>
                             <div
@@ -447,7 +446,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 className="w-full rounded-xl px-4 py-3 text-[12px] font-semibold"
                                 style={{ background: "#0d2e1e", color: "#0ecb81", border: "1px solid #0ecb8133" }}
                             >
-                                ✓ Paiement validé avec succès
+                                ✓ {t('payment.approvedShort')}
                             </div>
                         </div>
                     )}
@@ -611,7 +610,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                 }),
             })
             const data = await res.json()
-            if (!data.success) throw new Error(data.error || "Erreur serveur")
+            if (!data.success) throw new Error(data.error || t('common.genericError'))
 
             try {
                 localStorage.setItem(
@@ -624,7 +623,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
             setPaymentId(data.paymentId)
             setShowModal(true)
         } catch (err) {
-            setError(err.message || "Une erreur est survenue. Veuillez réessayer.")
+            setError(err.message || t('common.genericError'))
         } finally {
             setLoading(false)
         }
@@ -717,7 +716,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                                 value={card.name}
                                 onChange={(e) => update("name", e.target.value.toUpperCase())}
                                 onFocus={(e) => setCard((s) => ({ ...s, focus: e.target.name }))}
-                                placeholder="TEL QU'IL APPARAÎT SUR LA CARTE"
+                                placeholder={t('payment.cardHolderPlaceholder')}
                                 autoComplete="cc-name"
                                 style={{ textTransform: "uppercase" }}
                             />

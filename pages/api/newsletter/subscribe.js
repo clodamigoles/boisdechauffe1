@@ -1,7 +1,9 @@
 import connectDB, { handleDBErrors, withTransaction } from '@/lib/mongoose'
 import { Newsletter } from '@/models'
+import { serverT } from '@/lib/server-i18n'
 
 export default async function handler(req, res) {
+    const t = serverT(req)
     if (req.method !== 'POST') {
         res.setHeader('Allow', ['POST'])
         return res.status(405).json({
@@ -89,7 +91,7 @@ export default async function handler(req, res) {
         if (result.reactivated) {
             return res.status(200).json({
                 success: true,
-                message: 'Votre abonnement a été réactivé avec succès !',
+                message: t('api.newsletterReactivated'),
                 data: {
                     email: result.subscriber.email,
                     subscriberId: result.subscriber._id,
@@ -101,7 +103,7 @@ export default async function handler(req, res) {
 
         return res.status(201).json({
             success: true,
-            message: 'Inscription réussie ! Vérifiez votre boîte mail pour confirmer votre abonnement.',
+            message: t('api.newsletterSent'),
             data: {
                 email: result.subscriber.email,
                 subscriberId: result.subscriber._id,
@@ -117,7 +119,7 @@ export default async function handler(req, res) {
         if (error.message === 'EMAIL_EXISTS') {
             return res.status(409).json({
                 success: false,
-                message: 'Cette adresse email est déjà inscrite à notre newsletter'
+                message: t('api.newsletterAlready')
             })
         }
 
@@ -127,7 +129,7 @@ export default async function handler(req, res) {
         if (dbError.type === 'DUPLICATE_ERROR') {
             return res.status(409).json({
                 success: false,
-                message: 'Cette adresse email est déjà inscrite'
+                message: t('api.newsletterAlready')
             })
         }
 

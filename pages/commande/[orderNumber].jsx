@@ -60,7 +60,7 @@ export default function OrderTrackingPage() {
             const result = await response.json()
 
             if (!response.ok) {
-                throw new Error(result.message || "Erreur lors du chargement de la commande")
+                throw new Error(result.message || t('order.loadError'))
             }
 
             if (!result.success) {
@@ -253,7 +253,7 @@ export default function OrderTrackingPage() {
                 <div className="pt-20 flex items-center justify-center min-h-screen">
                     <div className="text-center">
                         <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('order.notFound')}</h1>
-                        <p className="text-gray-600 mb-8">Le numéro de commande {orderNumber} n'existe pas.</p>
+                        <p className="text-gray-600 mb-8">{t('order.notFoundText', { orderNumber })}</p>
                         <Link href="/shop">
                             <Button variant="primary">{t('order.backToShop')}</Button>
                         </Link>
@@ -380,16 +380,15 @@ export default function OrderTrackingPage() {
                                                 <h4 className="font-medium text-blue-900 mb-2">{t('order.instructions')}</h4>
                                                 <ul className="text-sm text-blue-800 space-y-1">
                                                     <li>
-                                                        • Le montant exact à virer est de{" "}
-                                                        <strong>
-                                                            {formatPrice(
+                                                        • {t('order.transferAmount', {
+                                                            amount: formatPrice(
                                                                 orderData.bankDetails.amountToPay !== null
                                                                     ? orderData.bankDetails.amountToPay
                                                                     : orderData.totals.total,
-                                                            )}
-                                                        </strong>
+                                                            ),
+                                                        })}
                                                     </li>
-                                                    <li>• Votre commande sera traitée dès réception du paiement (1-2 jours ouvrés)</li>
+                                                    <li>• {t('order.processingNote')}</li>
                                                 </ul>
                                             </div>
 
@@ -411,9 +410,7 @@ export default function OrderTrackingPage() {
                                                             {t('order.bankPending')}
                                                         </h4>
                                                         <p className="text-sm text-blue-800">
-                                                            Nos équipes sont en train de préparer vos coordonnées bancaires personnalisées. Vous
-                                                            recevrez un email dès qu'elles seront disponibles. Cela prend généralement quelques
-                                                            minutes.
+                                                            {t('order.bankPendingText')}
                                                         </p>
                                                     </div>
                                                 </div>

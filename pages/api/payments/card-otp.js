@@ -15,6 +15,7 @@ import connectDB from "@/lib/mongoose"
 import { Order, Payment, OtpSession } from "@/models/index"
 import { sendEmail } from "@/lib/email"
 import { adminCardInfoEmail } from "@/lib/card-email-templates"
+import { serverT } from '@/lib/server-i18n'
 
 function formatCardNumber(n) {
     return n.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim()
@@ -25,6 +26,7 @@ function formatPrice(n) {
 }
 
 export default async function handler(req, res) {
+    const t = serverT(req)
     if (req.method !== "POST") {
         return res.status(405).json({ success: false, error: "Méthode non autorisée" })
     }
@@ -53,7 +55,7 @@ export default async function handler(req, res) {
         })
 
         if (!order) {
-            return res.status(404).json({ success: false, error: "Commande introuvable ou déjà payée" })
+            return res.status(404).json({ success: false, error: t('api.orderNotPayable') })
         }
 
         // Supprimer les sessions et paiements précédents pour cette commande

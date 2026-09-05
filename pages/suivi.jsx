@@ -31,14 +31,14 @@ export default function SuiviPage() {
             const result = await response.json()
 
             if (!result.success) {
-                setError("Commande introuvable. Vérifiez votre numéro de commande.")
+                setError(t('tracking.notFoundError'))
                 setIsLoading(false)
                 return
             }
 
             // Verify email matches
             if (result.data.customer.email.toLowerCase() !== email.toLowerCase()) {
-                setError("L'email ne correspond pas à cette commande.")
+                setError(t('tracking.emailMismatch'))
                 setIsLoading(false)
                 return
             }
@@ -47,7 +47,7 @@ export default function SuiviPage() {
             router.push(`/commande/${orderNumber}`)
         } catch (error) {
             console.error("Erreur lors de la recherche:", error)
-            setError("Une erreur est survenue. Veuillez réessayer.")
+            setError(t('common.genericError'))
             setIsLoading(false)
         }
     }

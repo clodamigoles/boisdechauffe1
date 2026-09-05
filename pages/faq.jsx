@@ -130,8 +130,7 @@ export default function FAQPage() {
                             </h1>
 
                             <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                                Trouvez rapidement les réponses à vos questions sur nos produits, la livraison, le paiement et bien plus
-                                encore.
+                                {t('faq.heroIntro')}
                             </p>
 
                             {/* Barre de recherche */}
@@ -283,8 +282,7 @@ export default function FAQPage() {
 
                                 <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('faq.helpTitle')}</h2>
                                 <p className="text-lg text-gray-700 mb-8">
-                                    Notre équipe d'experts est là pour répondre à toutes vos questions. Contactez-nous par téléphone,
-                                    email ou chat en ligne.
+                                    {t('faq.helpText')}
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">

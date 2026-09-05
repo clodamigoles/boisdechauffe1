@@ -1,7 +1,9 @@
 import { Order } from "@/models/index"
 import connectDB from "@/lib/mongoose"
+import { serverT } from '@/lib/server-i18n'
 
 export default async function handler(req, res) {
+    const t = serverT(req)
     await connectDB()
 
     const { orderNumber } = req.query
@@ -31,7 +33,7 @@ export default async function handler(req, res) {
             console.error("Erreur récupération commande:", error)
             res.status(500).json({
                 success: false,
-                message: "Erreur lors de la récupération de la commande",
+                message: t('api.orderLoadFailed'),
                 error: process.env.NODE_ENV === "development" ? error.message : undefined,
             })
         }
@@ -78,14 +80,14 @@ export default async function handler(req, res) {
 
             res.status(200).json({
                 success: true,
-                message: "Commande mise à jour avec succès",
+                message: t('api.orderUpdated'),
                 data: order,
             })
         } catch (error) {
             console.error("Erreur mise à jour commande:", error)
             res.status(500).json({
                 success: false,
-                message: "Erreur lors de la mise à jour de la commande",
+                message: t('api.orderUpdateFailed'),
                 error: process.env.NODE_ENV === "development" ? error.message : undefined,
             })
         }

@@ -18,7 +18,15 @@
     "seeAll": "Alle ansehen",
     "readMore": "Weiterlesen",
     "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
-    "invalidValue": "Ungültiger Wert"
+    "invalidValue": "Ungültiger Wert",
+    "genericError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "fieldRequired": "Dieses Feld ist erforderlich",
+    "signupError": "Eintragung nicht möglich.",
+    "passwordStrength": "Passwortstärke: {level}",
+    "passwordWeak": "schwach",
+    "passwordMedium": "mittel",
+    "passwordStrong": "stark",
+    "charCount": "{count}/{max} Zeichen"
   },
   "nav": {
     "home": "Startseite",
@@ -38,7 +46,8 @@
     "skipToContent": "Zum Hauptinhalt springen",
     "mainNavigation": "Hauptnavigation",
     "cartCount_one": "{count} Artikel im Warenkorb",
-    "cartCount_other": "{count} Artikel im Warenkorb"
+    "cartCount_other": "{count} Artikel im Warenkorb",
+    "shopShort": "Shop"
   },
   "home": {
     "heroBadge": "Lieferung in 4 bis 5 Werktagen",
@@ -125,7 +134,9 @@
     "reviewsAfterOrder": "zu einer Bestellung vom {date}",
     "statProducts": "Produkte im Katalog",
     "statRating": "Kundenbewertung",
-    "statRatingValue": "{average} / 5"
+    "statRatingValue": "{average} / 5",
+    "whyTitle": "Warum bei {name} kaufen?",
+    "whySubtitle": "Holz, das wir selbst spalten und trocknen — und dessen Restfeuchte wir vor dem Versand messen."
   },
   "footer": {
     "tagline": "Trockenes Brennholz aus deutschen Wäldern, geliefert in Deutschland und in der Europäischen Union.",
@@ -210,7 +221,9 @@
     "pagination": "Seitennavigation",
     "sortBy": "Sortieren nach:",
     "searchShort": "Suchen…",
-    "viewProduct": "Produkt ansehen"
+    "viewProduct": "Produkt ansehen",
+    "available_one": "{count} Produkt verfügbar",
+    "available_other": "{count} Produkte verfügbar"
   },
   "product": {
     "addToCart": "In den Warenkorb",
@@ -251,7 +264,16 @@
     "techSpecs": "Technische Daten",
     "ecoBenefits": "Ökologische Vorteile",
     "usageTips": "Hinweise zur Verwendung",
-    "breadcrumb": "Brotkrumennavigation"
+    "breadcrumb": "Brotkrumennavigation",
+    "tipsTitle": "Hinweise zur Verwendung",
+    "tipStorage": "Trocken, luftig und vor Regen geschützt lagern",
+    "tipLength": "Scheite passend zur Breite Ihres Brennraums wählen",
+    "tipTopDown": "Von oben anzünden — weniger Rauch, saubererer Abbrand",
+    "deliveryLeadTime": "Lieferung in 4 bis 5 Werktagen",
+    "deliveryFree": "Versandkostenfrei ab {amount}",
+    "deliveryFreeUnknown": "Versandkosten nach Bundesland, vor der Zahlung sichtbar",
+    "deliveryPallet": "Auf Palette, mit Hebebühne abgeladen",
+    "tipMoisture": "Bester Wirkungsgrad bei unter 20 % Restfeuchte"
   },
   "species": {
     "chêne": "Eiche",
@@ -306,7 +328,9 @@
     "goToCart": "Warenkorb ansehen",
     "keepShopping": "Weiter",
     "itemsTitle": "Artikel",
-    "summaryTitle": "Übersicht"
+    "summaryTitle": "Übersicht",
+    "itemsInCart_one": "{count} Artikel in Ihrem Warenkorb",
+    "itemsInCart_other": "{count} Artikel in Ihrem Warenkorb"
   },
   "checkout": {
     "title": "Ihre Bestellung",
@@ -413,7 +437,9 @@
     "feature2": "Benachrichtigungen",
     "feature2Text": "Wir schreiben Ihnen bei Zahlungseingang und beim Versand.",
     "feature3": "Vollständiger Verlauf",
-    "feature3Text": "Jeder Schritt mit Datum, vom Eingang bis zur Zustellung."
+    "feature3Text": "Jeder Schritt mit Datum, vom Eingang bis zur Zustellung.",
+    "notFoundError": "Bestellung nicht gefunden. Prüfen Sie Ihre Bestellnummer.",
+    "emailMismatch": "Die E-Mail-Adresse gehört nicht zu dieser Bestellung."
   },
   "contact": {
     "title": "Kontakt",
@@ -496,7 +522,8 @@
     "trustWoodText": "Wir spalten und trocknen es selbst",
     "trustPrice": "Klare Preise",
     "trustPriceText": "Versandkosten vor der Zahlung sichtbar",
-    "reach": "Kontaktieren"
+    "reach": "Kontaktieren",
+    "heroSubtitle": "Eine Frage zu einem Produkt, einer Lieferung oder einer laufenden Bestellung — schreiben Sie uns."
   },
   "regions": {
     "Baden-Württemberg": "Baden-Württemberg",
@@ -592,7 +619,12 @@
     "receiptFormats": "Zulässige Formate: JPG, PNG, PDF (höchstens 10 MB)",
     "receiptSend": "Nachweis senden",
     "cancel": "Abbrechen",
-    "securePayment": "Gesicherte Zahlung"
+    "securePayment": "Gesicherte Zahlung",
+    "cardHolderPlaceholder": "WIE AUF DER KARTE ANGEGEBEN",
+    "bankAppNotice": "Öffnen Sie die App Ihrer Bank und bestätigen Sie die Zahlungsanfrage, die Ihnen zugestellt wurde.",
+    "receiptIntro": "Sobald Ihre Überweisung ausgeführt ist, können Sie uns den Beleg schicken — das beschleunigt die Bearbeitung Ihrer Bestellung.",
+    "otpRequired": "Bitte geben Sie den erhaltenen Code ein",
+    "approvedShort": "Zahlung bestätigt"
   },
   "empty": {
     "searchTitle": "Kein Ergebnis",
@@ -626,7 +658,12 @@
     "preparingTitle": "In Vorbereitung",
     "preparingText": "Ihre Bestellung wird zusammengestellt",
     "shippedText": "Ihre Bestellung ist unterwegs",
-    "deliveredText": "Ihre Bestellung wurde zugestellt"
+    "deliveredText": "Ihre Bestellung wurde zugestellt",
+    "notFoundText": "Die Bestellnummer {orderNumber} existiert nicht.",
+    "transferAmount": "Zu überweisen: {amount}",
+    "processingNote": "Ihre Bestellung wird bearbeitet, sobald die Zahlung eingegangen ist (ein bis zwei Werktage).",
+    "bankPendingText": "Wir bereiten Ihre Bankverbindung gerade vor. Sie erhalten sie per E-Mail, sobald sie bereit ist — in der Regel wenige Minuten.",
+    "loadError": "Die Bestellung konnte nicht geladen werden."
   },
   "faq": {
     "badge": "Hilfe",
@@ -651,7 +688,9 @@
     "resourceContact": "Eine Frage stellen",
     "resourceContactText": "Beschreiben Sie Ihr Heizgerät und die zu beheizende Fläche — wir sagen Ihnen, was passt.",
     "resourceContactCta": "Schreiben Sie uns",
-    "learnMore": "Mehr erfahren"
+    "learnMore": "Mehr erfahren",
+    "heroIntro": "Bestellen, bezahlen, Lieferung, Trocknung des Holzes — die Antworten auf das, was uns am häufigsten gefragt wird.",
+    "helpText": "Was hier nicht steht, beantworten wir schriftlich, innerhalb von 48 Stunden. Nennen Sie bei einer laufenden Bestellung bitte die Bestellnummer."
   },
   "delivery": {
     "badge": "Lieferung in ganz Deutschland",
@@ -706,5 +745,51 @@
     "privacyIntro": "Welche Daten wir erheben, wozu, und wie lange wir sie aufbewahren.",
     "cookiesTitle": "Cookie-Richtlinie",
     "cookiesIntro": "Was der Shop in Ihrem Browser speichert — und was nicht."
+  },
+  "api": {
+    "firstNameRequired": "Bitte geben Sie Ihren Vornamen an.",
+    "firstNameShort": "Der Vorname muss mindestens 2 Zeichen haben.",
+    "firstNameLong": "Der Vorname darf höchstens 50 Zeichen haben.",
+    "lastNameRequired": "Bitte geben Sie Ihren Nachnamen an.",
+    "lastNameShort": "Der Nachname muss mindestens 2 Zeichen haben.",
+    "emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse an.",
+    "emailInvalid": "Diese E-Mail-Adresse ist ungültig.",
+    "phoneRequired": "Bitte geben Sie Ihre Telefonnummer an.",
+    "phoneInvalid": "Diese Telefonnummer ist ungültig.",
+    "subjectRequired": "Bitte wählen Sie einen Betreff.",
+    "messageRequired": "Bitte schreiben Sie Ihre Nachricht.",
+    "messageShort": "Die Nachricht muss mindestens 10 Zeichen haben.",
+    "messageLong": "Die Nachricht darf höchstens 2000 Zeichen haben.",
+    "termsRequired": "Sie müssen den Bedingungen zustimmen.",
+    "contactSent": "Nachricht eingegangen. Wir antworten innerhalb von 48 Stunden.",
+    "reviewNameRequired": "Bitte geben Sie einen Namen an (mindestens 2 Zeichen).",
+    "reviewNameLong": "Der Name darf höchstens 100 Zeichen haben.",
+    "reviewCommentRequired": "Bitte schreiben Sie einen Kommentar (mindestens 10 Zeichen).",
+    "reviewCommentLong": "Der Kommentar darf höchstens 1000 Zeichen haben.",
+    "reviewRatingInvalid": "Die Bewertung muss zwischen 1 und 5 liegen.",
+    "reviewSent": "Ihre Bewertung wurde übermittelt und wird nach der Prüfung veröffentlicht.",
+    "newsletterReactivated": "Ihre Anmeldung wurde wieder aktiviert.",
+    "newsletterSent": "Fast geschafft: bestätigen Sie über die E-Mail, die wir Ihnen geschickt haben.",
+    "newsletterAlready": "Diese E-Mail-Adresse ist bereits eingetragen.",
+    "newsletterConfirmed": "Anmeldung bestätigt. Willkommen.",
+    "newsletterAlreadyConfirmed": "Diese E-Mail-Adresse war bereits bestätigt.",
+    "newsletterNotFound": "Diese E-Mail-Adresse steht nicht auf unserer Liste.",
+    "newsletterAlreadyOut": "Diese E-Mail-Adresse war bereits abgemeldet.",
+    "newsletterOut": "Abmeldung durchgeführt.",
+    "orderNotFound": "Bestellung nicht gefunden.",
+    "orderLoadFailed": "Die Bestellung konnte nicht geladen werden.",
+    "orderUpdated": "Bestellung aktualisiert.",
+    "orderUpdateFailed": "Die Bestellung konnte nicht aktualisiert werden.",
+    "receiptUploaded": "Zahlungsnachweis übermittelt.",
+    "receiptFailed": "Der Zahlungsnachweis konnte nicht übermittelt werden.",
+    "outOfStock": "Nicht genügend Bestand für {name}.",
+    "productNotFound": "Produkt {id} nicht gefunden.",
+    "orderNotPayable": "Bestellung nicht gefunden oder bereits bezahlt.",
+    "otpMissing": "Sitzung und Code sind erforderlich.",
+    "orderCreated": "Bestellung angelegt.",
+    "orderCreateFailed": "Die Bestellung konnte nicht angelegt werden.",
+    "invalidData": "Ungültige Angaben.",
+    "productsMissing": "Einige Produkte wurden nicht gefunden.",
+    "serverError": "Serverfehler."
   }
 }

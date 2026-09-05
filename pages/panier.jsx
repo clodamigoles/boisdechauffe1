@@ -97,7 +97,7 @@ export default function CartPage() {
                                 <p className="text-gray-600">
                                     {items.length === 0
                                         ? t('cart.empty')
-                                        : `${items.length} article${items.length > 1 ? "s" : ""} dans votre panier`}
+                                        : t.plural('cart.itemsInCart', items.length, { count: items.length })}
                                 </p>
                             </div>
 
@@ -251,14 +251,10 @@ export default function CartPage() {
                                         </div>
                                     </div>
 
-                                    {/* Informations livraison
-                                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                                        <div className="flex items-center space-x-2 text-green-700">
-                                            <Truck className="w-5 h-5" />
-                                            <span className="font-medium">Livraison gratuite</span>
-                                        </div>
-                                        <p className="text-sm text-green-600 mt-1">Livraison sous 24-48h dans toute la France</p>
-                                    </div> */}
+                                    {/* Un encart « Livraison gratuite — sous 24-48h dans toute
+                                        la France » était commenté ici. Retiré plutôt que laissé :
+                                        les trois affirmations étaient fausses, et un bloc mort
+                                        finit toujours par être réactivé par mégarde. */}
 
                                     {/* Boutons d'action */}
                                     <div className="space-y-3">

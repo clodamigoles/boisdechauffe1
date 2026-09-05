@@ -1,8 +1,10 @@
 import { withPublicAPI, createResponse } from '@/middleware/api'
 import { Newsletter } from '@/models'
 import crypto from 'crypto'
+import { serverT } from '@/lib/server-i18n'
 
 async function handler(req, res) {
+    const t = serverT(req)
     try {
         const { token } = req.body
 
@@ -66,7 +68,7 @@ async function handler(req, res) {
                         alreadyConfirmed: true,
                         confirmedAt: subscriber.confirmedAt
                     },
-                    'Cette adresse email était déjà confirmée'
+                    t('api.newsletterAlreadyConfirmed')
                 )
             )
         }
@@ -109,7 +111,7 @@ async function handler(req, res) {
                     confirmedAt: updatedSubscriber.confirmedAt,
                     interests: subscriber.interests
                 },
-                'Abonnement confirmé avec succès ! Bienvenue dans notre communauté.',
+                t('api.newsletterConfirmed'),
                 { stats }
             )
         )

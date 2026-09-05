@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { PHONE_VALIDATOR } from '@/lib/phone'
 
 const contactSchema = new mongoose.Schema(
     {
@@ -56,7 +57,7 @@ const contactSchema = new mongoose.Schema(
                 type: String,
                 required: [true, 'Le téléphone est requis'],
                 trim: true,
-                match: [/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/, 'Numéro de téléphone invalide']
+                match: PHONE_VALIDATOR
             },
             company: {
                 type: String,

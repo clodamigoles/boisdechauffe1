@@ -3,6 +3,7 @@ import { put } from "@vercel/blob"
 import fs from "fs"
 import connectDB from "@/lib/mongoose"
 import { Order } from "@/models/index"
+import { serverT } from '@/lib/server-i18n'
 
 export const config = {
     api: {
@@ -11,6 +12,7 @@ export const config = {
 }
 
 export default async function handler(req, res) {
+    const t = serverT(req)
     if (req.method !== "POST") {
         return res.status(405).json({ success: false, message: "Méthode non autorisée" })
     }
@@ -90,21 +92,21 @@ export default async function handler(req, res) {
 
         if (!updatedOrder) {
             console.log("[v0] Failed to update order")
-            return res.status(500).json({ success: false, message: "Erreur lors de la mise à jour de la commande" })
+            return res.status(500).json({ success: false, message: t('api.orderUpdateFailed') })
         }
 
         console.log("[v0] Order updated successfully, receipts count:", updatedOrder.paymentReceipts?.length)
 
         res.status(200).json({
             success: true,
-            message: "Récépissé uploadé avec succès",
+            message: t('api.receiptUploaded'),
             data: receiptData,
         })
     } catch (error) {
         console.error("[v0] Erreur upload récépissé:", error)
         res.status(500).json({
             success: false,
-            message: "Erreur lors de l'upload du récépissé",
+            message: t('api.receiptFailed'),
             error: process.env.NODE_ENV === "development" ? error.message : undefined,
         })
     }

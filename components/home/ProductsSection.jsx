@@ -98,10 +98,10 @@ export default function ProductsSection({ products = [] }) {
                 >
                     <div className="text-center mb-12">
                         <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                            Pourquoi Choisir {siteName} ?
+                            {t('home.whyTitle', { name: siteName })}
                         </h3>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            8 années d'expertise au service de votre confort
+                            {t('home.whySubtitle')}
                         </p>
                     </div>
 

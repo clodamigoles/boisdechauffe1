@@ -6,9 +6,12 @@ import { ShoppingCart, Heart, Share2, Minus, Plus, Calculator } from "lucide-rea
 import { useCartStore } from "../../store/cartStore"
 import Button from "../ui/ActionButton"
 import CartToast from "../ui/CartToast"
-import { useT } from '@/lib/i18n'
+import { useFormatter, useT } from '@/lib/i18n'
+import { useSettings } from "@/hooks/useSettings"
 
 export default function ProductDetailActions({ product }) {
+    const { freeShippingThreshold } = useSettings()
+    const format = useFormatter()
     const t = useT()
     const [quantity, setQuantity] = useState(1)
     const [isWishlisted, setIsWishlisted] = useState(false)
@@ -120,7 +123,7 @@ export default function ProductDetailActions({ product }) {
                         className="w-full flex items-center justify-center space-x-2"
                     >
                         <ShoppingCart className="w-5 h-5" />
-                        <span>{product.inStock ? "Ajouter au panier" : "{t('product.unavailable')}"}</span>
+                        <span>{product.inStock ? t('product.addToCart') : t('product.unavailable')}</span>
                     </Button>
 
                     <div className="grid grid-cols-2 gap-3">
@@ -158,10 +161,19 @@ export default function ProductDetailActions({ product }) {
 
                 <div className="bg-blue-50 rounded-lg p-4">
                     <h4 className="font-medium text-blue-900 mb-2">{t('cart.shipping')}</h4>
+                    {/* Trois affirmations fausses tenaient ici : « 24-48h »
+                        pour un délai de quatre à cinq jours, « gratuite dès
+                        200 € » pour un seuil réglé à 500 €, et « partout en
+                        France » pour un marché allemand. Le seuil vient
+                        maintenant des paramètres, comme au panier. */}
                     <ul className="text-sm text-blue-800 space-y-1">
-                        <li>• Livraison 24-48h partout en France</li>
-                        <li>• Gratuite dès 200€ d'achat</li>
-                        <li>• Déchargement inclus</li>
+                        <li>• {t('product.deliveryLeadTime')}</li>
+                        <li>
+                            • {freeShippingThreshold
+                                ? t('product.deliveryFree', { amount: format.price(freeShippingThreshold) })
+                                : t('product.deliveryFreeUnknown')}
+                        </li>
+                        <li>• {t('product.deliveryPallet')}</li>
                     </ul>
                 </div>
             </motion.div>

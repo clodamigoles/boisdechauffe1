@@ -5,8 +5,10 @@ import { validateOrderData } from "@/lib/validation"
 import { sendOrderConfirmationEmail, sendAdminNewOrderNotification, sendEmail } from "@/lib/email"
 import { cardOrderPlacedEmail } from "@/lib/card-email-templates"
 import { localizeDoc, resolveLocale } from '@/lib/localize-doc'
+import { serverT } from '@/lib/server-i18n'
 
 export default async function handler(req, res) {
+    const t = serverT(req)
     await connectDB()
 
     if (req.method === "POST") {
@@ -24,7 +26,7 @@ export default async function handler(req, res) {
                 console.log("[v0] Validation errors:", error.details)
                 return res.status(400).json({
                     success: false,
-                    message: "Données invalides",
+                    message: t('api.invalidData'),
                     errors: error.details.map((detail) => detail.message),
                 })
             }
@@ -47,7 +49,7 @@ export default async function handler(req, res) {
             if (products.length !== items.length) {
                 return res.status(400).json({
                     success: false,
-                    message: "Certains produits sont introuvables",
+                    message: t('api.productsMissing'),
                 })
             }
 
@@ -61,14 +63,14 @@ export default async function handler(req, res) {
                 if (!product) {
                     return res.status(400).json({
                         success: false,
-                        message: `Produit ${item.productId} introuvable`,
+                        message: t('api.productNotFound', { id: item.productId }),
                     })
                 }
 
                 if (product.stock < item.quantity) {
                     return res.status(400).json({
                         success: false,
-                        message: `Stock insuffisant pour ${localizeDoc(product, orderLocale).name}`,
+                        message: t('api.outOfStock', { name: localizeDoc(product, orderLocale).name }),
                     })
                 }
 
@@ -185,7 +187,7 @@ export default async function handler(req, res) {
 
             res.status(201).json({
                 success: true,
-                message: "Commande créée avec succès",
+                message: t('api.orderCreated'),
                 data: {
                     orderNumber: order.orderNumber,
                     orderId: order._id,
@@ -198,7 +200,7 @@ export default async function handler(req, res) {
             console.error("Erreur création commande:", error)
             res.status(500).json({
                 success: false,
-                message: "Erreur lors de la création de la commande",
+                message: t('api.orderCreateFailed'),
                 error: process.env.NODE_ENV === "development" ? error.message : undefined,
             })
         }

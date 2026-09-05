@@ -1,8 +1,10 @@
 import { withPublicAPI, createResponse, rateLimiters } from '@/middleware/api'
 import { Newsletter } from '@/models'
 import crypto from 'crypto'
+import { serverT } from '@/lib/server-i18n'
 
 async function handler(req, res) {
+    const t = serverT(req)
     try {
         const { email, token, reason } = req.body
 
@@ -23,7 +25,7 @@ async function handler(req, res) {
 
         if (!subscriber) {
             return res.status(404).json(
-                createResponse.error('Adresse email non trouvée dans notre liste', 'EMAIL_NOT_FOUND')
+                createResponse.error(t('api.newsletterNotFound'), 'EMAIL_NOT_FOUND')
             )
         }
 
@@ -32,7 +34,7 @@ async function handler(req, res) {
             return res.status(200).json(
                 createResponse.success(
                     { email: normalizedEmail, alreadyUnsubscribed: true },
-                    'Cette adresse email était déjà désabonnée'
+                    t('api.newsletterAlreadyOut')
                 )
             )
         }
@@ -79,7 +81,7 @@ async function handler(req, res) {
                     unsubscribedAt: updatedSubscriber.unsubscribedAt,
                     subscriberId: updatedSubscriber._id
                 },
-                'Désabonnement effectué avec succès',
+                t('api.newsletterOut'),
                 { stats }
             )
         )

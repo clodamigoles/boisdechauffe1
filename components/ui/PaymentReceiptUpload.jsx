@@ -112,8 +112,7 @@ export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
             </div>
 
             <p className="text-sm text-blue-800 mb-4">
-                Une fois votre virement effectué, vous pouvez nous envoyer votre récépissé bancaire pour accélérer le traitement
-                de votre commande.
+                {t('payment.receiptIntro')}
             </p>
 
             {uploadStatus === "success" ? (

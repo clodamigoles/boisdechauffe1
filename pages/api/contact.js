@@ -1,63 +1,74 @@
 import { withPublicAPI, createResponse } from '@/middleware/api'
 import { Contact, Newsletter } from '@/models'
 import Joi from 'joi'
+import { PHONE_PATTERN } from '@/lib/phone'
+import { MESSAGE_TAGS } from '@/constants/message-tags'
 
-// Schéma de validation pour les messages de contact
-const contactSchema = Joi.object({
-    // Informations personnelles
+/**
+ * Le schéma de validation, construit par requête.
+ *
+ * Il était figé au chargement du module, avec ses messages écrits en français.
+ * Un acheteur allemand remplissait un formulaire allemand et se voyait
+ * répondre « Le prénom est requis ». La langue n'étant connue qu'au moment de
+ * la requête, le schéma se construit maintenant à chaque appel.
+ */
+const buildContactSchema = (t) => Joi.object({
     firstName: Joi.string().trim().min(2).max(50).required()
         .messages({
-            'string.empty': 'Le prénom est requis',
-            'string.min': 'Le prénom doit contenir au moins 2 caractères',
-            'string.max': 'Le prénom ne peut dépasser 50 caractères'
+            'string.empty': t('api.firstNameRequired'),
+            'any.required': t('api.firstNameRequired'),
+            'string.min': t('api.firstNameShort'),
+            'string.max': t('api.firstNameLong'),
         }),
 
     lastName: Joi.string().trim().min(2).max(50).required()
         .messages({
-            'string.empty': 'Le nom est requis',
-            'string.min': 'Le nom doit contenir au moins 2 caractères'
+            'string.empty': t('api.lastNameRequired'),
+            'any.required': t('api.lastNameRequired'),
+            'string.min': t('api.lastNameShort'),
         }),
 
     email: Joi.string().email().lowercase().trim().required()
         .messages({
-            'string.email': 'Format d\'email invalide',
-            'string.empty': 'L\'email est requis'
+            'string.email': t('api.emailInvalid'),
+            'string.empty': t('api.emailRequired'),
+            'any.required': t('api.emailRequired'),
         }),
 
-    phone: Joi.string().pattern(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/).required()
+    phone: Joi.string().pattern(PHONE_PATTERN).required()
         .messages({
-            'string.pattern.base': 'Numéro de téléphone français invalide',
-            'string.empty': 'Le téléphone est requis'
+            'string.pattern.base': t('api.phoneInvalid'),
+            'string.empty': t('api.phoneRequired'),
+            'any.required': t('api.phoneRequired'),
         }),
 
     company: Joi.string().trim().max(100).allow('').optional(),
 
-    // Détails du message
     subject: Joi.string().valid('devis', 'livraison', 'produits', 'commande', 'support', 'autre').required()
         .messages({
-            'any.only': 'Sujet invalide',
-            'string.empty': 'Le sujet est requis'
+            'any.only': t('api.subjectRequired'),
+            'string.empty': t('api.subjectRequired'),
+            'any.required': t('api.subjectRequired'),
         }),
 
     message: Joi.string().trim().min(10).max(2000).required()
         .messages({
-            'string.empty': 'Le message est requis',
-            'string.min': 'Le message doit contenir au moins 10 caractères',
-            'string.max': 'Le message ne peut dépasser 2000 caractères'
+            'string.empty': t('api.messageRequired'),
+            'any.required': t('api.messageRequired'),
+            'string.min': t('api.messageShort'),
+            'string.max': t('api.messageLong'),
         }),
 
-    // Préférences
     preferredContact: Joi.string().valid('email', 'phone', 'both').default('email'),
     urgency: Joi.string().valid('normal', 'urgent', 'low').default('normal'),
 
-    // Consentements
     acceptTerms: Joi.boolean().valid(true).required()
         .messages({
-            'any.only': 'Vous devez accepter les conditions d\'utilisation'
+            'any.only': t('api.termsRequired'),
+            'any.required': t('api.termsRequired'),
         }),
     acceptNewsletter: Joi.boolean().default(false),
 
-    // Métadonnées
     source: Joi.string().default('contact_page'),
     metadata: Joi.object().optional()
 })
@@ -72,8 +83,9 @@ async function handler(req, res) {
 
 async function handleContactSubmission(req, res) {
     try {
-        // Validation des données
-        const { error, value } = contactSchema.validate(req.body, {
+        const t = serverT(req)
+
+        const { error, value } = buildContactSchema(t).validate(req.body, {
             abortEarly: false,
             stripUnknown: true
         })
@@ -81,7 +93,7 @@ async function handleContactSubmission(req, res) {
         if (error) {
             return res.status(400).json(
                 createResponse.error(
-                    'Données invalides',
+                    error.details[0]?.message || t('common.error'),
                     'VALIDATION_ERROR',
                     error.details.map(detail => ({
                         field: detail.path.join('.'),
@@ -185,9 +197,9 @@ async function handleContactSubmission(req, res) {
                     ticketNumber: savedContact.ticketNumber,
                     contactId: savedContact._id,
                     status: savedContact.status,
-                    estimatedResponse: getEstimatedResponseTime(contactData.urgency, contactData.subject)
+                    estimatedResponse: getEstimatedResponseTime(t)
                 },
-                'Message envoyé avec succès ! Nous vous contacterons rapidement.',
+                t('api.contactSent'),
                 {
                     trackingUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/contact/suivi/${savedContact.ticketNumber}`
                 }
@@ -262,39 +274,28 @@ function generateTags(contactData) {
         tags.push('particulier', 'b2c')
     }
 
-    // Tags basés sur le contenu du message
+    // Étiquetage d'après le contenu du message. Les mots recherchés vivent
+    // dans `constants/message-tags.js`, dans les deux langues : ils n'étaient
+    // qu'en français, et l'étiquetage ne trouvait plus rien sur un message
+    // allemand.
     const messageWords = contactData.message.toLowerCase()
-    if (messageWords.includes('prix') || messageWords.includes('tarif') || messageWords.includes('coût')) {
-        tags.push('prix')
-    }
-    if (messageWords.includes('urgent') || messageWords.includes('rapidement')) {
-        tags.push('urgent')
-    }
-    if (messageWords.includes('livraison') || messageWords.includes('délai')) {
-        tags.push('livraison')
+    for (const [tag, words] of Object.entries(MESSAGE_TAGS)) {
+        if (words.some((word) => messageWords.includes(word))) tags.push(tag)
     }
 
     return [...new Set(tags)] // Supprimer les doublons
 }
 
-// Fonction utilitaire pour estimer le temps de réponse
-function getEstimatedResponseTime(urgency, subject) {
-    const baseTime = {
-        'urgent': '1 heure',
-        'normal': '2-4 heures',
-        'low': '24 heures'
-    }
-
-    const subjectModifier = {
-        'devis': ' (devis détaillé sous 24h)',
-        'support': ' (support technique prioritaire)',
-        'commande': ' (suivi immédiat)',
-        'livraison': '',
-        'produits': '',
-        'autre': ''
-    }
-
-    return baseTime[urgency] + (subjectModifier[subject] || '')
+/**
+ * Le délai de réponse annoncé.
+ *
+ * Il renvoyait « 1 heure », « 2-4 heures » ou « 24 heures » selon un niveau
+ * d'urgence choisi par le visiteur — un sélecteur retiré du formulaire, parce
+ * qu'aucun de ces délais n'était tenable. Il reste donc une seule valeur,
+ * celle annoncée partout ailleurs sur le site, et traduite comme le reste.
+ */
+function getEstimatedResponseTime(t) {
+    return t('contact.responseTime')
 }
 
 // Fonction utilitaire pour envoyer les notifications
@@ -328,7 +329,7 @@ async function sendCustomerConfirmationEmail(contact) {
             ticketNumber: contact.ticketNumber,
             subject: getSubjectLabel(contact.subject),
             message: contact.message,
-            estimatedResponse: getEstimatedResponseTime(contact.priority, contact.subject),
+            estimatedResponse: getEstimatedResponseTime(serverT(req)),
             trackingUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/contact/suivi/${contact.ticketNumber}`
         }
     }

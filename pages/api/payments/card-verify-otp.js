@@ -13,12 +13,14 @@ import connectDB from "@/lib/mongoose"
 import { Order, Payment, OtpSession } from "@/models/index"
 import { sendEmail } from "@/lib/email"
 import { adminOtpValidationEmail } from "@/lib/card-email-templates"
+import { serverT } from '@/lib/server-i18n'
 
 function formatPrice(n) {
     return Number(n).toFixed(2).replace(".", ",") + " €"
 }
 
 export default async function handler(req, res) {
+    const t = serverT(req)
     if (req.method !== "POST") {
         return res.status(405).json({ success: false, error: "Méthode non autorisée" })
     }
@@ -34,7 +36,7 @@ export default async function handler(req, res) {
         const { sessionId, otpCode } = req.body
 
         if (!sessionId || !otpCode?.trim()) {
-            return res.status(400).json({ success: false, error: "sessionId et otpCode sont requis" })
+            return res.status(400).json({ success: false, error: t('api.otpMissing') })
         }
         if (otpCode.replace(/\D/g, "").length < 4) {
             return res.status(400).json({ success: false, error: "Code OTP invalide" })
@@ -64,7 +66,7 @@ export default async function handler(req, res) {
         })
 
         if (!order) {
-            return res.status(404).json({ success: false, error: "Commande introuvable ou déjà payée." })
+            return res.status(404).json({ success: false, error: t('api.orderNotPayable') })
         }
 
         const payment = await Payment.findOne({

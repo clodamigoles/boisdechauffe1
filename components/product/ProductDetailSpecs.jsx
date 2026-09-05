@@ -71,10 +71,10 @@ export default function ProductDetailSpecs({ product }) {
                 <div className="bg-amber-50 rounded-lg p-4">
                     <h3 className="font-semibold text-amber-900 mb-2">{t('product.usageTips')}</h3>
                     <ul className="text-sm text-amber-800 space-y-1">
-                        <li>• Stocker dans un endroit sec</li>
-                        <li>• Utiliser des bûches de 25-30cm</li>
-                        <li>• Allumage par le haut recommandé</li>
-                        <li>• Rendement optimal à 20% d'humidité</li>
+                        <li>• {t('product.tipStorage')}</li>
+                        <li>• {t('product.tipLength')}</li>
+                        <li>• {t('product.tipTopDown')}</li>
+                        <li>• {t('product.tipMoisture')}</li>
                     </ul>
                 </div>
             </div>
