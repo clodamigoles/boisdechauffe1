@@ -1,7 +1,9 @@
 import Link from "next/link"
 import { ChevronRight, Home } from "lucide-react"
+import { useT } from '@/lib/i18n'
 
 export default function ProductBreadcrumb({ product }) {
+    const t = useT()
     const breadcrumbs = [
         { name: "Accueil", href: "/", icon: Home },
         { name: "Boutique", href: "/shop" },
@@ -10,7 +12,7 @@ export default function ProductBreadcrumb({ product }) {
     ]
 
     return (
-        <nav className="flex" aria-label="Breadcrumb">
+        <nav className="flex" aria-label={t('product.breadcrumb')}>
             <ol className="flex items-center space-x-2">
                 {breadcrumbs.map((breadcrumb, index) => (
                     <li key={breadcrumb.name} className="flex items-center">

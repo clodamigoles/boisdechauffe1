@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { ChevronRight, Home } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 export default function Breadcrumb({ items }) {
+    const t = useT()
     if (!items || items.length === 0) return null
 
     return (
-        <nav className="flex" aria-label="Breadcrumb">
+        <nav className="flex" aria-label={t('product.breadcrumb')}>
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
                 {items.map((item, index) => (
                     <li key={index} className="inline-flex items-center">

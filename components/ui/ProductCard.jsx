@@ -94,7 +94,7 @@ export default function ProductCard({ product }) {
                                     whileHover={{ scale: 1, opacity: 1 }}
                                     className="text-white font-medium"
                                 >
-                                    Voir le produit
+                                    {t('shop.viewProduct')}
                                 </motion.div>
                             </div>
 

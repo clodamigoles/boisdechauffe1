@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion"
 import ProductCard from "../ui/ProductCard"
+import { useT } from '@/lib/i18n'
 
 export default function SimilarProducts({ products }) {
+    const t = useT()
     if (!products || products.length === 0) {
         return null
     }
@@ -15,7 +17,7 @@ export default function SimilarProducts({ products }) {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="bg-white rounded-xl border border-gray-200 p-6"
         >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Produits similaires</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('product.similar')}</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {products.map((product, index) => (

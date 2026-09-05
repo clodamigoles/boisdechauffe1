@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion"
 import { Star, Truck, Shield, Award, Clock } from "lucide-react"
+import { useT } from '@/lib/i18n'
 
 export default function ProductDetailInfo({ product }) {
+    const t = useT()
     const renderStars = (rating) => {
         return [...Array(5)].map((_, i) => (
             <Star
@@ -16,13 +18,13 @@ export default function ProductDetailInfo({ product }) {
     const features = [
         {
             icon: Truck,
-            title: "Livraison 24-48h",
-            description: "Partout en France",
+            title: "{t('shop.leadTime')}",
+            description: "{t('product.deliveryScope')}",
         },
         {
             icon: Shield,
-            title: "Qualité garantie",
-            description: "Bois séché et contrôlé",
+            title: "{t('product.qualityChecked')}",
+            description: "{t('product.qualityCheckedText')}",
         },
         // {
         //     icon: Award,
@@ -91,10 +93,10 @@ export default function ProductDetailInfo({ product }) {
                     <div className="flex items-center space-x-2">
                         <div className={`w-3 h-3 rounded-full ${product.inStock ? "bg-green-400" : "bg-red-400"}`}></div>
                         <span className={`text-sm font-medium ${product.inStock ? "text-green-700" : "text-red-700"}`}>
-                            {product.inStock ? "En stock" : "Rupture de stock"}
+                            {product.inStock ? "En stock" : "{t('product.outOfStockShort')}"}
                         </span>
                     </div>
-                    {product.isLowStock && <span className="text-sm text-orange-600 font-medium">Stock limité</span>}
+                    {product.isLowStock && <span className="text-sm text-orange-600 font-medium">{t('product.lowStockShort')}</span>}
                 </div>
             </div>
 

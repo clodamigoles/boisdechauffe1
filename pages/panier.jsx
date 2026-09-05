@@ -9,6 +9,7 @@ import { useCartStore } from "../store/cartStore"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/ActionButton"
+import SeoHead from "@/components/layout/SeoHead"
 import { useT } from "@/lib/i18n"
 
 const pageVariants = {
@@ -26,13 +27,8 @@ const pageTransition = {
 export default function CartPage() {
     const t = useT()
     const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-        // Simuler un petit délai de chargement pour éviter l'hydration mismatch
-        const timer = setTimeout(() => setIsLoading(false), 100)
-        return () => clearTimeout(timer)
-    }, [])
 
     const handleQuantityChange = (productId, newQuantity) => {
         if (newQuantity < 1) {
@@ -62,6 +58,12 @@ export default function CartPage() {
     }
 
     return (
+        <>
+            {/* Le panier n'avait aucun <Head> : la page s'affichait donc sans
+                titre d'onglet. `noindex` : une page de panier n'a rien à faire
+                dans un index de recherche. */}
+            <SeoHead title={t('meta.cartTitle')} noindex />
+
         <div className="min-h-screen bg-gray-50">
             <Header />
 
@@ -91,7 +93,7 @@ export default function CartPage() {
 
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Panier</h1>
+                                <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('cart.title')}</h1>
                                 <p className="text-gray-600">
                                     {items.length === 0
                                         ? t('cart.empty')
@@ -136,7 +138,7 @@ export default function CartPage() {
                             <div className="lg:col-span-2">
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                     <div className="p-6 border-b border-gray-100">
-                                        <h2 className="text-lg font-semibold text-gray-900">Articles</h2>
+                                        <h2 className="text-lg font-semibold text-gray-900">{t('cart.itemsTitle')}</h2>
                                     </div>
 
                                     <div className="divide-y divide-gray-100">
@@ -229,7 +231,7 @@ export default function CartPage() {
                             {/* Résumé de commande */}
                             <div className="lg:col-span-1">
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-6">Résumé</h2>
+                                    <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('cart.summaryTitle')}</h2>
 
                                     {/* Détails prix */}
                                     <div className="space-y-4 mb-6">
@@ -298,5 +300,6 @@ export default function CartPage() {
 
             <Footer />
         </div>
+        </>
     )
 }

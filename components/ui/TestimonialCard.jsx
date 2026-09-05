@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { useT } from '@/lib/i18n'
 
 export default function TestimonialCard({ testimonial, featured = false, compact = false }) {
+    const t = useT()
     const renderStars = (rating) => {
         return [...Array(5)].map((_, i) => (
             <svg
@@ -168,7 +170,7 @@ export default function TestimonialCard({ testimonial, featured = false, compact
             {testimonial.productPurchased && (
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <div className="text-sm text-gray-500">
-                        Produit acheté :
+                        {t('product.purchased')}
                     </div>
                     <div className="text-sm font-medium text-amber-600">
                         {testimonial.productPurchased}
@@ -180,7 +182,7 @@ export default function TestimonialCard({ testimonial, featured = false, compact
             {testimonial.verified && (
                 <div className="mt-3 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                    Achat vérifié
+                    {t('product.verifiedPurchase')}
                 </div>
             )}
         </motion.div>

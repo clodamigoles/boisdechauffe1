@@ -69,7 +69,7 @@ export default function ProductSort({ value, onChange }) {
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
             >
-                <span className="text-gray-600">Trier par :</span>
+                <span className="text-gray-600">{t('shop.sortBy')}</span>
                 <span className="text-gray-900 flex-1 text-left">{selectedOption.label}</span>
                 <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
             </button>

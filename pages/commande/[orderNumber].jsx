@@ -9,6 +9,7 @@ import Header from "../../components/layout/Header"
 import Footer from "../../components/layout/Footer"
 import Button from "../../components/ui/ActionButton"
 import PaymentReceiptUpload from "../../components/ui/PaymentReceiptUpload"
+import { useT } from "@/lib/i18n"
 
 const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -25,7 +26,7 @@ const pageTransition = {
 // Composant Skeleton pour les informations bancaires
 const BankDetailsSkeleton = () => (
     <div className="bg-white rounded-lg p-4 mb-4 animate-pulse">
-        <h3 className="font-medium text-gray-900 mb-3">Coordonnées bancaires</h3>
+        <h3 className="font-medium text-gray-900 mb-3">{t('order.bankDetails')}</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             {[1, 2, 3, 4].map((i) => (
                 <div key={i}>
@@ -42,6 +43,7 @@ const BankDetailsSkeleton = () => (
 )
 
 export default function OrderTrackingPage() {
+    const t = useT()
     const router = useRouter()
     const { orderNumber } = router.query
     const [orderData, setOrderData] = useState(null)
@@ -62,7 +64,7 @@ export default function OrderTrackingPage() {
             }
 
             if (!result.success) {
-                throw new Error(result.message || "Commande introuvable")
+                throw new Error(result.message || "{t('order.notFound')}")
             }
 
             // Transform the backend data to match the frontend format
@@ -144,47 +146,47 @@ export default function OrderTrackingPage() {
         const timeline = [
             {
                 status: "order_placed",
-                title: "Commande passée",
-                description: "Votre commande a été enregistrée avec succès",
+                title: t('order.placedTitle'),
+                description: t('order.placedText'),
                 date: statusHistory.find((h) => h.status === "pending")?.date || new Date().toISOString(),
                 completed: true,
             },
             {
                 status: "pending_payment",
-                title: "En attente de paiement",
-                description: "Effectuez le virement bancaire pour confirmer votre commande",
+                title: t('order.awaitingTitle'),
+                description: t('order.awaitingText'),
                 date: null,
                 completed: paymentStatus === "received",
                 current: status === "pending" && paymentStatus === "pending",
             },
             {
                 status: "payment_received",
-                title: "Paiement reçu",
-                description: "Votre paiement a été confirmé",
+                title: t('order.paidTitle'),
+                description: t('order.paidText'),
                 date: statusHistory.find((h) => h.status === "confirmed")?.date || null,
                 completed: paymentStatus === "received",
                 current: status === "confirmed" && paymentStatus === "received",
             },
             {
                 status: "preparing",
-                title: "Préparation",
-                description: "Votre commande est en cours de préparation",
+                title: t('order.preparingTitle'),
+                description: t('order.preparingText'),
                 date: statusHistory.find((h) => h.status === "processing")?.date || null,
                 completed: ["processing", "shipped", "delivered"].includes(status),
                 current: status === "processing",
             },
             {
                 status: "shipped",
-                title: "Expédiée",
-                description: "Votre commande est en route",
+                title: t("tracking.statusShipped"),
+                description: t('order.shippedText'),
                 date: statusHistory.find((h) => h.status === "shipped")?.date || null,
                 completed: ["shipped", "delivered"].includes(status),
                 current: status === "shipped",
             },
             {
                 status: "delivered",
-                title: "Livrée",
-                description: "Votre commande a été livrée",
+                title: t("tracking.statusDelivered"),
+                description: t('order.deliveredText'),
                 date: statusHistory.find((h) => h.status === "delivered")?.date || null,
                 completed: status === "delivered",
                 current: status === "delivered",
@@ -195,7 +197,7 @@ export default function OrderTrackingPage() {
     }
 
     const formatPrice = (price) => {
-        return new Intl.NumberFormat("fr-FR", {
+        return new Intl.NumberFormat(t.tag, {
             style: "currency",
             currency: "EUR",
         }).format(price)
@@ -250,10 +252,10 @@ export default function OrderTrackingPage() {
                 <Header />
                 <div className="pt-20 flex items-center justify-center min-h-screen">
                     <div className="text-center">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-4">Commande introuvable</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-4">{t('order.notFound')}</h1>
                         <p className="text-gray-600 mb-8">Le numéro de commande {orderNumber} n'existe pas.</p>
                         <Link href="/shop">
-                            <Button variant="primary">Retour à la boutique</Button>
+                            <Button variant="primary">{t('order.backToShop')}</Button>
                         </Link>
                     </div>
                 </div>
@@ -285,7 +287,7 @@ export default function OrderTrackingPage() {
                                     className="flex items-center space-x-2 text-gray-600 hover:text-amber-600 transition-colors"
                                 >
                                     <ArrowLeft className="w-5 h-5" />
-                                    <span>Retour à la boutique</span>
+                                    <span>{t('order.backToShop')}</span>
                                 </motion.button>
                             </Link>
                         </div>
@@ -308,7 +310,7 @@ export default function OrderTrackingPage() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Suivi de commande */}
+                        {/* {t('order.tracking')} */}
                         <div className="lg:col-span-2 space-y-8">
                             {/* Timeline */}
                             <motion.div
@@ -316,7 +318,7 @@ export default function OrderTrackingPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
                             >
-                                <h2 className="text-lg font-semibold text-gray-900 mb-6">Suivi de commande</h2>
+                                <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('order.tracking')}</h2>
 
                                 <div className="space-y-6">
                                     {orderData.timeline.map((step, index) => (
@@ -335,7 +337,7 @@ export default function OrderTrackingPage() {
                                 </div>
                             </motion.div>
 
-                            {/* Informations de paiement */}
+                            {/* {t('order.paymentInfo')} */}
                             {orderData.paymentStatus === "pending" && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -347,13 +349,13 @@ export default function OrderTrackingPage() {
                                         <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
                                             <FileText className="w-4 h-4 text-amber-600" />
                                         </div>
-                                        <h2 className="text-lg font-semibold text-amber-900">Informations de paiement</h2>
+                                        <h2 className="text-lg font-semibold text-amber-900">{t('order.paymentInfo')}</h2>
                                     </div>
 
                                     {hasBankDetails() ? (
                                         <>
                                             <div className="bg-white rounded-lg p-4 mb-4">
-                                                <h3 className="font-medium text-gray-900 mb-3">Coordonnées bancaires</h3>
+                                                <h3 className="font-medium text-gray-900 mb-3">{t('order.bankDetails')}</h3>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                                     <div>
                                                         <span className="text-gray-600">IBAN :</span>
@@ -364,18 +366,18 @@ export default function OrderTrackingPage() {
                                                         <p className="font-mono font-medium">{orderData.bankDetails.bic}</p>
                                                     </div>
                                                     <div>
-                                                        <span className="text-gray-600">Bénéficiaire :</span>
+                                                        <span className="text-gray-600">{t('order.beneficiary')}</span>
                                                         <p className="font-medium">{orderData.bankDetails.accountName}</p>
                                                     </div>
                                                     <div>
-                                                        <span className="text-gray-600">Référence :</span>
+                                                        <span className="text-gray-600">{t('order.reference')}</span>
                                                         <p className="font-mono font-medium text-amber-600">{orderData.orderNumber}</p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                                                <h4 className="font-medium text-blue-900 mb-2">Instructions importantes</h4>
+                                                <h4 className="font-medium text-blue-900 mb-2">{t('order.instructions')}</h4>
                                                 <ul className="text-sm text-blue-800 space-y-1">
                                                     <li>
                                                         • Le montant exact à virer est de{" "}
@@ -406,7 +408,7 @@ export default function OrderTrackingPage() {
                                                     <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                                                     <div>
                                                         <h4 className="font-medium text-blue-900 mb-1">
-                                                            Informations bancaires en cours de préparation
+                                                            {t('order.bankPending')}
                                                         </h4>
                                                         <p className="text-sm text-blue-800">
                                                             Nos équipes sont en train de préparer vos coordonnées bancaires personnalisées. Vous
@@ -421,14 +423,14 @@ export default function OrderTrackingPage() {
                                 </motion.div>
                             )}
 
-                            {/* Articles commandés */}
+                            {/* {t('order.items')} */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
                                 className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
                             >
-                                <h2 className="text-lg font-semibold text-gray-900 mb-6">Articles commandés</h2>
+                                <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('order.items')}</h2>
 
                                 <div className="space-y-4">
                                     {orderData.items.map((item) => (
@@ -450,11 +452,11 @@ export default function OrderTrackingPage() {
                                 <div className="border-t border-gray-100 pt-4 mt-4">
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-gray-600">
-                                            <span>Sous-total</span>
+                                            <span>{t('cart.subtotal')}</span>
                                             <span>{formatPrice(orderData.totals.subtotal)}</span>
                                         </div>
                                         <div className="flex justify-between text-gray-600">
-                                            <span>Livraison</span>
+                                            <span>{t('cart.shipping')}</span>
                                             <span className="text-green-600 font-medium">
                                                 {orderData.totals.shipping === 0 ? "Gratuite" : formatPrice(orderData.totals.shipping)}
                                             </span>
@@ -470,14 +472,14 @@ export default function OrderTrackingPage() {
 
                         {/* Informations de contact et livraison */}
                         <div className="lg:col-span-1 space-y-6">
-                            {/* Informations client */}
+                            {/* {t('order.customerInfo')} */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
                                 className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
                             >
-                                <h3 className="font-semibold text-gray-900 mb-4">Informations client</h3>
+                                <h3 className="font-semibold text-gray-900 mb-4">{t('order.customerInfo')}</h3>
                                 <div className="space-y-3 text-sm">
                                     <div className="flex items-center space-x-2">
                                         <Mail className="w-4 h-4 text-gray-400" />
@@ -490,14 +492,14 @@ export default function OrderTrackingPage() {
                                 </div>
                             </motion.div>
 
-                            {/* Adresse de livraison */}
+                            {/* {t('order.shippingAddress')} */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 }}
                                 className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
                             >
-                                <h3 className="font-semibold text-gray-900 mb-4">Adresse de livraison</h3>
+                                <h3 className="font-semibold text-gray-900 mb-4">{t('order.shippingAddress')}</h3>
                                 <div className="flex items-start space-x-2 text-sm text-gray-600">
                                     <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                                     <div>

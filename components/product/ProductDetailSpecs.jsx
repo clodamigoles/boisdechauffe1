@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion"
 import { Droplets, Flame, Zap, TreePine, Ruler, Weight } from "lucide-react"
+import { useT } from '@/lib/i18n'
 
 export default function ProductDetailSpecs({ product }) {
+    const t = useT()
     const getSpecIcon = (specName) => {
         const icons = {
             Humidité: Droplets,
@@ -27,7 +29,7 @@ export default function ProductDetailSpecs({ product }) {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="bg-white rounded-xl border border-gray-200 p-6 mb-8"
         >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Spécifications techniques</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('product.techSpecs')}</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {product.specifications.map((spec, index) => {
@@ -57,7 +59,7 @@ export default function ProductDetailSpecs({ product }) {
             {/* Informations supplémentaires */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-green-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-green-900 mb-2">Avantages écologiques</h3>
+                    <h3 className="font-semibold text-green-900 mb-2">{t('product.ecoBenefits')}</h3>
                     <ul className="text-sm text-green-800 space-y-1">
                         <li>• Énergie renouvelable et locale</li>
                         <li>• Bilan carbone neutre</li>
@@ -67,7 +69,7 @@ export default function ProductDetailSpecs({ product }) {
                 </div>
 
                 <div className="bg-amber-50 rounded-lg p-4">
-                    <h3 className="font-semibold text-amber-900 mb-2">Conseils d'utilisation</h3>
+                    <h3 className="font-semibold text-amber-900 mb-2">{t('product.usageTips')}</h3>
                     <ul className="text-sm text-amber-800 space-y-1">
                         <li>• Stocker dans un endroit sec</li>
                         <li>• Utiliser des bûches de 25-30cm</li>

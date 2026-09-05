@@ -215,23 +215,22 @@ const siteSettingsSchema = new mongoose.Schema(
         },
 
         // Contenus légaux
+        /**
+         * Les quatre textes légaux, en allemand et en français.
+         *
+         * Ils étaient de simples chaînes, et le site allemand affichait donc
+         * des mentions françaises. Chaque document porte maintenant ses deux
+         * versions ; `localized()` retombe sur l'allemand si le français
+         * manque, jamais l'inverse.
+         *
+         * Format : Markdown restreint (titres, gras, liens, listes) — voir
+         * `components/layout/LegalPage.jsx`.
+         */
         legalContent: {
-            mentionsLegales: {
-                type: String,
-                default: "",
-            },
-            politiqueConfidentialite: {
-                type: String,
-                default: "",
-            },
-            cgv: {
-                type: String,
-                default: "",
-            },
-            cookies: {
-                type: String,
-                default: "",
-            },
+            mentionsLegales: { de: { type: String, default: "" }, fr: { type: String, default: "" } },
+            politiqueConfidentialite: { de: { type: String, default: "" }, fr: { type: String, default: "" } },
+            cgv: { de: { type: String, default: "" }, fr: { type: String, default: "" } },
+            cookies: { de: { type: String, default: "" }, fr: { type: String, default: "" } },
         },
 
         // Options supplémentaires

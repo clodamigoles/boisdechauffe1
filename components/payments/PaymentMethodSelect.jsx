@@ -1,18 +1,20 @@
 import { CreditCard, Building2 } from "lucide-react"
+import { useT } from '@/lib/i18n'
 
 export default function PaymentMethodSelect({ value, onChange }) {
+    const t = useT()
     const methods = [
         {
             id: "card",
-            label: "Carte bancaire",
-            description: "Paiement sécurisé par carte Visa, Mastercard ou American Express.",
+            label: t('payment.methodCard'),
+            description: t('payment.methodCardText'),
             icon: <CreditCard className="h-5 w-5" />,
         },
         {
             id: "bank_transfer",
-            label: "Virement bancaire",
+            label: t('payment.methodTransfer'),
             description:
-                "Après validation de votre commande, vous recevrez les coordonnées bancaires par email.",
+                t('payment.methodTransferText'),
             icon: <Building2 className="h-5 w-5" />,
         },
     ]

@@ -4,8 +4,10 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 import { ShoppingCart, X, Eye } from "lucide-react"
+import { useT } from '@/lib/i18n'
 
 export default function CartToast({ product, onClose, isVisible }) {
+    const t = useT()
     if (!isVisible) return null
 
     return (
@@ -22,7 +24,7 @@ export default function CartToast({ product, onClose, isVisible }) {
                     <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                         <ShoppingCart className="w-4 h-4 text-green-600" />
                     </div>
-                    <span className="font-medium text-gray-900">Ajouté au panier !</span>
+                    <span className="font-medium text-gray-900">{t('cart.addedTitle')}</span>
                 </div>
                 <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -56,7 +58,7 @@ export default function CartToast({ product, onClose, isVisible }) {
                         className="w-full bg-amber-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors flex items-center justify-center space-x-2"
                     >
                         <Eye className="w-4 h-4" />
-                        <span>Voir le panier</span>
+                        <span>{t('cart.goToCart')}</span>
                     </motion.button>
                 </Link>
                 <motion.button
@@ -65,7 +67,7 @@ export default function CartToast({ product, onClose, isVisible }) {
                     onClick={onClose}
                     className="px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                    Continuer
+                    {t('cart.keepShopping')}
                 </motion.button>
             </div>
         </motion.div>

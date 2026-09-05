@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { TreePine, Flame, Package, Zap, ArrowRight, TrendingUp } from 'lucide-react'
+import { TreePine, Flame, Package, Zap, ArrowRight, TrendingUp, Star } from 'lucide-react'
 
 import CategoryCard from '../ui/CategoryCard'
 import { containerVariants, itemVariants } from '@/utils/animations'
-import { useT } from '@/lib/i18n'
+import { useFormatter, useT } from '@/lib/i18n'
 
-export default function CategoriesSection({ categories = [] }) {
+export default function CategoriesSection({ categories = [], productCount = 0, rating = 0 }) {
     const t = useT()
+    const format = useFormatter()
     const iconMap = {
         'bois-feuillus-premium': TreePine,
         'bois-resineux-sec': TreePine,
@@ -15,44 +16,9 @@ export default function CategoriesSection({ categories = [] }) {
         'allume-feu-naturel': Flame
     }
 
-    const defaultCategories = [[
-        {
-            _id: '1',
-            name: 'Bois Feuillus Premium',
-            slug: 'bois-feuillus-premium',
-            shortDescription: 'Chêne, hêtre, charme - Excellence garantie',
-            image: '/images/categories/feuillus.jpg',
-            productCount: 24,
-            trending: true
-        },
-        {
-            _id: '2',
-            name: 'Bois Résineux Sec',
-            slug: 'bois-resineux-sec',
-            shortDescription: 'Pin, épicéa, sapin - Allumage facile',
-            image: '/images/categories/resineux.jpg',
-            productCount: 18,
-            trending: false
-        },
-        {
-            _id: '3',
-            name: 'Granulés Premium',
-            slug: 'granules-premium',
-            shortDescription: 'Pellets haute performance - Rendement optimal',
-            image: '/images/categories/granules.jpg',
-            productCount: 12,
-            trending: true
-        },
-        {
-            _id: '4',
-            name: 'Allume-Feu Naturel',
-            slug: 'allume-feu-naturel',
-            shortDescription: 'Écologique et efficace - Démarrage garanti',
-            image: '/images/categories/allume-feu.jpg',
-            productCount: 8,
-            trending: false
-        }
-    ]]
+    // Quatre catégories inventées — « Bois Résineux Sec », « Allume-Feu
+    // Naturel » — qui ne correspondent à aucune de celles en base.
+
 
     const displayCategories = categories.length > 0 ? categories : []
 
@@ -124,12 +90,26 @@ export default function CategoriesSection({ categories = [] }) {
                     transition={{ delay: 0.6, duration: 0.8 }}
                     className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
                 >
+                    {/* Quatre chiffres étaient écrits en dur ici : « 50+ »
+                        références pour un catalogue de dix-neuf produits,
+                        « 24-48h » pour un délai de quatre à cinq jours, et une
+                        note de « 4,9/5 » alors que la moyenne réelle est 4,0.
+                        Ils viennent maintenant du catalogue et des avis, et la
+                        tuile disparaît quand la donnée manque. */}
                     {[
-                        { icon: Zap, value: '< 18%', label: 'Taux d\'humidité' },
-                        { icon: Package, value: '50+', label: 'Références produits' },
-                        { icon: TrendingUp, value: '24-48h', label: 'Délai livraison' },
-                        { icon: TrendingUp, value: '4.9/5', label: 'Note clients' }
-                    ].map((stat, index) => {
+                        { icon: Zap, value: t('home.heroStatMoistureValue'), label: t('home.heroStatMoisture') },
+                        productCount
+                            ? { icon: Package, value: String(productCount), label: t('home.statProducts') }
+                            : null,
+                        { icon: TrendingUp, value: t('home.heroStatLeadTimeValue'), label: t('home.heroStatLeadTime') },
+                        rating
+                            ? {
+                                icon: Star,
+                                value: t('home.statRatingValue', { average: format.number(Math.round(rating * 10) / 10) }),
+                                label: t('home.statRating'),
+                            }
+                            : null,
+                    ].filter(Boolean).map((stat, index) => {
                         const IconComponent = stat.icon
                         return (
                             <motion.div
@@ -196,7 +176,7 @@ export default function CategoriesSection({ categories = [] }) {
                                         whileTap={{ scale: 0.95 }}
                                         className="bg-amber-700 text-white px-8 py-4 rounded-xl font-semibold hover:bg-amber-800 transition-all duration-300 flex items-center space-x-2"
                                     >
-                                        <span>Voir Toutes les Catégories</span>
+                                        <span>{t('home.categoriesBrowse')}</span>
                                         <ArrowRight className="w-4 h-4" />
                                     </motion.button>
                                 </Link>

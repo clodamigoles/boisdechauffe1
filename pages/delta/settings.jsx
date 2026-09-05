@@ -12,6 +12,8 @@ import toast from "react-hot-toast"
 import { Textarea } from "@/components/ui/textarea"
 
 export default function SettingsPage() {
+    // La langue en cours d'édition des textes légaux.
+    const [legalLang, setLegalLang] = useState("de")
     const [settings, setSettings] = useState(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -82,6 +84,48 @@ export default function SettingsPage() {
             },
         }))
     }
+
+    /** Un texte légal : on ne modifie que la langue affichée. */
+    const handleLegalChange = (documentKey, value) => {
+        setSettings((prev) => ({
+            ...prev,
+            legalContent: {
+                ...prev.legalContent,
+                [documentKey]: {
+                    ...(typeof prev.legalContent?.[documentKey] === "object"
+                        ? prev.legalContent[documentKey]
+                        : { de: "", fr: prev.legalContent?.[documentKey] || "" }),
+                    [legalLang]: value,
+                },
+            },
+        }))
+    }
+
+    /** Le texte affiché, quel que soit le format en base. */
+    const legalValue = (documentKey) => {
+        const entry = settings.legalContent?.[documentKey]
+        if (typeof entry === "string") return legalLang === "fr" ? entry : ""
+        return entry?.[legalLang] ?? ""
+    }
+
+    const LegalLangTabs = () => (
+        <div className="inline-flex rounded-lg border border-gray-200 p-0.5">
+            {LOCALES.map((code) => (
+                <button
+                    key={code}
+                    type="button"
+                    onClick={() => setLegalLang(code)}
+                    aria-pressed={legalLang === code}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${legalLang === code
+                        ? "bg-amber-50 text-amber-700"
+                        : "text-gray-500 hover:text-gray-900"
+                        }`}
+                >
+                    {LOCALE_NAMES[code]}
+                </button>
+            ))}
+        </div>
+    )
 
     const handleAddShippingZone = () => {
         setSettings((prev) => ({
@@ -397,6 +441,12 @@ export default function SettingsPage() {
                         <CardDescription>Gérez les contenus des pages légales (Markdown supporté)</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                        {/* Une seule bascule pour les quatre textes : on rédige
+                            une langue entière, puis l'autre. */}
+                        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                            <span className="text-sm text-muted-foreground">Langue en cours d'édition</span>
+                            <LegalLangTabs />
+                        </div>
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <Label htmlFor="mentionsLegales">Mentions Légales</Label>
@@ -411,14 +461,14 @@ export default function SettingsPage() {
                             </div>
                             <Textarea
                                 id="mentionsLegales"
-                                value={settings.legalContent?.mentionsLegales || ""}
-                                onChange={(e) => handleNestedInputChange("legalContent", "mentionsLegales", e.target.value)}
+                                value={legalValue("mentionsLegales")}
+                                onChange={(e) => handleLegalChange("mentionsLegales", e.target.value)}
                                 placeholder="Contenu des mentions légales (Markdown)"
                                 rows={6}
                                 className="font-mono text-sm"
                             />
                             <p className="text-xs text-muted-foreground">
-                                Laissez vide pour utiliser le contenu par défaut généré automatiquement
+                                Markdown : # titre, ## sous-titre, **gras**, - liste, [lien](/url). Vide, la page indique que le texte manque.
                             </p>
                         </div>
 
@@ -438,14 +488,14 @@ export default function SettingsPage() {
                             </div>
                             <Textarea
                                 id="politiqueConfidentialite"
-                                value={settings.legalContent?.politiqueConfidentialite || ""}
-                                onChange={(e) => handleNestedInputChange("legalContent", "politiqueConfidentialite", e.target.value)}
+                                value={legalValue("politiqueConfidentialite")}
+                                onChange={(e) => handleLegalChange("politiqueConfidentialite", e.target.value)}
                                 placeholder="Contenu de la politique de confidentialité (Markdown)"
                                 rows={6}
                                 className="font-mono text-sm"
                             />
                             <p className="text-xs text-muted-foreground">
-                                Laissez vide pour utiliser le contenu par défaut généré automatiquement
+                                Markdown : # titre, ## sous-titre, **gras**, - liste, [lien](/url). Vide, la page indique que le texte manque.
                             </p>
                         </div>
 
@@ -465,14 +515,14 @@ export default function SettingsPage() {
                             </div>
                             <Textarea
                                 id="cgv"
-                                value={settings.legalContent?.cgv || ""}
-                                onChange={(e) => handleNestedInputChange("legalContent", "cgv", e.target.value)}
+                                value={legalValue("cgv")}
+                                onChange={(e) => handleLegalChange("cgv", e.target.value)}
                                 placeholder="Contenu des conditions générales de vente (Markdown)"
                                 rows={6}
                                 className="font-mono text-sm"
                             />
                             <p className="text-xs text-muted-foreground">
-                                Laissez vide pour utiliser le contenu par défaut généré automatiquement
+                                Markdown : # titre, ## sous-titre, **gras**, - liste, [lien](/url). Vide, la page indique que le texte manque.
                             </p>
                         </div>
 
@@ -492,14 +542,14 @@ export default function SettingsPage() {
                             </div>
                             <Textarea
                                 id="cookies"
-                                value={settings.legalContent?.cookies || ""}
-                                onChange={(e) => handleNestedInputChange("legalContent", "cookies", e.target.value)}
+                                value={legalValue("cookies")}
+                                onChange={(e) => handleLegalChange("cookies", e.target.value)}
                                 placeholder="Contenu de la politique de cookies (Markdown)"
                                 rows={6}
                                 className="font-mono text-sm"
                             />
                             <p className="text-xs text-muted-foreground">
-                                Laissez vide pour utiliser le contenu par défaut généré automatiquement
+                                Markdown : # titre, ## sous-titre, **gras**, - liste, [lien](/url). Vide, la page indique que le texte manque.
                             </p>
                         </div>
                     </CardContent>

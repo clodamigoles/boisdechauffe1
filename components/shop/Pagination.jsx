@@ -1,6 +1,7 @@
 import { useMemo, memo } from 'react'
 import { motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 const PageButton = memo(({ page, isActive = false, isDisabled = false, onClick, children }) => (
     <motion.button
@@ -27,6 +28,7 @@ const PageButton = memo(({ page, isActive = false, isDisabled = false, onClick, 
 PageButton.displayName = 'PageButton'
 
 export default function Pagination({ currentPage, totalPages, onPageChange, maxVisiblePages = 5 }) {
+    const t = useT()
     if (totalPages <= 1) return null
 
     const visiblePages = useMemo(() => {
@@ -88,7 +90,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
     }
 
     return (
-        <nav className="flex items-center justify-between" aria-label="Pagination">
+        <nav className="flex items-center justify-between" aria-label={t('shop.pagination')}>
             {/* Info sur les résultats */}
             <div className="hidden sm:block">
                 <p className="text-sm text-gray-700">
@@ -105,7 +107,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
                     onClick={handlePrevious}
                 >
                     <ChevronLeft className="w-4 h-4" />
-                    <span className="hidden sm:inline ml-1">Précédent</span>
+                    <span className="hidden sm:inline ml-1">{t('shop.previousPage')}</span>
                 </PageButton>
 
                 {/* Pages - Desktop */}
@@ -146,7 +148,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
                     isDisabled={currentPage === totalPages}
                     onClick={handleNext}
                 >
-                    <span className="hidden sm:inline mr-1">Suivant</span>
+                    <span className="hidden sm:inline mr-1">{t('shop.nextPage')}</span>
                     <ChevronRight className="w-4 h-4" />
                 </PageButton>
             </div>
@@ -155,7 +157,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, maxV
             {totalPages > 10 && (
                 <div className="hidden lg:flex items-center gap-2">
                     <label htmlFor="goto-page" className="text-sm text-gray-700">
-                        Aller à la page :
+                        {t('shop.goToPage')}
                     </label>
                     <input
                         id="goto-page"

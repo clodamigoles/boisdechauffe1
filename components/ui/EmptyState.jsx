@@ -1,5 +1,6 @@
 import { Search, Package, Filter } from 'lucide-react'
 import Button from './ActionButton'
+import { useT } from '@/lib/i18n'
 
 export default function EmptyState({
     type = 'search',
@@ -9,6 +10,7 @@ export default function EmptyState({
     onAction,
     className = ''
 }) {
+    const t = useT()
     const getIcon = () => {
         switch (type) {
             case 'search':
@@ -26,23 +28,23 @@ export default function EmptyState({
         switch (type) {
             case 'search':
                 return {
-                    title: 'Aucun résultat trouvé',
-                    description: 'Essayez de modifier votre recherche ou vos filtres'
+                    title: t('empty.searchTitle'),
+                    description: t('empty.searchText')
                 }
             case 'products':
                 return {
-                    title: 'Aucun produit disponible',
-                    description: 'Nous ajoutons régulièrement de nouveaux produits'
+                    title: t('empty.productsTitle'),
+                    description: t('empty.productsText')
                 }
             case 'filter':
                 return {
-                    title: 'Aucun produit ne correspond',
-                    description: 'Essayez de modifier vos critères de filtrage'
+                    title: t('empty.filteredTitle'),
+                    description: t('empty.filteredText')
                 }
             default:
                 return {
-                    title: 'Aucun élément trouvé',
-                    description: 'Aucun contenu à afficher pour le moment'
+                    title: t('empty.genericTitle'),
+                    description: t('empty.genericText')
                 }
         }
     }

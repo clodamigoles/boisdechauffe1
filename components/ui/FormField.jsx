@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useT } from '@/lib/i18n'
 
 export default function Input({
     type = 'text',
@@ -15,6 +16,7 @@ export default function Input({
     className = '',
     ...props
 }) {
+    const t = useT()
     const [isFocused, setIsFocused] = useState(false)
     const [isValid, setIsValid] = useState(true)
 
@@ -109,7 +111,7 @@ export default function Input({
                     {error || (
                         !isValid && required && !value ? 'Ce champ est requis' :
                             !isValid && type === 'email' ? 'Format d\'email invalide' :
-                                'Valeur invalide'
+                                t('common.invalidValue')
                     )}
                 </motion.div>
             )}

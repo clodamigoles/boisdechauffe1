@@ -4,8 +4,10 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Upload, FileText, CheckCircle, AlertCircle, X } from "lucide-react"
 import Button from "./ActionButton"
+import { useT } from '@/lib/i18n'
 
 export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
+    const t = useT()
     const [isUploading, setIsUploading] = useState(false)
     const [uploadStatus, setUploadStatus] = useState(null) // 'success', 'error', null
     const [dragActive, setDragActive] = useState(false)
@@ -106,7 +108,7 @@ export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                     <Upload className="w-4 h-4 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-blue-900">Envoyer votre récépissé de paiement</h3>
+                <h3 className="text-lg font-semibold text-blue-900">{t('payment.receiptTitle')}</h3>
             </div>
 
             <p className="text-sm text-blue-800 mb-4">
@@ -118,18 +120,18 @@ export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                     <div className="flex items-center space-x-2">
                         <CheckCircle className="w-5 h-5 text-green-600" />
-                        <span className="text-green-800 font-medium">Récépissé envoyé avec succès !</span>
+                        <span className="text-green-800 font-medium">{t('payment.receiptSuccess')}</span>
                     </div>
-                    <p className="text-sm text-green-700 mt-1">Nous traiterons votre commande dès que possible.</p>
+                    <p className="text-sm text-green-700 mt-1">{t('payment.receiptSuccessText')}</p>
                 </div>
             ) : uploadStatus === "error" ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                     <div className="flex items-center space-x-2">
                         <AlertCircle className="w-5 h-5 text-red-600" />
-                        <span className="text-red-800 font-medium">Erreur lors de l'envoi</span>
+                        <span className="text-red-800 font-medium">{t('payment.receiptError')}</span>
                     </div>
                     <p className="text-sm text-red-700 mt-1">
-                        Veuillez vérifier le format du fichier (JPG, PNG, PDF) et la taille (max 10MB).
+                        {t('payment.receiptErrorText')}
                     </p>
                 </div>
             ) : null}
@@ -144,12 +146,12 @@ export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
                     onDrop={handleDrop}
                 >
                     <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-600 mb-2">Glissez-déposez votre récépissé ici ou</p>
+                    <p className="text-gray-600 mb-2">{t('payment.receiptDrop')}</p>
                     <label className="cursor-pointer">
                         <span className="text-blue-600 hover:text-blue-700 font-medium">parcourez vos fichiers</span>
                         <input type="file" className="hidden" accept="image/*,.pdf" onChange={handleFileInput} />
                     </label>
-                    <p className="text-xs text-gray-500 mt-2">Formats acceptés: JPG, PNG, PDF (max 10MB)</p>
+                    <p className="text-xs text-gray-500 mt-2">{t('payment.receiptFormats')}</p>
                 </div>
             ) : (
                 <div className="bg-white rounded-lg p-4 border border-gray-200">
@@ -171,17 +173,17 @@ export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
                             {isUploading ? (
                                 <>
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                                    Envoi en cours...
+                                    {t('common.sending')}
                                 </>
                             ) : (
                                 <>
                                     <Upload className="w-4 h-4 mr-2" />
-                                    Envoyer le récépissé
+                                    {t('payment.receiptSend')}
                                 </>
                             )}
                         </Button>
                         <Button variant="outline" onClick={resetUpload} disabled={isUploading}>
-                            Annuler
+                            {t('payment.cancel')}
                         </Button>
                     </div>
                 </div>

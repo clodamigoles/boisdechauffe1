@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
 import { useT } from '@/lib/i18n'
 
-export default function ProductSearch({ value, onChange, placeholder = "Rechercher..." }) {
+export default function ProductSearch({ value, onChange, placeholder }) {
     const t = useT()
+    const hint = placeholder ?? t('shop.searchShort')
     const [searchTerm, setSearchTerm] = useState(value || '')
     const timeoutRef = useRef(null)
 
@@ -53,9 +54,9 @@ export default function ProductSearch({ value, onChange, placeholder = "Recherch
                 type="text"
                 value={searchTerm}
                 onChange={handleChange}
-                placeholder={placeholder}
+                placeholder={hint}
                 className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-colors"
-                aria-label={placeholder}
+                aria-label={hint}
             />
             {searchTerm && (
                 <button

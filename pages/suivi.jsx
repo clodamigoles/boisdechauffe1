@@ -74,8 +74,8 @@ export default function SuiviPage() {
                             <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-6">
                                 <Package className="w-8 h-8" />
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-bold mb-4">Suivi de Commande</h1>
-                            <p className="text-xl text-white/90 max-w-2xl mx-auto">Suivez l'état de votre commande en temps réel</p>
+                            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('tracking.heroTitle')}</h1>
+                            <p className="text-xl text-white/90 max-w-2xl mx-auto">{t('tracking.heroSubtitle')}</p>
                         </motion.div>
                     </div>
                 </div>
@@ -137,7 +137,7 @@ export default function SuiviPage() {
                                 >
                                     <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="text-sm font-medium text-red-800">Erreur</p>
+                                        <p className="text-sm font-medium text-red-800">{t('tracking.error')}</p>
                                         <p className="text-sm text-red-700 mt-1">{error}</p>
                                     </div>
                                 </motion.div>
@@ -174,18 +174,18 @@ export default function SuiviPage() {
                         {[
                             {
                                 icon: "📦",
-                                title: "Suivi en temps réel",
-                                description: "Consultez l'état de votre commande à tout moment",
+                                title: t('tracking.feature1'),
+                                description: t('tracking.feature1Text'),
                             },
                             {
                                 icon: "🔔",
-                                title: "Notifications",
-                                description: "Recevez des alertes par email à chaque étape",
+                                title: t('tracking.feature2'),
+                                description: t('tracking.feature2Text'),
                             },
                             {
                                 icon: "📄",
-                                title: "Historique complet",
-                                description: "Accédez à l'historique détaillé de votre commande",
+                                title: t('tracking.feature3'),
+                                description: t('tracking.feature3Text'),
                             },
                         ].map((feature, index) => (
                             <motion.div

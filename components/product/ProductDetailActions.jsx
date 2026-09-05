@@ -6,8 +6,10 @@ import { ShoppingCart, Heart, Share2, Minus, Plus, Calculator } from "lucide-rea
 import { useCartStore } from "../../store/cartStore"
 import Button from "../ui/ActionButton"
 import CartToast from "../ui/CartToast"
+import { useT } from '@/lib/i18n'
 
 export default function ProductDetailActions({ product }) {
+    const t = useT()
     const [quantity, setQuantity] = useState(1)
     const [isWishlisted, setIsWishlisted] = useState(false)
     const [showToast, setShowToast] = useState(false)
@@ -93,13 +95,13 @@ export default function ProductDetailActions({ product }) {
 
                 <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-600">Prix unitaire:</span>
+                        <span className="text-sm text-gray-600">{t('product.unitPriceLabel')}</span>
                         <span className="font-medium">
                             {product.price}€ / {product.unit}
                         </span>
                     </div>
                     <div className="flex items-center justify-between">
-                        <span className="text-lg font-semibold text-gray-900">Total:</span>
+                        <span className="text-lg font-semibold text-gray-900">{t('product.totalLabel')}</span>
                         <span className="text-2xl font-bold text-amber-600">{totalPrice}€</span>
                     </div>
                     {product.compareAtPrice && (
@@ -118,7 +120,7 @@ export default function ProductDetailActions({ product }) {
                         className="w-full flex items-center justify-center space-x-2"
                     >
                         <ShoppingCart className="w-5 h-5" />
-                        <span>{product.inStock ? "Ajouter au panier" : "Produit indisponible"}</span>
+                        <span>{product.inStock ? "Ajouter au panier" : "{t('product.unavailable')}"}</span>
                     </Button>
 
                     <div className="grid grid-cols-2 gap-3">
@@ -142,7 +144,7 @@ export default function ProductDetailActions({ product }) {
                             className="flex items-center justify-center space-x-2 px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:border-gray-400 transition-colors"
                         >
                             <Share2 className="w-4 h-4" />
-                            <span className="text-sm font-medium">Partager</span>
+                            <span className="text-sm font-medium">{t('product.share')}</span>
                         </motion.button>
                     </div>
                 </div>
@@ -150,12 +152,12 @@ export default function ProductDetailActions({ product }) {
                 <div className="border-t border-gray-200 pt-6">
                     <button className="w-full flex items-center justify-center space-x-2 text-amber-600 hover:text-amber-700 transition-colors">
                         <Calculator className="w-4 h-4" />
-                        <span className="text-sm font-medium">Calculer mes besoins</span>
+                        <span className="text-sm font-medium">{t('product.estimate')}</span>
                     </button>
                 </div>
 
                 <div className="bg-blue-50 rounded-lg p-4">
-                    <h4 className="font-medium text-blue-900 mb-2">Livraison</h4>
+                    <h4 className="font-medium text-blue-900 mb-2">{t('cart.shipping')}</h4>
                     <ul className="text-sm text-blue-800 space-y-1">
                         <li>• Livraison 24-48h partout en France</li>
                         <li>• Gratuite dès 200€ d'achat</li>

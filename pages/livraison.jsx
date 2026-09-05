@@ -1,711 +1,368 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { useRouter } from "next/router"
 import Link from "next/link"
+import { motion } from "framer-motion"
 import {
-    Truck,
-    MapPin,
-    Clock,
-    Euro,
-    Shield,
-    CheckCircle,
-    Phone,
-    Calendar,
-    Package,
     AlertCircle,
-    ArrowRight,
-    Target
+    CheckCircle,
+    ChevronDown,
+    Clock,
+    MapPin,
+    Package,
+    Phone,
+    Truck,
 } from "lucide-react"
+
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
 import Button from "../components/ui/ActionButton"
-import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
-import { useSettings } from "@/hooks/useSettings"
-import { cloudinaryVideoPosterUrl, cloudinaryVideoUrl } from "@/lib/cloudinary-url"
 import SeoHead from "@/components/layout/SeoHead"
-import { useT } from "@/lib/i18n"
+import { cloudinaryVideoPosterUrl, cloudinaryVideoUrl } from "@/lib/cloudinary-url"
+import { useSettings } from "@/hooks/useSettings"
+import { FAQ_ITEMS } from "@/constants/faq"
+import { localized, useFormatter, useT } from "@/lib/i18n"
 
-const pageTransition = {
-    type: "tween",
-    ease: "anticipate",
-    duration: 0.5,
-}
+/**
+ * La page livraison.
+ *
+ * **Elle décrivait une entreprise qui n'existe pas.** Trois zones autour de
+ * Lyon, un « entrepôt lyonnais », une « Livraison Express en moins de 24 h »,
+ * une « Livraison Premium avec mise en tas », un suivi par SMS à chaque étape,
+ * et des seuils de gratuité — 200 €, 300 €, 500 € — qui ne correspondaient à
+ * aucun réglage. Le site vend en Allemagne, livre par Land en quatre à cinq
+ * jours, et ne propose qu'un seul service de livraison.
+ *
+ * Les tarifs affichés ici sont ceux de la base, les mêmes que ceux appliqués au
+ * moment de payer. C'est la raison d'être de cette page : personne ne devrait
+ * découvrir le coût du transport à la dernière étape du tunnel.
+ */
 
-/** Fond décoratif de l'en-tête. Sur Cloudinary, jamais dans `public/` : les
- *  29 Mo d'origine repartaient en entier à chaque point de présence du CDN. */
+/** Fond décoratif de l'en-tête. Sur Cloudinary, jamais dans `public/`. */
 const HERO_VIDEO = "mbdc/videos/hero-background"
+
+/** Le marché principal : sa grille est détaillée, les autres pays résumés. */
+const HOME_COUNTRY = "Deutschland"
 
 export default function LivraisonPage() {
     const t = useT()
-    const { contactPhone, whatsappLink } = useSettings()
-    const [selectedRegion, setSelectedRegion] = useState(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [selectedTab, setSelectedTab] = useState('zones')
+    const format = useFormatter()
+    const { locale } = useRouter()
+    const { shippingZones, freeShippingThreshold, contactPhone, whatsappLink } = useSettings()
+    const [openQuestion, setOpenQuestion] = useState(null)
 
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 600)
-        return () => clearTimeout(timer)
-    }, [])
+    const homeZone = shippingZones?.find((zone) => zone.country === HOME_COUNTRY)
+    const otherZones = shippingZones?.filter((zone) => zone.country !== HOME_COUNTRY) ?? []
 
-    const deliveryZones = [
-        {
-            id: 'zone-1',
-            name: 'Zone 1 - Région Lyonnaise',
-            regions: ['Rhône (69)', 'Ain (01)', 'Loire (42)', 'Isère (38)'],
-            delay: '24-48h',
-            price: 'Gratuite dès 200€',
-            standardPrice: '15€',
-            color: 'bg-green-500',
-            description: 'Livraison express dans notre zone principale'
-        },
-        {
-            id: 'zone-2',
-            name: 'Zone 2 - Auvergne-Rhône-Alpes étendue',
-            regions: ['Savoie (73)', 'Haute-Savoie (74)', 'Ardèche (07)', 'Drôme (26)', 'Puy-de-Dôme (63)'],
-            delay: '48-72h',
-            price: 'Gratuite dès 300€',
-            standardPrice: '25€',
-            color: 'bg-blue-500',
-            description: 'Livraison rapide en région étendue'
-        },
-        {
-            id: 'zone-3',
-            name: 'Zone 3 - France métropolitaine',
-            regions: ['Toute la France métropolitaine'],
-            delay: '3-5 jours',
-            price: 'Gratuite dès 500€',
-            standardPrice: '35€',
-            color: 'bg-amber-500',
-            description: 'Livraison standard partout en France'
-        }
+    // Les régions sont triées par tarif : le lecteur cherche d'abord combien
+    // ça lui coûte, pas où se situe son Land dans l'alphabet.
+    const regions = [...(homeZone?.regions ?? [])].sort((a, b) => a.cost - b.cost)
+
+    const steps = [
+        { icon: CheckCircle, title: t("delivery.step1"), text: t("delivery.step1Text") },
+        { icon: Clock, title: t("delivery.step2"), text: t("delivery.step2Text") },
+        { icon: Package, title: t("delivery.step3"), text: t("delivery.step3Text") },
+        { icon: Phone, title: t("delivery.step4"), text: t("delivery.step4Text") },
+        { icon: Truck, title: t("delivery.step5"), text: t("delivery.step5Text") },
     ]
 
-    const deliverySteps = [
-        {
-            step: 1,
-            title: 'Commande validée',
-            description: 'Réception de votre paiement et validation de la commande',
-            icon: CheckCircle,
-            time: 'J+0'
-        },
-        {
-            step: 2,
-            title: 'Préparation',
-            description: 'Sélection et conditionnement de votre bois de chauffage',
-            icon: Package,
-            time: 'J+1'
-        },
-        {
-            step: 3,
-            title: 'Expédition',
-            description: 'Chargement et départ de notre entrepôt lyonnais',
-            icon: Truck,
-            time: 'J+2'
-        },
-        {
-            step: 4,
-            title: 'Livraison',
-            description: 'Réception chez vous avec déchargement inclus',
-            icon: Target,
-            time: 'J+2 à J+5'
-        }
+    const preparations = [
+        { title: t("delivery.prep1"), text: t("delivery.prep1Text") },
+        { title: t("delivery.prep2"), text: t("delivery.prep2Text") },
+        { title: t("delivery.prep3"), text: t("delivery.prep3Text") },
+        { title: t("delivery.prep4"), text: t("delivery.prep4Text") },
     ]
 
-    const deliveryOptions = [
-        {
-            title: 'Livraison Standard',
-            description: 'Déchargement au plus près de votre habitation',
-            features: [
-                'Livraison en bordure de voie',
-                'Déchargement manuel inclus',
-                'Horaires 8h-18h du lundi au vendredi',
-                'Préavis 24h par téléphone'
-            ],
-            price: 'Selon zone',
-            popular: true
-        },
-        {
-            title: 'Livraison Premium',
-            description: 'Service complet avec mise en place',
-            features: [
-                'Livraison jusqu\'à votre stockage',
-                'Mise en tas organisée',
-                'Créneaux élargis weekends compris',
-                'Service de nettoyage'
-            ],
-            price: '+20€',
-            popular: false
-        },
-        {
-            title: 'Livraison Express',
-            description: 'Livraison en moins de 24h (Zone 1 uniquement)',
-            features: [
-                'Délai garanti sous 24h',
-                'Créneaux spécifiques 2h',
-                'SMS de suivi temps réel',
-                'Zone lyonnaise uniquement'
-            ],
-            price: '+35€',
-            popular: false
-        }
-    ]
-
-    const faqItems = [
-        {
-            question: 'Comment suivre ma livraison ?',
-            answer: 'Vous recevez un email avec le numéro de suivi dès l\'expédition. Notre équipe vous contacte 24h avant la livraison pour confirmer le créneau.'
-        },
-        {
-            question: 'Que faire si je ne suis pas disponible ?',
-            answer: 'Nous proposons la livraison chez un voisin ou dans un lieu sûr convenu. En cas d\'absence totale, nous replanifions gratuitement une nouvelle livraison.'
-        },
-        {
-            question: 'Le déchargement est-il inclus ?',
-            answer: 'Oui, le déchargement manuel est toujours inclus. Nous déchargeons au plus près de votre habitation accessible par camion.'
-        },
-        {
-            question: 'Livrez-vous dans les étages ?',
-            answer: 'La livraison standard se fait en rez-de-chaussée. Pour les étages, nous proposons un service premium avec supplément selon la configuration.'
-        },
-        {
-            question: 'Quels sont vos délais en période hivernale ?',
-            answer: 'En période de forte demande (octobre à février), les délais peuvent être prolongés de 1-2 jours. Nous recommandons de commander à l\'avance.'
-        }
-    ]
-
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-gray-50">
-                <Header />
-                <div className="pt-20 flex items-center justify-center min-h-screen">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
-                </div>
-                <Footer />
-            </div>
-        )
-    }
+    // Les questions sur la livraison sont déjà écrites dans le module de FAQ,
+    // dans les deux langues : les recopier ici en ferait deux versions à tenir
+    // à jour, qui divergeraient à la première correction.
+    const questions = FAQ_ITEMS.filter((item) => item.category === "delivery").map((item) => ({
+        question: localized(item.question, locale),
+        answer: localized(item.answer, locale),
+    }))
 
     return (
         <>
             <SeoHead
-                title={t('meta.deliveryTitle')}
-                description={t('meta.deliveryDescription')}
+                title={t("meta.deliveryTitle")}
+                description={t("meta.deliveryDescription")}
             />
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-white">
                 <Header />
-                <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900">
-                    {/* Vidéo Background */}
-                    <div className="absolute inset-0 z-0">
-                        <video
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            preload="none"
-                            className="w-full h-full object-cover opacity-60"
-                            poster={cloudinaryVideoPosterUrl(HERO_VIDEO, { width: 1600, height: 900 })}
-                            src={cloudinaryVideoUrl(HERO_VIDEO, { width: 1280, maxBitrate: "700k" })}
-                        />
 
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-transparent" />
-                    </div>
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-                            className="text-center max-w-4xl mx-auto"
-                        >
+                <main>
+                    {/* En-tête */}
+                    <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden bg-gray-900">
+                        <div className="absolute inset-0 z-0">
+                            <video
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="none"
+                                className="h-full w-full object-cover opacity-60"
+                                poster={cloudinaryVideoPosterUrl(HERO_VIDEO, { width: 1600, height: 900 })}
+                                src={cloudinaryVideoUrl(HERO_VIDEO, { width: 1280, maxBitrate: "700k" })}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-gray-900/65 to-gray-900/40" />
+                        </div>
+
+                        <div className="relative z-10 mx-auto max-w-4xl px-4 py-24 text-center sm:px-6">
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
+                                initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.2 }}
-                                className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
+                                className="mb-6 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm"
                             >
-                                <Truck className="w-4 h-4 mr-2" />
-                                Livraison Partout en France
+                                <Truck className="mr-2 h-4 w-4" aria-hidden="true" />
+                                {t("delivery.badge")}
                             </motion.div>
 
-                            <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-                                Livraison Rapide et
-                                <span className="block text-amber-400">
-                                    Déchargement Inclus
-                                </span>
-                            </h1>
+                            <motion.h1
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3, duration: 0.8 }}
+                                className="mb-6 text-4xl font-bold leading-tight text-white lg:text-5xl"
+                            >
+                                {t("delivery.title")}
+                                <span className="block text-amber-400">{t("delivery.titleAccent")}</span>
+                            </motion.h1>
 
-                            <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                                Service de livraison professionnel avec déchargement inclus.
-                                De 24h en région lyonnaise à 5 jours partout en France.
-                            </p>
+                            <motion.p
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5, duration: 0.8 }}
+                                className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-gray-300"
+                            >
+                                {t("delivery.subtitle")}
+                            </motion.p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                {/* <Button
-                                    variant="primary"
-                                    size="lg"
-                                    className="flex items-center space-x-2 bg-amber-600 hover:bg-amber-700"
-                                >
-                                    <MapPin className="w-5 h-5" />
-                                    <span>Vérifier ma zone</span>
-                                </Button> */}
-                                <Link href={whatsappLink}>
-                                    <Button
-                                        variant="secondary"
-                                        size="lg"
-                                        className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
-                                    >
-                                        <Phone className="w-5 h-5" />
-                                        <span>{contactPhone}</span>
-                                    </Button>
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.7, duration: 0.8 }}
+                                className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+                            >
+                                <Link href="/shop">
+                                    <Button variant="primary" size="lg">{t("delivery.ctaShop")}</Button>
                                 </Link>
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
-
-                {/* Navigation Tabs */}
-                <section className="bg-white border-b border-gray-200 sticky top-16 z-40">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <nav className="flex space-x-8 overflow-x-auto">
-                            {[
-                                { id: 'zones', label: 'Zones & Tarifs', icon: MapPin },
-                                { id: 'process', label: 'Processus', icon: Truck },
-                                { id: 'options', label: 'Options', icon: Package },
-                                { id: 'faq', label: 'Questions', icon: AlertCircle }
-                            ].map((tab) => {
-                                const IconComponent = tab.icon
-                                return (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setSelectedTab(tab.id)}
-                                        className={`flex items-center space-x-2 py-4 border-b-2 transition-colors whitespace-nowrap ${selectedTab === tab.id
-                                                ? 'border-amber-600 text-amber-600'
-                                                : 'border-transparent text-gray-600 hover:text-amber-600'
-                                            }`}
-                                    >
-                                        <IconComponent className="w-4 h-4" />
-                                        <span className="font-medium">{tab.label}</span>
-                                    </button>
-                                )
-                            })}
-                        </nav>
-                    </div>
-                </section>
-
-                {/* Zones & Tarifs */}
-                {selectedTab === 'zones' && (
-                    <section className="py-16">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                variants={containerVariants}
-                                initial="initial"
-                                whileInView="animate"
-                                viewport={{ once: true }}
-                                className="text-center mb-12"
-                            >
-                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Nos Zones de Livraison
-                                </h2>
-                                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    Trois zones de livraison avec des délais et tarifs adaptés à votre localisation
-                                </p>
-                            </motion.div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                {deliveryZones.map((zone, index) => (
-                                    <motion.div
-                                        key={zone.id}
-                                        variants={itemVariants}
-                                        custom={index}
-                                        whileHover={{ y: -5, scale: 1.02 }}
-                                        className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer"
-                                        onClick={() => setSelectedRegion(selectedRegion === zone.id ? null : zone.id)}
-                                    >
-                                        <div className={`h-2 ${zone.color}`}></div>
-                                        <div className="p-8">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <h3 className="text-xl font-bold text-gray-900">{zone.name}</h3>
-                                                <div className={`w-4 h-4 rounded-full ${zone.color}`}></div>
-                                            </div>
-
-                                            <p className="text-gray-600 mb-6">{zone.description}</p>
-
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-2">
-                                                        <Clock className="w-4 h-4 text-gray-400" />
-                                                        <span className="text-sm text-gray-600">Délai</span>
-                                                    </div>
-                                                    <span className="font-semibold text-gray-900">{zone.delay}</span>
-                                                </div>
-
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-2">
-                                                        <Euro className="w-4 h-4 text-gray-400" />
-                                                        <span className="text-sm text-gray-600">Gratuite</span>
-                                                    </div>
-                                                    <span className="font-semibold text-green-600">{zone.price}</span>
-                                                </div>
-
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-2">
-                                                        <Truck className="w-4 h-4 text-gray-400" />
-                                                        <span className="text-sm text-gray-600">Standard</span>
-                                                    </div>
-                                                    <span className="font-semibold text-gray-900">{zone.standardPrice}</span>
-                                                </div>
-                                            </div>
-
-                                            {selectedRegion === zone.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, height: 0 }}
-                                                    animate={{ opacity: 1, height: 'auto' }}
-                                                    exit={{ opacity: 0, height: 0 }}
-                                                    className="mt-6 pt-6 border-t border-gray-100"
-                                                >
-                                                    <h4 className="font-semibold text-gray-900 mb-3">Départements couverts :</h4>
-                                                    <div className="space-y-2">
-                                                        {zone.regions.map((region, regionIndex) => (
-                                                            <div
-                                                                key={regionIndex}
-                                                                className="flex items-center space-x-2 text-sm text-gray-600"
-                                                            >
-                                                                <CheckCircle className="w-4 h-4 text-green-500" />
-                                                                <span>{region}</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.6 }}
-                                className="mt-12 bg-amber-50 border border-amber-200 rounded-xl p-6"
-                            >
-                                <div className="flex items-start space-x-3">
-                                    <AlertCircle className="w-6 h-6 text-amber-600 mt-1 flex-shrink-0" />
-                                    <div>
-                                        <h4 className="font-semibold text-amber-900 mb-2">Zone non couverte ?</h4>
-                                        <p className="text-amber-800 mb-4">
-                                            Votre région n'apparaît pas dans nos zones de livraison ? Contactez-nous !
-                                            Nous étudions toutes les demandes et pouvons organiser une livraison spéciale.
-                                        </p>
-                                        <Link href="/contact">
-                                            <Button variant="outline" size="sm" className="bg-white text-amber-700 border-amber-300 hover:bg-amber-50">
-                                                Nous contacter
-                                            </Button>
-                                        </Link>
-                                    </div>
-                                </div>
+                                <Link href="/contact">
+                                    <span className="font-semibold text-white underline decoration-white/40 underline-offset-8 transition-colors hover:decoration-white">
+                                        {t("delivery.ctaContact")}
+                                    </span>
+                                </Link>
                             </motion.div>
                         </div>
                     </section>
-                )}
 
-                {/* Processus de Livraison */}
-                {selectedTab === 'process' && (
-                    <section className="py-16">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                variants={containerVariants}
-                                initial="initial"
-                                whileInView="animate"
-                                viewport={{ once: true }}
-                                className="text-center mb-12"
-                            >
-                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Comment ça se passe ?
+                    {/* Tarifs — la donnée vient des paramètres, comme au panier */}
+                    <section className="bg-white py-16 lg:py-20">
+                        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+                            <div className="max-w-2xl">
+                                <h2 className="text-2xl font-bold text-gray-900 lg:text-3xl">
+                                    {t("delivery.ratesTitle")}
                                 </h2>
-                                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    De la validation de votre commande à la livraison chez vous, suivez chaque étape
-                                </p>
-                            </motion.div>
+                                <p className="mt-3 leading-relaxed text-gray-600">{t("delivery.ratesIntro")}</p>
+                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                {deliverySteps.map((step, index) => {
-                                    const IconComponent = step.icon
+                            {regions.length > 0 ? (
+                                <>
+                                    <div className="mt-10 overflow-x-auto rounded-xl border border-gray-200">
+                                        <table className="w-full text-left text-sm">
+                                            <thead className="bg-gray-50 text-gray-500">
+                                                <tr>
+                                                    <th scope="col" className="px-5 py-3 font-medium">
+                                                        {t("delivery.ratesRegion")}
+                                                    </th>
+                                                    <th scope="col" className="px-5 py-3 text-right font-medium">
+                                                        {t("delivery.ratesPrice")}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100">
+                                                {regions.map((region) => (
+                                                    <tr key={region.name}>
+                                                        <th scope="row" className="px-5 py-3 font-normal text-gray-900">
+                                                            {t(`regions.${region.name}`)}
+                                                        </th>
+                                                        <td className="px-5 py-3 text-right font-semibold tabular-nums text-gray-900">
+                                                            {format.price(region.cost)}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {freeShippingThreshold ? (
+                                        <p className="mt-4 flex items-start gap-2 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                                            <CheckCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                                            {t("delivery.ratesFreeNotice", {
+                                                amount: format.price(freeShippingThreshold),
+                                            })}
+                                        </p>
+                                    ) : null}
+
+                                    {otherZones.length > 0 ? (
+                                        <div className="mt-10">
+                                            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+                                                {t("delivery.ratesOtherCountries")}
+                                            </h3>
+                                            <ul className="mt-4 flex flex-wrap gap-2">
+                                                {otherZones.map((zone) => (
+                                                    <li
+                                                        key={zone.country}
+                                                        className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700"
+                                                    >
+                                                        {t(`countries.${zone.country}`)}
+                                                        <span className="ml-2 font-semibold tabular-nums">
+                                                            {format.price(Math.min(...zone.regions.map((r) => r.cost)))}
+                                                        </span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ) : null}
+                                </>
+                            ) : (
+                                <p className="mt-8 text-sm text-gray-500">{t("delivery.ratesUnavailable")}</p>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* Étapes */}
+                    <section className="border-y border-gray-100 bg-gray-50 py-16 lg:py-20">
+                        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+                            <div className="max-w-2xl">
+                                <h2 className="text-2xl font-bold text-gray-900 lg:text-3xl">
+                                    {t("delivery.stepsTitle")}
+                                </h2>
+                                <p className="mt-3 leading-relaxed text-gray-600">{t("delivery.stepsIntro")}</p>
+                            </div>
+
+                            <ol className="mt-10 space-y-6">
+                                {steps.map((step, index) => {
+                                    const Icon = step.icon
                                     return (
-                                        <motion.div
-                                            key={step.step}
-                                            variants={itemVariants}
-                                            custom={index}
-                                            className="text-center"
+                                        <motion.li
+                                            key={step.title}
+                                            initial={{ opacity: 0, y: 12 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ delay: Math.min(index, 4) * 0.05 }}
+                                            className="flex gap-4 rounded-xl border border-gray-100 bg-white p-5"
                                         >
-                                            <div className="relative mb-6">
-                                                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <IconComponent className="w-8 h-8 text-white" />
-                                                </div>
-                                                <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
-                                                    {step.step}
-                                                </div>
-
-                                                {index < deliverySteps.length - 1 && (
-                                                    <div className="hidden lg:block absolute top-8 left-16 w-full h-0.5 bg-gray-300"></div>
-                                                )}
+                                            <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-amber-100">
+                                                <Icon className="h-5 w-5 text-amber-700" aria-hidden="true" />
                                             </div>
-
-                                            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                                                <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mb-3">
-                                                    {step.time}
-                                                </div>
-                                                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                            <div>
+                                                <h3 className="font-semibold text-gray-900">
+                                                    <span className="mr-2 tabular-nums text-amber-600">{index + 1}.</span>
                                                     {step.title}
                                                 </h3>
-                                                <p className="text-gray-600 text-sm">
-                                                    {step.description}
-                                                </p>
+                                                <p className="mt-1 text-sm leading-relaxed text-gray-600">{step.text}</p>
                                             </div>
-                                        </motion.div>
+                                        </motion.li>
+                                    )
+                                })}
+                            </ol>
+
+                            <p className="mt-6 flex items-start gap-2 text-sm text-gray-500">
+                                <Clock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                                {t("delivery.leadTimeNotice")}
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* Préparation */}
+                    <section className="bg-white py-16 lg:py-20">
+                        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+                            <h2 className="max-w-2xl text-2xl font-bold text-gray-900 lg:text-3xl">
+                                {t("delivery.prepTitle")}
+                            </h2>
+
+                            <div className="mt-10 grid gap-6 sm:grid-cols-2">
+                                {preparations.map((item) => (
+                                    <div key={item.title} className="rounded-xl border border-gray-100 bg-gray-50 p-6">
+                                        <div className="mb-3 flex items-center gap-2">
+                                            <MapPin className="h-4 w-4 shrink-0 text-amber-600" aria-hidden="true" />
+                                            <h3 className="font-semibold text-gray-900">{item.title}</h3>
+                                        </div>
+                                        <p className="text-sm leading-relaxed text-gray-600">{item.text}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Questions */}
+                    <section className="border-t border-gray-100 bg-gray-50 py-16 lg:py-20">
+                        <div className="mx-auto max-w-3xl px-4 sm:px-6">
+                            <h2 className="text-2xl font-bold text-gray-900 lg:text-3xl">
+                                {t("delivery.faqTitle")}
+                            </h2>
+
+                            <div className="mt-8 divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white">
+                                {questions.map((item, index) => {
+                                    const isOpen = openQuestion === index
+                                    return (
+                                        <div key={item.question}>
+                                            <button
+                                                type="button"
+                                                onClick={() => setOpenQuestion(isOpen ? null : index)}
+                                                aria-expanded={isOpen}
+                                                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                                            >
+                                                <span className="font-medium text-gray-900">{item.question}</span>
+                                                <ChevronDown
+                                                    aria-hidden="true"
+                                                    className={`h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                                                        }`}
+                                                />
+                                            </button>
+                                            {isOpen ? (
+                                                <p className="px-5 pb-5 text-sm leading-relaxed text-gray-600">
+                                                    {item.answer}
+                                                </p>
+                                            ) : null}
+                                        </div>
                                     )
                                 })}
                             </div>
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.8 }}
-                                className="mt-16 text-center"
+                            <Link
+                                href="/faq"
+                                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-amber-700 hover:text-amber-800"
                             >
-                                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
-                                    <h3 className="text-2xl font-bold mb-4">Suivi temps réel</h3>
-                                    <p className="text-blue-100 mb-6">
-                                        Recevez des SMS et emails à chaque étape pour suivre votre livraison en temps réel
-                                    </p>
-                                    <div className="flex flex-wrap justify-center gap-6 text-sm">
-                                        <div className="flex items-center space-x-2">
-                                            <CheckCircle className="w-4 h-4" />
-                                            <span>SMS de départ</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <CheckCircle className="w-4 h-4" />
-                                            <span>Appel 24h avant</span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            <CheckCircle className="w-4 h-4" />
-                                            <span>SMS d'arrivée</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
+                                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                                {t("delivery.faqCta")}
+                            </Link>
                         </div>
                     </section>
-                )}
 
-                {/* Options de Livraison */}
-                {selectedTab === 'options' && (
-                    <section className="py-16">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                variants={containerVariants}
-                                initial="initial"
-                                whileInView="animate"
-                                viewport={{ once: true }}
-                                className="text-center mb-12"
-                            >
-                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Choisissez Votre Service
-                                </h2>
-                                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    Trois niveaux de service pour s'adapter à vos besoins et votre budget
-                                </p>
-                            </motion.div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                {deliveryOptions.map((option, index) => (
-                                    <motion.div
-                                        key={option.title}
-                                        variants={itemVariants}
-                                        custom={index}
-                                        whileHover={{ y: -5 }}
-                                        className={`bg-white rounded-2xl shadow-lg border p-8 relative ${option.popular ? 'border-amber-500 ring-2 ring-amber-500 ring-opacity-20' : 'border-gray-200'
-                                            }`}
-                                    >
-                                        {option.popular && (
-                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                                <span className="bg-amber-600 text-white px-4 py-1 rounded-full text-sm font-medium">
-                                                    Le plus choisi
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        <div className="text-center mb-6">
-                                            <h3 className="text-xl font-bold text-gray-900 mb-2">{option.title}</h3>
-                                            <p className="text-gray-600 mb-4">{option.description}</p>
-                                            <div className="text-2xl font-bold text-amber-600">{option.price}</div>
-                                        </div>
-
-                                        <ul className="space-y-3 mb-8">
-                                            {option.features.map((feature, featureIndex) => (
-                                                <li key={featureIndex} className="flex items-start space-x-3">
-                                                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                                                    <span className="text-gray-600 text-sm">{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-
-                                        <Button
-                                            variant={option.popular ? "primary" : "outline"}
-                                            className="w-full"
-                                        >
-                                            {option.popular ? "Choisir cette option" : "En savoir plus"}
-                                        </Button>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-                )}
-
-                {/* FAQ */}
-                {selectedTab === 'faq' && (
-                    <section className="py-16">
-                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <motion.div
-                                variants={containerVariants}
-                                initial="initial"
-                                whileInView="animate"
-                                viewport={{ once: true }}
-                                className="text-center mb-12"
-                            >
-                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Questions Fréquentes
-                                </h2>
-                                <p className="text-lg text-gray-600">
-                                    Tout ce que vous devez savoir sur nos livraisons
-                                </p>
-                            </motion.div>
-
-                            <div className="space-y-6">
-                                {faqItems.map((item, index) => (
-                                    <motion.div
-                                        key={index}
-                                        variants={itemVariants}
-                                        custom={index}
-                                        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
-                                    >
-                                        <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                                            {item.question}
-                                        </h3>
-                                        <p className="text-gray-600 leading-relaxed">
-                                            {item.answer}
-                                        </p>
-                                    </motion.div>
-                                ))}
-                            </div>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.6 }}
-                                className="mt-12 text-center"
-                            >
-                                <div className="bg-gray-100 rounded-xl p-8">
-                                    <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                                        Une autre question ?
-                                    </h3>
-                                    <p className="text-gray-600 mb-6">
-                                        Notre équipe est là pour répondre à toutes vos questions sur la livraison
-                                    </p>
-                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                        <Link href="/contact">
-                                            <Button variant="primary" className="flex items-center space-x-2">
-                                                <Phone className="w-4 h-4" />
-                                                <span>Nous contacter</span>
-                                            </Button>
-                                        </Link>
-                                        <Button variant="outline" className="flex items-center space-x-2">
-                                            <Calendar className="w-4 h-4" />
-                                            <span>Planifier un appel</span>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </div>
-                    </section>
-                )}
-
-                {/* CTA Section */}
-                <section className="py-16 bg-gray-400">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="text-center text-white"
-                        >
-                            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-                                Prêt à Commander ?
-                            </h2>
-                            <p className="text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
-                                Découvrez notre sélection de bois de chauffage premium et
-                                bénéficiez de notre service de livraison professionnel
+                    {/* Appel à l'action */}
+                    <section className="bg-gray-900 py-16">
+                        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
+                            <h2 className="text-2xl font-bold text-white lg:text-3xl">{t("delivery.finalTitle")}</h2>
+                            <p className="mx-auto mt-3 max-w-xl leading-relaxed text-gray-300">
+                                {t("delivery.finalText")}
                             </p>
-
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                                 <Link href="/shop">
-                                    <Button
-                                        variant="secondary"
-                                        size="lg"
-                                        className="flex items-center space-x-2 bg-white text-amber-600 hover:bg-gray-100"
-                                    >
-                                        <Package className="w-5 h-5" />
-                                        <span>Voir nos produits</span>
-                                        <ArrowRight className="w-4 h-4 ml-2" />
-                                    </Button>
+                                    <Button variant="primary" size="lg">{t("delivery.ctaShop")}</Button>
                                 </Link>
-
-                                <Link href="/devis">
-                                    <Button
-                                        variant="outline"
-                                        size="lg"
-                                        className="flex items-center space-x-2 text-white border-white/30 hover:bg-white/10"
+                                {contactPhone ? (
+                                    <a
+                                        href={whatsappLink || `tel:${contactPhone}`}
+                                        className="font-semibold text-white underline decoration-white/40 underline-offset-8 transition-colors hover:decoration-white"
                                     >
-                                        <Euro className="w-5 h-5" />
-                                        <span>Devis gratuit</span>
-                                    </Button>
-                                </Link>
+                                        {contactPhone}
+                                    </a>
+                                ) : null}
                             </div>
-
-                            {/* Avantages rapides */}
-                            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="text-center">
-                                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Truck className="w-6 h-6 text-white" />
-                                    </div>
-                                    <h3 className="font-semibold text-white mb-2">Livraison Rapide</h3>
-                                    <p className="text-orange-100 text-sm">24-48h en région lyonnaise</p>
-                                </div>
-
-                                <div className="text-center">
-                                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <Shield className="w-6 h-6 text-white" />
-                                    </div>
-                                    <h3 className="font-semibold text-white mb-2">Service Garanti</h3>
-                                    <p className="text-orange-100 text-sm">Déchargement inclus</p>
-                                </div>
-
-                                <div className="text-center">
-                                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <CheckCircle className="w-6 h-6 text-white" />
-                                    </div>
-                                    <h3 className="font-semibold text-white mb-2">Suivi Complet</h3>
-                                    <p className="text-orange-100 text-sm">SMS et appels de suivi</p>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
+                        </div>
+                    </section>
+                </main>
 
                 <Footer />
             </div>

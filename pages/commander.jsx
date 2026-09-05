@@ -270,7 +270,7 @@ export default function CheckoutPage() {
                         </div>
 
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('checkout.title')}</h1>
-                        <p className="text-gray-600">Remplissez vos informations pour obtenir votre devis personnalisé</p>
+                        <p className="text-gray-600">{t('checkout.intro')}</p>
                     </div>
 
                     {createdOrder && paymentMethod === "card" ? (

@@ -20,7 +20,8 @@
     "prices:up": "node scripts/update-prices.js --percent=25",
     "prices:dry": "node scripts/update-prices.js --percent=25 --dry-run",
     "catalog:translate": "node scripts/translate-catalog.js",
-    "reviews:import": "node scripts/import-reviews.js"
+    "reviews:import": "node scripts/import-reviews.js",
+    "legal:seed": "node scripts/seed-legal.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",

@@ -4,19 +4,19 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import {
-    Phone,
+    AlertCircle,
+    CheckCircle,
+    Clock,
+    FileText,
+    Headphones,
     Mail,
     MapPin,
-    Clock,
-    Send,
-    CheckCircle,
-    AlertCircle,
     MessageSquare,
-    Calendar,
-    Headphones,
-    FileText,
+    Package,
+    Phone,
+    Send,
+    Truck,
     Users,
-    Truck
 } from "lucide-react"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
@@ -36,7 +36,7 @@ const pageTransition = {
 export default function ContactPage() {
     const t = useT()
     const { contactEmail, fullAddress, contactPhone, whatsappLink } = useSettings()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitSuccess, setSubmitSuccess] = useState(false)
     const [errors, setErrors] = useState({})
@@ -56,91 +56,46 @@ export default function ContactPage() {
         acceptTerms: false
     })
 
-    useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 600)
-        return () => clearTimeout(timer)
-    }, [])
 
+    /**
+     * Les moyens de contact qui existent réellement.
+     *
+     * Il y en avait quatre : le téléphone, l'e-mail, un « chat en ligne
+     * disponible lundi-vendredi 9h-18h » et une « prise de rendez-vous » —
+     * les deux derniers pointant vers `href: "#"`, c'est-à-dire nulle part.
+     * Un visiteur qui clique dessus reste sur la page.
+     *
+     * Restent les deux qui aboutissent. Les horaires et le délai de réponse
+     * sont ceux annoncés partout ailleurs sur le site.
+     */
     const contactMethods = [
         {
             icon: Phone,
-            title: "Téléphone",
-            description: "Appelez-nous directement",
+            title: t("contact.methodPhone"),
+            description: t("contact.methodPhoneText"),
             value: contactPhone,
-            availability: "Lun-Sam : 8h-19h",
-            href: whatsappLink,
+            availability: t("contact.hoursValue"),
+            href: whatsappLink || `tel:${contactPhone}`,
             color: "bg-green-500",
-            urgent: true
         },
         {
             icon: Mail,
-            title: "Email",
-            description: "Écrivez-nous",
+            title: t("contact.methodEmail"),
+            description: t("contact.methodEmailText"),
             value: contactEmail,
-            availability: "Réponse sous 2-4h",
+            availability: t("contact.responseTime"),
             href: `mailto:${contactEmail}`,
             color: "bg-blue-500",
-            urgent: false
         },
-        {
-            icon: MessageSquare,
-            title: "Chat en ligne",
-            description: "Discussion instantanée",
-            value: "Chat disponible",
-            availability: "Lun-Ven : 9h-18h",
-            href: "#",
-            color: "bg-purple-500",
-            urgent: true
-        },
-        {
-            icon: Calendar,
-            title: "Rendez-vous",
-            description: "Planifier une visite",
-            value: "Prise de RDV",
-            availability: "Sur rendez-vous",
-            href: "#",
-            color: "bg-orange-500",
-            urgent: false
-        }
     ]
 
     const subjects = [
-        {
-            id: "devis",
-            label: "Demande de devis",
-            icon: FileText,
-            description: "Pour une estimation personnalisée"
-        },
-        {
-            id: "livraison",
-            label: "Questions livraison",
-            icon: Truck,
-            description: "Délais, zones, modalités"
-        },
-        {
-            id: "produits",
-            label: "Informations produits",
-            icon: Users,
-            description: "Caractéristiques, qualité, stock"
-        },
-        {
-            id: "commande",
-            label: "Suivi de commande",
-            icon: CheckCircle,
-            description: "État, modification, problème"
-        },
-        {
-            id: "support",
-            label: "Support technique",
-            icon: Headphones,
-            description: "Aide et assistance"
-        },
-        {
-            id: "autre",
-            label: "Autre demande",
-            icon: MessageSquare,
-            description: "Toute autre question"
-        }
+        { id: "devis", label: t("contact.subjectQuote"), icon: FileText, description: t("contact.subjectQuoteText") },
+        { id: "livraison", label: t("contact.subjectDelivery"), icon: Truck, description: t("contact.subjectDeliveryText") },
+        { id: "produits", label: t("contact.subjectProducts"), icon: Package, description: t("contact.subjectProductsText") },
+        { id: "commande", label: t("contact.subjectOrder"), icon: Clock, description: t("contact.subjectOrderText") },
+        { id: "support", label: t("contact.subjectSupport"), icon: AlertCircle, description: t("contact.subjectSupportText") },
+        { id: "autre", label: t("contact.subjectOther"), icon: MessageSquare, description: t("contact.subjectOtherText") },
     ]
 
     const handleInputChange = (field, value) => {
@@ -154,25 +109,25 @@ export default function ContactPage() {
         const newErrors = {}
 
         // Validation des champs requis
-        if (!formData.firstName.trim()) newErrors.firstName = "Prénom requis"
-        if (!formData.lastName.trim()) newErrors.lastName = "Nom requis"
+        if (!formData.firstName.trim()) newErrors.firstName = t('contact.errorFirstName')
+        if (!formData.lastName.trim()) newErrors.lastName = t('contact.errorLastName')
 
         if (!formData.email.trim()) {
-            newErrors.email = "Email requis"
+            newErrors.email = t('contact.errorEmailRequired')
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = "Format email invalide"
+            newErrors.email = t('checkout.errorEmail')
         }
 
         if (!formData.phone.trim()) {
-            newErrors.phone = "Téléphone requis"
+            newErrors.phone = t('contact.errorPhoneRequired')
         } else if (!/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/.test(formData.phone)) {
-            newErrors.phone = "Numéro de téléphone invalide"
+            newErrors.phone = t('checkout.errorPhone')
         }
 
-        if (!formData.subject.trim()) newErrors.subject = "Sujet requis"
-        if (!formData.message.trim()) newErrors.message = "Message requis"
-        if (formData.message.trim().length < 10) newErrors.message = "Message trop court (minimum 10 caractères)"
-        if (!formData.acceptTerms) newErrors.acceptTerms = "Vous devez accepter les conditions"
+        if (!formData.subject.trim()) newErrors.subject = t('contact.errorSubject')
+        if (!formData.message.trim()) newErrors.message = t('contact.errorMessage')
+        if (formData.message.trim().length < 10) newErrors.message = t('contact.errorMessageShort')
+        if (!formData.acceptTerms) newErrors.acceptTerms = t('contact.errorAccept')
 
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
@@ -295,13 +250,13 @@ export default function ContactPage() {
                                     className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
                                 >
                                     <Headphones className="w-4 h-4 mr-2" />
-                                    Service Client Dédié
+                                    {t('contact.badge')}
                                 </motion.div>
 
                                 <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-                                    Contactez Nos
+                                    {t('contact.title')}
                                     <span className="block text-amber-400">
-                                        Experts Bois
+                                        {t('contact.titleAccent')}
                                     </span>
                                 </h1>
 
@@ -320,14 +275,8 @@ export default function ContactPage() {
                                         <span>{contactPhone}</span>
                                     </Button>
 
-                                    <Button
-                                        variant="outline"
-                                        size="lg"
-                                        className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
-                                    >
-                                        <Calendar className="w-5 h-5" />
-                                        <span>Prendre RDV</span>
-                                    </Button>
+                                    {/* Un bouton « Prendre RDV » se trouvait ici. Il n'ouvrait
+                                        rien : aucun système de rendez-vous n'existe. */}
                                 </div>
                             </motion.div>
                         </div>
@@ -344,10 +293,10 @@ export default function ContactPage() {
                                 className="text-center mb-12"
                             >
                                 <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                                    Comment Nous Contacter ?
+                                    {t('contact.methodsTitle')}
                                 </h2>
                                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    Choisissez le moyen de contact qui vous convient le mieux
+                                    {t('contact.methodsIntro')}
                                 </p>
                             </motion.div>
 
@@ -362,14 +311,6 @@ export default function ContactPage() {
                                             whileHover={{ y: -5, scale: 1.02 }}
                                             className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 text-center relative overflow-hidden"
                                         >
-                                            {method.urgent && (
-                                                <div className="absolute top-3 right-3">
-                                                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                                                        Urgent
-                                                    </span>
-                                                </div>
-                                            )}
-
                                             <div className={`w-14 h-14 ${method.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
                                                 <IconComponent className="w-7 h-7 text-white" />
                                             </div>
@@ -392,7 +333,7 @@ export default function ContactPage() {
                                                     size="sm"
                                                     className="w-full bg-transparent hover:bg-gray-50"
                                                 >
-                                                    Contacter
+                                                    {t('contact.reach')}
                                                 </Button>
                                             </Link>
                                         </motion.div>
@@ -415,10 +356,10 @@ export default function ContactPage() {
                                     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
                                         <div className="mb-8">
                                             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                                                Envoyez-nous un message
+                                                {t('contact.formTitle')}
                                             </h2>
                                             <p className="text-gray-600">
-                                                Remplissez le formulaire ci-dessous et nous vous répondrons rapidement
+                                                {t('contact.formIntro')}
                                             </p>
                                         </div>
 
@@ -432,16 +373,16 @@ export default function ContactPage() {
                                                     <CheckCircle className="w-8 h-8 text-green-600" />
                                                 </div>
                                                 <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                                    Message envoyé avec succès !
+                                                    {t('contact.success')}
                                                 </h3>
                                                 <p className="text-gray-600 mb-6">
-                                                    Merci pour votre message. Notre équipe vous contactera sous 2-4h.
+                                                    {t('contact.responseTime')}
                                                 </p>
                                                 <Button
                                                     variant="outline"
                                                     onClick={() => setSubmitSuccess(false)}
                                                 >
-                                                    Envoyer un autre message
+                                                    {t('contact.sendAnother')}
                                                 </Button>
                                             </motion.div>
                                         ) : (
@@ -500,7 +441,7 @@ export default function ContactPage() {
                                                 {/* Sujet de la demande */}
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                                                        Sujet de votre demande <span className="text-red-500">*</span>
+                                                        {t('contact.subjectSection')} <span className="text-red-500">*</span>
                                                     </label>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                         {subjects.map((subject) => {
@@ -547,7 +488,7 @@ export default function ContactPage() {
                                                 {/* Message */}
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Votre message <span className="text-red-500">*</span>
+                                                        {t('contact.message')} <span className="text-red-500">*</span>
                                                     </label>
                                                     <textarea
                                                         rows={5}
@@ -602,7 +543,7 @@ export default function ContactPage() {
                                                             className="mt-1 w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
                                                         />
                                                         <span className="text-sm text-gray-700">
-                                                            J'accepte que mes données soient utilisées pour traiter ma demande
+                                                            {t('contact.acceptData')}
                                                             <span className="text-red-500 ml-1">*</span>
                                                         </span>
                                                     </label>
@@ -618,7 +559,7 @@ export default function ContactPage() {
                                                             className="mt-1 w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500"
                                                         />
                                                         <span className="text-sm text-gray-700">
-                                                            Je souhaite recevoir la newsletter avec les offres et conseils
+                                                            {t('contact.acceptNewsletter')}
                                                         </span>
                                                     </label>
                                                 </div>
@@ -670,7 +611,7 @@ export default function ContactPage() {
                                     {/* Informations pratiques */}
                                     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
                                         <h3 className="text-xl font-bold text-gray-900 mb-6">
-                                            Informations Pratiques
+                                            {t('contact.practicalTitle')}
                                         </h3>
 
                                         <div className="space-y-6">
@@ -679,7 +620,7 @@ export default function ContactPage() {
                                                     <MapPin className="w-5 h-5 text-blue-600" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900 mb-1">Adresse</h4>
+                                                    <h4 className="font-semibold text-gray-900 mb-1">{t('contact.address')}</h4>
                                                     <p className="text-gray-600 text-sm">
                                                         {fullAddress}
                                                     </p>
@@ -703,70 +644,33 @@ export default function ContactPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-start space-x-4">
-                                                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                                    <Phone className="w-5 h-5 text-purple-600" />
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-semibold text-gray-900 mb-1">Urgences</h4>
-                                                    <p className="text-gray-600 text-sm">
-                                                        Hotline 24h/7j : 06 12 34 56 78<br />
-                                                        Pour les urgences livraison uniquement
-                                                    </p>
-                                                </div>
-                                            </div>
+                                            {/* Une « hotline 24h/7j » figurait ici, avec le numéro
+                                                06 12 34 56 78 — qui n'est celui de personne. Le seul
+                                                numéro du site est celui des paramètres, plus haut. */}
                                         </div>
 
                                         <div className="mt-8 pt-6 border-t border-gray-100">
-                                            <h4 className="font-semibold text-gray-900 mb-4">Temps de réponse</h4>
-                                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                                <div className="flex items-center space-x-2">
-                                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Email : 2-4h</span>
-                                                </div>
-                                                <div className="flex items-center space-x-2">
-                                                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Téléphone : Immédiat</span>
-                                                </div>
-                                                <div className="flex items-center space-x-2">
-                                                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Chat : &lt; 5min</span>
-                                                </div>
-                                                <div className="flex items-center space-x-2">
-                                                    <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                                    <span className="text-gray-600">Devis : 24h</span>
-                                                </div>
-                                            </div>
+                                            {/* Quatre délais étaient annoncés — dont « Chat : < 5 min »
+                                                et « Devis : 24 h » pour des canaux qui n'existent pas.
+                                                Un seul délai, celui qu'on tient. */}
+                                            <h4 className="font-semibold text-gray-900 mb-4">{t('contact.responseTitle')}</h4>
+                                            <p className="text-sm text-gray-600">{t('contact.responseTime')}</p>
                                         </div>
                                     </div>
                                     
+                                    {/* Trois questions étaient posées ici — visite de l'entrepôt
+                                        sur rendez-vous, devis sous 24 h, livraison le samedi avec
+                                        supplément — dont aucune ne correspond au fonctionnement du
+                                        site. Le lien mène à la vraie FAQ. */}
                                     <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-8">
-                                        <h3 className="text-xl font-bold text-gray-900 mb-4">
-                                            Questions Fréquentes
+                                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                            {t('contact.faqTitle')}
                                         </h3>
-                                        <div className="space-y-4">
-                                            <div>
-                                                <h4 className="font-medium text-gray-900 text-sm">Puis-je visiter votre entrepôt ?</h4>
-                                                <p className="text-gray-600 text-sm mt-1">
-                                                    Oui, sur rendez-vous uniquement. Contactez-nous pour planifier une visite.
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <h4 className="font-medium text-gray-900 text-sm">Combien de temps pour un devis ?</h4>
-                                                <p className="text-gray-600 text-sm mt-1">
-                                                    Nous vous envoyons un devis détaillé sous 24h maximum.
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <h4 className="font-medium text-gray-900 text-sm">Livrez-vous le weekend ?</h4>
-                                                <p className="text-gray-600 text-sm mt-1">
-                                                    Livraisons possibles le samedi matin sur demande et avec supplément.
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <Link href="/faq" className="inline-flex items-center text-amber-600 hover:text-amber-700 text-sm font-medium mt-4">
-                                            Voir toutes les FAQ
-                                            <Send className="w-3 h-3 ml-1" />
+                                        <p className="text-sm text-gray-600 mb-4">
+                                            {t('meta.faqDescription')}
+                                        </p>
+                                        <Link href="/faq" className="text-sm font-semibold text-amber-700 hover:text-amber-800">
+                                            {t('contact.faqCta')}
                                         </Link>
                                     </div>
                                 </motion.div>
@@ -783,11 +687,10 @@ export default function ContactPage() {
                                 viewport={{ once: true }}
                             >
                                 <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-                                    Prêt à Démarrer Votre Projet ?
+                                    {t('contact.finalTitle')}
                                 </h2>
                                 <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                                    Notre équipe d'experts est là pour vous accompagner.
-                                    Contactez-nous dès maintenant pour une réponse rapide.
+                                    {t('contact.finalText')}
                                 </p>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -797,7 +700,7 @@ export default function ContactPage() {
                                         className="flex items-center space-x-2 bg-amber-600 hover:bg-amber-700"
                                     >
                                         <Phone className="w-5 h-5" />
-                                        <span>Appel Whatsapp Gratuit : {contactPhone}</span>
+                                        <span>{t('contact.whatsappCta', { phone: contactPhone })}</span>
                                     </Button>
 
                                     {/* <Link href="/devis">
@@ -817,15 +720,15 @@ export default function ContactPage() {
                                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Clock className="w-6 h-6 text-amber-400" />
                                         </div>
-                                        <h3 className="font-semibold mb-2">Réponse Rapide</h3>
-                                        <p className="text-gray-400 text-sm">Sous 2h en moyenne</p>
+                                        <h3 className="font-semibold mb-2">{t('contact.trustResponse')}</h3>
+                                        <p className="text-gray-400 text-sm">{t('contact.trustResponseText')}</p>
                                     </div>
 
                                     <div>
                                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <Users className="w-6 h-6 text-amber-400" />
                                         </div>
-                                        <h3 className="font-semibold mb-2">Équipe Experte</h3>
+                                        <h3 className="font-semibold mb-2">{t('contact.trustWood')}</h3>
                                         <p className="text-gray-400 text-sm">15 ans d'expérience</p>
                                     </div>
 
@@ -833,8 +736,8 @@ export default function ContactPage() {
                                         <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <CheckCircle className="w-6 h-6 text-amber-400" />
                                         </div>
-                                        <h3 className="font-semibold mb-2">Service Garanti</h3>
-                                        <p className="text-gray-400 text-sm">Satisfaction 100%</p>
+                                        <h3 className="font-semibold mb-2">{t('contact.trustPrice')}</h3>
+                                        <p className="text-gray-400 text-sm">{t('contact.trustPriceText')}</p>
                                     </div>
                                 </div>
                             </motion.div>

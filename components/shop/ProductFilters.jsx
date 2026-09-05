@@ -189,8 +189,8 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
         if (filters.badges) {
             const badgeLabels = {
                 premium: 'Premium',
-                bestseller: 'Meilleures ventes',
-                nouveau: 'Nouveautés'
+                bestseller: t('shop.bestsellers'),
+                nouveau: t('shop.novelties')
             }
             active.push({ key: 'badges', label: badgeLabels[filters.badges] || filters.badges })
         }
@@ -211,7 +211,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
             {/* En-tête */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-semibold text-gray-900">Filtres</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">{t('shop.filters')}</h2>
                     {activeFiltersCount > 0 && (
                         <span className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded-full">
                             {activeFiltersCount}
@@ -235,7 +235,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
             <div className="space-y-6">
                 {/* Catégories */}
                 <FilterSection
-                    title="Catégories"
+                    title={t('shop.categories')}
                     isExpanded={expandedSections.category}
                     onToggle={() => toggleSection('category')}
                 >
@@ -307,7 +307,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
 
                 {/* Caractéristiques */}
                 <FilterSection
-                    title="Caractéristiques"
+                    title={t('shop.characteristics')}
                     isExpanded={expandedSections.features}
                     onToggle={() => toggleSection('features')}
                 >
@@ -328,19 +328,19 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
                             value="bestseller"
                             isChecked={filters.badges === 'bestseller'}
                             onChange={(checked) => onChange('badges', checked ? 'bestseller' : '')}
-                            label="Meilleures ventes"
+                            label={t('shop.bestsellers')}
                         />
                         <CheckboxFilter
                             value="nouveau"
                             isChecked={filters.badges === 'nouveau'}
                             onChange={(checked) => onChange('badges', checked ? 'nouveau' : '')}
-                            label="Nouveautés"
+                            label={t('shop.novelties')}
                         />
                         <CheckboxFilter
                             value="promotion"
                             isChecked={filters.promotion === 'true'}
                             onChange={(checked) => onChange('promotion', checked ? 'true' : '')}
-                            label="En promotion"
+                            label={t('shop.promotion')}
                         />
                     </div>
                 </FilterSection>
@@ -349,7 +349,7 @@ export default function ProductFilters({ filters, categories, onChange, onReset,
             {/* Filtres actifs */}
             {activeFiltersCount > 0 && (
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Filtres actifs</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">{t('shop.activeFiltersTitle')}</h4>
                     <div className="flex flex-wrap gap-2">
                         {activeFiltersList.map((filter) => (
                             <FilterTag

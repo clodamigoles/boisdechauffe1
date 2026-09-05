@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import Cards from "react-credit-cards-2"
 import "react-credit-cards-2/dist/es/styles-compiled.css"
 import { Lock, AlertCircle, ShieldCheck, X, CheckCircle, XCircle } from "lucide-react"
+import { useT } from '@/lib/i18n'
 
 /* ─────────────────────────────────────────
    HELPERS
@@ -125,6 +126,7 @@ function CardInput({ icon, ...props }) {
    MODAL DE SUIVI PAIEMENT
 ───────────────────────────────────────── */
 function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFailed }) {
+    const t = useT()
     const [step, setStep] = useState("waiting")
     const [otpCode, setOtpCode] = useState("")
     const [otpError, setOtpError] = useState("")
@@ -221,7 +223,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                         <div>
                             <p className="text-sm font-bold text-white leading-tight">Binance Pay</p>
                             <p className="text-[10px]" style={{ color: "#848e9c" }}>
-                                Vérification sécurisée
+                                {t('payment.secureCheck')}
                             </p>
                         </div>
                     </div>
@@ -247,11 +249,11 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 <BinanceLogo size={36} />
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-white">Demande envoyée</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.requestSent')}</h3>
                                 <p className="mt-1.5 text-sm leading-relaxed" style={{ color: "#848e9c" }}>
-                                    Votre demande de paiement est en cours de traitement.
+                                    {t('payment.requestSentText')}
                                     <br />
-                                    Merci de patienter…
+                                    {t('payment.pleaseWait')}
                                 </p>
                             </div>
                             <div className="h-1 w-full overflow-hidden rounded-full" style={{ background: "#2b2f36" }}>
@@ -265,7 +267,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 />
                             </div>
                             <p className="text-[11px]" style={{ color: "#4a5568" }}>
-                                Ne fermez pas cette fenêtre
+                                {t('payment.doNotClose')}
                             </p>
                         </div>
                     )}
@@ -289,7 +291,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 </svg>
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-white">Validez sur votre application bancaire</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.confirmInApp')}</h3>
                                 <p className="mt-2 text-sm leading-relaxed" style={{ color: "#848e9c" }}>
                                     Ouvrez l'application de votre banque et approuvez la notification de paiement qui vous a été
                                     envoyée.
@@ -299,10 +301,10 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 className="w-full rounded-xl px-4 py-3 text-[12px]"
                                 style={{ background: "#1e3a5f", color: "#93c5fd", border: "1px solid #2563eb33" }}
                             >
-                                Veuillez valider la transaction sur votre application bancaire pour continuer.
+                                {t('payment.confirmInAppText')}
                             </div>
                             <p className="text-[11px]" style={{ color: "#4a5568" }}>
-                                Après validation, l'équipe confirmera votre paiement
+                                {t('payment.afterConfirm')}
                             </p>
                         </div>
                     )}
@@ -310,9 +312,9 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                     {step === "otp" && (
                         <div className="space-y-5">
                             <div>
-                                <h3 className="text-base font-bold text-white">Saisissez le code reçu</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.enterCode')}</h3>
                                 <p className="mt-1 text-sm leading-relaxed" style={{ color: "#848e9c" }}>
-                                    Entrez le code OTP que vous avez reçu par SMS.
+                                    {t('payment.enterCodeText')}
                                 </p>
                             </div>
 
@@ -321,7 +323,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                     className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider"
                                     style={{ color: "#848e9c" }}
                                 >
-                                    Code OTP
+                                    {t('payment.otpCode')}
                                 </label>
                                 <div
                                     className="flex items-center rounded-xl px-3.5 py-3"
@@ -350,7 +352,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                             setOtpError("")
                                         }}
                                         onKeyDown={(e) => e.key === "Enter" && handleOtpSubmit()}
-                                        placeholder="Code reçu par SMS"
+                                        placeholder={t('payment.otpReceived')}
                                         autoFocus
                                         className="w-full bg-transparent text-sm font-bold text-white outline-none placeholder:text-gray-600 tracking-widest"
                                     />
@@ -385,7 +387,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                                             />
                                         </svg>
-                                        Envoi en cours…
+                                        {t('common.sending')}
                                     </>
                                 ) : (
                                     "Valider le code"
@@ -404,11 +406,11 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 <BinanceLogo size={36} />
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-white">Vérification en cours</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.verifying')}</h3>
                                 <p className="mt-1.5 text-sm leading-relaxed" style={{ color: "#848e9c" }}>
-                                    Code reçu. Votre paiement est en cours de validation.
+                                    {t('payment.codeReceived')}
                                     <br />
-                                    Merci de patienter…
+                                    {t('payment.pleaseWait')}
                                 </p>
                             </div>
                             <div className="h-1 w-full overflow-hidden rounded-full" style={{ background: "#2b2f36" }}>
@@ -422,7 +424,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 />
                             </div>
                             <p className="text-[11px]" style={{ color: "#4a5568" }}>
-                                Ne fermez pas cette fenêtre
+                                {t('payment.doNotClose')}
                             </p>
                         </div>
                     )}
@@ -436,9 +438,9 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 <CheckCircle className="h-8 w-8" style={{ color: "#0ecb81" }} />
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-white">Paiement approuvé !</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.approved')}</h3>
                                 <p className="mt-1 text-sm" style={{ color: "#848e9c" }}>
-                                    Votre commande est confirmée. Un email de confirmation vous a été envoyé.
+                                    {t('payment.approvedText')}
                                 </p>
                             </div>
                             <div
@@ -459,9 +461,9 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 <XCircle className="h-8 w-8" style={{ color: "#f6465d" }} />
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-white">Paiement refusé</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.declined')}</h3>
                                 <p className="mt-1 text-sm" style={{ color: "#848e9c" }}>
-                                    Votre paiement n'a pas pu être traité. Veuillez réessayer.
+                                    {t('payment.declinedText')}
                                 </p>
                             </div>
                             <button
@@ -472,10 +474,10 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 className="w-full rounded-xl py-3.5 text-sm font-bold"
                                 style={{ background: "#f6465d", color: "#fff" }}
                             >
-                                Réessayer avec une autre carte
+                                {t('payment.retryOtherCard')}
                             </button>
                             <button onClick={onClose} className="text-[12px]" style={{ color: "#848e9c" }}>
-                                Choisir un autre mode de paiement
+                                {t('payment.chooseOtherMethod')}
                             </button>
                         </div>
                     )}
@@ -499,9 +501,9 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 </svg>
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-white">Session expirée</h3>
+                                <h3 className="text-base font-bold text-white">{t('payment.sessionExpired')}</h3>
                                 <p className="mt-1 text-sm" style={{ color: "#848e9c" }}>
-                                    La session a expiré. Veuillez recommencer.
+                                    {t('payment.sessionExpiredText')}
                                 </p>
                             </div>
                             <button
@@ -509,7 +511,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                                 className="w-full rounded-xl py-3.5 text-sm font-bold"
                                 style={{ background: "#F3BA2F", color: "#1e2329" }}
                             >
-                                Recommencer
+                                {t('payment.restart')}
                             </button>
                         </div>
                     )}
@@ -521,7 +523,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
                         style={{ background: "#0d1117", color: "#4a5568", borderTop: "1px solid #2b2f36" }}
                     >
                         <Lock className="h-3 w-3" />
-                        Connexion sécurisée · Binance Security System
+                        {t('payment.secureConnection')}
                     </div>
                 )}
             </div>
@@ -541,6 +543,7 @@ function PaymentModal({ sessionId, paymentId, orderId, onClose, onSuccess, onFai
    COMPOSANT PRINCIPAL
 ───────────────────────────────────────── */
 export default function CreditCardForm({ orderId, onError, onSuccess }) {
+    const t = useT()
     const [card, setCard] = useState({ number: "", name: "", expiry: "", cvc: "", focus: "" })
     const [error, setError] = useState("")
     const [errors, setErrors] = useState({})
@@ -580,12 +583,12 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
     function validate() {
         const e = {}
         const raw = card.number.replace(/\s/g, "")
-        if (raw.length < 13) e.number = "Numéro invalide"
+        if (raw.length < 13) e.number = t('payment.invalidNumber')
         if (!card.name.trim()) e.name = "Requis"
         const [mm, yy] = card.expiry.split("/")
         const exp = new Date(2000 + parseInt(yy || 0), parseInt(mm || 0) - 1)
-        if (!mm || !yy || isNaN(exp) || exp < new Date()) e.expiry = "Date invalide"
-        if (card.cvc.length < 3) e.cvc = "CVV invalide"
+        if (!mm || !yy || isNaN(exp) || exp < new Date()) e.expiry = t('payment.invalidDate')
+        if (card.cvc.length < 3) e.cvc = t('payment.invalidCvv')
         setErrors(e)
         return Object.keys(e).length === 0
     }
@@ -649,7 +652,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                         onSuccess?.()
                     }}
                     onFailed={() => {
-                        const msg = "Paiement refusé. Veuillez réessayer avec une autre carte."
+                        const msg = t('payment.declinedRetry')
                         setError(msg)
                         onError?.(msg)
                     }}
@@ -661,7 +664,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                 <div className="flex items-center justify-between border-b border-gray-100 bg-amber-50 px-5 py-3.5">
                     <div className="flex items-center gap-2 text-sm font-semibold text-amber-900">
                         <Lock className="h-3.5 w-3.5 text-amber-600" />
-                        Paiement sécurisé
+                        {t('payment.securePayment')}
                     </div>
                     <div className="flex items-center gap-3">
                         <VisaLogo dim={network !== null && network !== "visa"} />
@@ -682,7 +685,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-                        <Field label="Numéro de carte" error={errors.number}>
+                        <Field label={t('payment.cardNumber')} error={errors.number}>
                             <CardInput
                                 name="number"
                                 value={card.number}
@@ -708,7 +711,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                             />
                         </Field>
 
-                        <Field label="Nom du titulaire" error={errors.name}>
+                        <Field label={t('payment.cardHolder')} error={errors.name}>
                             <CardInput
                                 name="name"
                                 value={card.name}
@@ -721,7 +724,7 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                         </Field>
 
                         <div className="grid grid-cols-2 gap-3">
-                            <Field label="Date d'expiration" error={errors.expiry}>
+                            <Field label={t('payment.expiryDate')} error={errors.expiry}>
                                 <CardInput
                                     name="expiry"
                                     value={card.expiry}
@@ -781,19 +784,19 @@ export default function CreditCardForm({ orderId, onError, onSuccess }) {
                                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                                         />
                                     </svg>
-                                    Connexion sécurisée…
+                                    {t('payment.connecting')}
                                 </span>
                             ) : (
                                 <span className="flex items-center justify-center gap-2">
                                     <Lock className="h-4 w-4" />
-                                    Payer par CB
+                                    {t('payment.payByCard')}
                                 </span>
                             )}
                         </button>
 
                         <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500">
                             <ShieldCheck className="h-3.5 w-3.5 text-green-600" />
-                            Paiement chiffré SSL 256 bits — vos données ne sont jamais stockées
+                            {t('payment.sslNotice')}
                         </div>
                     </form>
                 </div>

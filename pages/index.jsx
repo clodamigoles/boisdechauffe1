@@ -14,6 +14,7 @@ import NewsletterSection from '@/components/home/NewsletterSection'
 import { pageVariants } from '@/utils/animations'
 import { cachedAPI } from '@/lib/api'
 import { getReviewShowcase } from '@/lib/reviews'
+import { countActiveProducts, getHomeCatalog } from '@/lib/catalog-stats'
 import { useSettings } from '@/hooks/useSettings'
 import SeoHead from "@/components/layout/SeoHead"
 import { useT } from "@/lib/i18n"
@@ -22,6 +23,7 @@ export default function HomePage({
     initialCategories,
     initialProducts,
     initialShowcase,
+    productCount,
     hasErrors
 }) {
     const t = useT()
@@ -87,13 +89,11 @@ export default function HomePage({
 
                     <CategoriesSection
                         categories={categories}
-                        fallbackMessage={hasErrors ? "Chargement des catégories..." : null}
+                        productCount={productCount}
+                        rating={initialShowcase?.average ?? 0}
                     />
 
-                    <ProductsSection
-                        products={products}
-                        fallbackMessage={hasErrors ? "Chargement des produits..." : null}
-                    />
+                    <ProductsSection products={products} />
 
                     <DeliverySection />
 
@@ -114,69 +114,44 @@ export default function HomePage({
     )
 }
 
-export async function getStaticProps() {
+export async function getStaticProps({ locale }) {
+    // Les données sont lues en base, pas demandées à l'API de ce même site :
+    // `getStaticProps` s'exécute à la construction, quand aucun serveur
+    // n'écoute encore. L'appel HTTP échouait, le repli rendait des tableaux
+    // vides, et la page partait en production sans catégories ni produits.
     try {
-        // Timeouts pour éviter les blocages
-        const TIMEOUT_DURATION = 8000 // 8 secondes
-
-        const createTimeoutPromise = (ms) => new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), ms)
-        )
-
-        // Tentative de chargement des données avec timeout
-        const loadWithTimeout = async (apiCall, fallback = []) => {
-            try {
-                const result = await Promise.race([
-                    apiCall(),
-                    createTimeoutPromise(TIMEOUT_DURATION)
-                ])
-                return result?.data || fallback
-            } catch (error) {
-                console.error('Erreur lors du chargement:', error)
-                return fallback
-            }
-        }
-
-        // Chargement des données en parallèle.
-        //
-        // Les avis sont lus directement en base plutôt qu'à travers l'API :
-        // une page statique qui appelle sa propre API au moment de la
-        // construction dépend d'un serveur qui n'est pas encore démarré, et le
-        // repli renvoyait alors une liste vide. C'est ce qui faisait servir
-        // « 6 avis, moyenne 0 » dans le HTML.
-        const [categories, products, showcase] = await Promise.all([
-            loadWithTimeout(() => cachedAPI.categories.getFeatured(false)),
-            loadWithTimeout(() => cachedAPI.products.getFeatured('all', 8, false)),
-            getReviewShowcase().catch(() => null)
+        const [{ categories, products }, showcase, productCount] = await Promise.all([
+            getHomeCatalog(locale, 8),
+            getReviewShowcase().catch(() => null),
+            countActiveProducts().catch(() => 0),
         ])
 
-        const hasErrors = !categories.length && !products.length
-
         return {
-            props: {
-                initialCategories: categories,
-                initialProducts: products,
-                initialShowcase: showcase
-                    ? JSON.parse(JSON.stringify(showcase))
-                    : null,
-                hasErrors
-            },
-            // Revalidation ISR - régénérer la page toutes les heures
-            revalidate: 3600
+            props: JSON.parse(
+                JSON.stringify({
+                    initialCategories: categories,
+                    initialProducts: products,
+                    initialShowcase: showcase,
+                    productCount,
+                    hasErrors: false,
+                }),
+            ),
+            // Régénération toutes les heures : le catalogue bouge peu, les
+            // avis un peu plus.
+            revalidate: 3600,
         }
     } catch (error) {
-        console.error('Erreur critique lors du chargement des données:', error)
+        console.error("Accueil : lecture des données impossible", error)
 
-        // En cas d'erreur critique, retourner des props vides
         return {
             props: {
                 initialCategories: [],
                 initialProducts: [],
                 initialShowcase: null,
-                hasErrors: true
+                productCount: 0,
+                hasErrors: true,
             },
-            // Revalidation plus fréquente en cas d'erreur
-            revalidate: 300 // 5 minutes
+            revalidate: 300,
         }
     }
 }
