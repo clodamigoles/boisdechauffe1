@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -10,29 +7,27 @@ import HeroSection from '@/components/home/HeroSection'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import ProductsSection from '@/components/home/ProductsSection'
 import DeliverySection from '@/components/home/DeliverySection'
+import DepotGallery from '@/components/home/DepotGallery'
+import VideoReels from '@/components/home/VideoReels'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
 import NewsletterSection from '@/components/home/NewsletterSection'
 import { pageVariants } from '@/utils/animations'
 import { cachedAPI } from '@/lib/api'
+import { getReviewShowcase } from '@/lib/reviews'
 import { useSettings } from '@/hooks/useSettings'
+import SeoHead from "@/components/layout/SeoHead"
+import { useT } from "@/lib/i18n"
 
 export default function HomePage({
     initialCategories,
     initialProducts,
-    initialTestimonials,
+    initialShowcase,
     hasErrors
 }) {
+    const t = useT()
     const { siteName } = useSettings()
-    const [isLoading, setIsLoading] = useState(true)
     const [categories, setCategories] = useState(initialCategories || [])
     const [products, setProducts] = useState(initialProducts || [])
-    const [testimonials, setTestimonials] = useState(initialTestimonials || [])
-
-    useEffect(() => {
-        // Simuler un temps de chargement pour une meilleure UX
-        const timer = setTimeout(() => setIsLoading(false), 800)
-        return () => clearTimeout(timer)
-    }, [])
 
     // Recharger les données si elles sont manquantes (fallback côté client)
     useEffect(() => {
@@ -45,9 +40,6 @@ export default function HomePage({
                 }
                 if (!products.length) {
                     promises.push(cachedAPI.products.getFeatured('all', 8))
-                }
-                if (!testimonials.length) {
-                    promises.push(cachedAPI.testimonials.getFeatured(6))
                 }
 
                 if (promises.length > 0) {
@@ -62,9 +54,6 @@ export default function HomePage({
                         setProducts(results[index].value.data || [])
                         index++
                     }
-                    if (!testimonials.length && results[index]?.status === 'fulfilled') {
-                        setTestimonials(results[index].value.data || [])
-                    }
                 }
             } catch (error) {
                 console.error('Erreur lors du chargement des données manquantes:', error)
@@ -74,103 +63,53 @@ export default function HomePage({
         if (hasErrors) {
             loadMissingData()
         }
-    }, [hasErrors, categories.length, products.length, testimonials.length])
+    }, [hasErrors, categories.length, products.length])
 
     return (
         <>
-            <Head>
-                <title>{`${siteName} | Livraison Rapide`}</title>
-                <meta name="description" content="Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France. Devis gratuit !" />
-                <meta name="keywords" content="bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec" />
-            </Head>
+            <SeoHead
+                title={t('meta.homeTitle')}
+                description={t('meta.homeDescription')}
+            />
 
-            <AnimatePresence mode="wait">
-                {isLoading ? (
-                    <motion.div
-                        key="loader"
-                        initial={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="fixed inset-0 bg-white flex items-center justify-center z-50"
-                    >
-                        <div className="text-center">
-                            <div className="relative mb-8">
-                                {/* Logo animé */}
-                                <motion.div
-                                    initial={{ scale: 0.8, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    transition={{ duration: 0.6 }}
-                                    className="w-24 h-24 mx-auto mb-4"
-                                >
-                                    <div className="relative w-full h-full">
-                                        <Image
-                                            src="/images/logo.svg"
-                                            alt={`${siteName} Logo`}
-                                            fill
-                                            className="object-contain"
-                                            priority
-                                        />
-                                    </div>
-                                </motion.div>
-                            </div>
+            <motion.div
+                key="content"
+                initial="initial"
+                animate="enter"
+                exit="exit"
+                variants={pageVariants}
+                className="min-h-screen bg-white"
+            >
+                <Header />
 
-                            <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 }}
-                                className="text-xl font-semibold text-gray-900 mb-2"
-                            >
-                                {siteName}
-                            </motion.h2>
+                <main>
+                    <HeroSection />
 
-                            <motion.p
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                                className="text-gray-600"
-                            >
-                                Chargement de votre expérience premium...
-                            </motion.p>
-                        </div>
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="content"
-                        initial="initial"
-                        animate="enter"
-                        exit="exit"
-                        variants={pageVariants}
-                        className="min-h-screen bg-white"
-                    >
-                        <Header />
+                    <CategoriesSection
+                        categories={categories}
+                        fallbackMessage={hasErrors ? "Chargement des catégories..." : null}
+                    />
 
-                        <main>
-                            <HeroSection />
+                    <ProductsSection
+                        products={products}
+                        fallbackMessage={hasErrors ? "Chargement des produits..." : null}
+                    />
 
-                            <CategoriesSection
-                                categories={categories}
-                                fallbackMessage={hasErrors ? "Chargement des catégories..." : null}
-                            />
+                    <DeliverySection />
 
-                            <ProductsSection
-                                products={products}
-                                fallbackMessage={hasErrors ? "Chargement des produits..." : null}
-                            />
+                    {/* La preuve avant l'avis : le visiteur voit d'abord d'où
+                        part sa commande, puis ce qu'en disent les clients. */}
+                    <DepotGallery />
 
-                            <DeliverySection />
+                    <VideoReels />
 
-                            <TestimonialsSection
-                                testimonials={testimonials}
-                                fallbackMessage={hasErrors ? "Chargement des témoignages..." : null}
-                            />
+                    <TestimonialsSection showcase={initialShowcase} />
 
-                            <NewsletterSection />
-                        </main>
+                    <NewsletterSection />
+                </main>
 
-                        <Footer />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                <Footer />
+            </motion.div>
         </>
     )
 }
@@ -198,21 +137,28 @@ export async function getStaticProps() {
             }
         }
 
-        // Chargement des données en parallèle
-        const [categories, products, testimonials] = await Promise.all([
+        // Chargement des données en parallèle.
+        //
+        // Les avis sont lus directement en base plutôt qu'à travers l'API :
+        // une page statique qui appelle sa propre API au moment de la
+        // construction dépend d'un serveur qui n'est pas encore démarré, et le
+        // repli renvoyait alors une liste vide. C'est ce qui faisait servir
+        // « 6 avis, moyenne 0 » dans le HTML.
+        const [categories, products, showcase] = await Promise.all([
             loadWithTimeout(() => cachedAPI.categories.getFeatured(false)),
             loadWithTimeout(() => cachedAPI.products.getFeatured('all', 8, false)),
-            loadWithTimeout(() => cachedAPI.testimonials.getFeatured(6, false))
+            getReviewShowcase().catch(() => null)
         ])
 
-        // Vérifier si toutes les données ont été chargées
-        const hasErrors = !categories.length && !products.length && !testimonials.length
+        const hasErrors = !categories.length && !products.length
 
         return {
             props: {
                 initialCategories: categories,
                 initialProducts: products,
-                initialTestimonials: testimonials,
+                initialShowcase: showcase
+                    ? JSON.parse(JSON.stringify(showcase))
+                    : null,
                 hasErrors
             },
             // Revalidation ISR - régénérer la page toutes les heures
@@ -226,7 +172,7 @@ export async function getStaticProps() {
             props: {
                 initialCategories: [],
                 initialProducts: [],
-                initialTestimonials: [],
+                initialShowcase: null,
                 hasErrors: true
             },
             // Revalidation plus fréquente en cas d'erreur

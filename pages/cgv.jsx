@@ -47,7 +47,7 @@ export default function CGVPage() {
 
 ## 1. Objet
 
-Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre ${settings?.companyName || settings?.siteName || "Mon bois de chauffe"} et ses clients.
+Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre ${settings?.companyName || settings?.siteName || "Mein Brennholz"} et ses clients.
 
 ## 2. Produits et Services
 
@@ -194,7 +194,7 @@ La validation de votre commande implique l'acceptation pleine et entière des pr
         <>
             <Head>
                 <title>
-                    Conditions Générales de Vente - {settings?.siteName || "Mon bois de chauffe"}
+                    Conditions Générales de Vente - {settings?.siteName || "Mein Brennholz"}
                 </title>
                 <meta
                     name="description"

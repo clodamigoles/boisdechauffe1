@@ -4,8 +4,10 @@ import { TreePine, Flame, Package, Zap, ArrowRight, TrendingUp } from 'lucide-re
 
 import CategoryCard from '../ui/CategoryCard'
 import { containerVariants, itemVariants } from '@/utils/animations'
+import { useT } from '@/lib/i18n'
 
 export default function CategoriesSection({ categories = [] }) {
+    const t = useT()
     const iconMap = {
         'bois-feuillus-premium': TreePine,
         'bois-resineux-sec': TreePine,
@@ -73,19 +75,15 @@ export default function CategoriesSection({ categories = [] }) {
                         className="inline-flex items-center px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-6"
                     >
                         <Package className="w-4 h-4 mr-2" />
-                        Nos Catégories
+                        {t('home.categoriesBadge')}
                     </motion.div>
 
                     <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
-                        Trouvez le Bois Parfait
-                        <span className="block text-amber-600">
-                            pour Vos Besoins
-                        </span>
+                        {t('home.categoriesTitle')}
                     </h2>
 
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                        Une sélection rigoureuse de bois de chauffage premium, classée par essence et usage.
-                        Chaque catégorie répond à des besoins spécifiques.
+                        {t('home.categoriesIntro')}
                     </p>
                 </motion.div>
 
@@ -175,11 +173,10 @@ export default function CategoriesSection({ categories = [] }) {
                         </div>
                         <div className="relative z-10">
                             <h3 className="text-2xl lg:text-3xl font-bold mb-4">
-                                Besoin d'aide pour choisir ?
+                                {t('home.helpTitle')}
                             </h3>
                             <p className="text-lg text-amber-100 mb-8 max-w-2xl mx-auto">
-                                Nos experts vous conseillent gratuitement pour trouver le bois de chauffage
-                                adapté à vos besoins et votre région.
+                                {t('home.helpText')}
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -189,7 +186,7 @@ export default function CategoriesSection({ categories = [] }) {
                                         whileTap={{ scale: 0.95 }}
                                         className="bg-white text-amber-600 px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
                                     >
-                                        <span>Conseil Gratuit</span>
+                                        <span>{t('home.helpCta')}</span>
                                     </motion.button>
                                 </Link>
 

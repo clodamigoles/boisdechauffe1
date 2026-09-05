@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react"
-import Head from "next/head"
 import { useRouter } from "next/router"
 import { motion, AnimatePresence } from "framer-motion"
 import { SlidersHorizontal, Grid3X3, List } from "lucide-react"
@@ -16,8 +15,11 @@ import Breadcrumb from "../components/ui/Breadcrumb"
 import LoadingSpinner from "../components/ui/LoadingSpinner"
 import EmptyState from "../components/ui/EmptyState"
 import { pageVariants } from "../utils/animations"
+import SeoHead from "@/components/layout/SeoHead"
+import { useT } from "@/lib/i18n"
 
 export default function ShopPage({ initialProducts, categories, totalProducts: initialTotal, totalPages: initialTotalPages }) {
+    const t = useT()
     const router = useRouter()
     const [products, setProducts] = useState(initialProducts || [])
     const [totalProducts, setTotalProducts] = useState(initialTotal || 0)
@@ -151,14 +153,10 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
 
     return (
         <>
-            <Head>
-                <title>Boutique - Tous nos Produits | BoisChauffage Pro</title>
-                <meta
-                    name="description"
-                    content="Découvrez tous nos produits de bois de chauffage premium : chêne, hêtre, charme, granulés. Filtres avancés, livraison rapide."
-                />
-                <meta name="keywords" content="boutique, bois chauffage, chêne, hêtre, charme, granulés, acheter" />
-            </Head>
+            <SeoHead
+                title={t('meta.shopTitle')}
+                description={t('meta.shopDescription')}
+            />
 
             <div className="min-h-screen bg-gray-50">
                 <Header />
@@ -192,7 +190,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                     <ProductSearch
                                         value={filters.search}
                                         onChange={(value) => updateFilters("search", value)}
-                                        placeholder="Rechercher un produit..."
+                                        placeholder={t('shop.searchPlaceholder')}
                                     />
                                 </div>
                             </div>
@@ -225,7 +223,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                                 className="lg:hidden inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                                             >
                                                 <SlidersHorizontal className="w-4 h-4" />
-                                                <span>Filtres</span>
+                                                <span>{t('shop.filters')}</span>
                                                 {activeFiltersCount > 0 && (
                                                     <span className="bg-amber-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
                                                         {activeFiltersCount}
@@ -249,7 +247,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                                             ? "bg-white text-gray-900 shadow-sm"
                                                             : "text-gray-600 hover:text-gray-900"
                                                     }`}
-                                                    aria-label="Vue grille"
+                                                    aria-label={t('shop.gridView')}
                                                 >
                                                     <Grid3X3 className="w-4 h-4" />
                                                 </button>
@@ -260,7 +258,7 @@ export default function ShopPage({ initialProducts, categories, totalProducts: i
                                                             ? "bg-white text-gray-900 shadow-sm"
                                                             : "text-gray-600 hover:text-gray-900"
                                                     }`}
-                                                    aria-label="Vue liste"
+                                                    aria-label={t('shop.listView')}
                                                 >
                                                     <List className="w-4 h-4" />
                                                 </button>

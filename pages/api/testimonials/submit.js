@@ -1,8 +1,9 @@
 import { withPublicAPI, createResponse } from '@/middleware/api'
 import { Testimonial } from '@/models'
+import { resolveLocale } from '@/lib/localize-doc'
 
 async function handler(req, res) {
-    const { name, comment } = req.body
+    const { name, comment, rating } = req.body
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
         return res.status(400).json(createResponse.error('Le nom est requis (minimum 2 caractères)', 'VALIDATION_ERROR'))
@@ -20,11 +21,21 @@ async function handler(req, res) {
         return res.status(400).json(createResponse.error('Le commentaire ne peut dépasser 1000 caractères', 'VALIDATION_ERROR'))
     }
 
+    // La note était imposée à cinq étoiles : le visiteur choisissait deux
+    // étoiles, le site enregistrait cinq, et la moyenne affichée n'avait plus
+    // de rapport avec ce que les clients avaient écrit.
+    const stars = Number(rating)
+    if (!Number.isInteger(stars) || stars < 1 || stars > 5) {
+        return res.status(400).json(createResponse.error('La note doit être comprise entre 1 et 5', 'VALIDATION_ERROR'))
+    }
+
     const testimonial = await Testimonial.create({
         name: name.trim(),
         comment: comment.trim(),
-        location: 'France',
-        rating: 5,
+        // Faute de demander le pays au visiteur, on enregistre le marché
+        // depuis lequel il écrit plutôt qu'un « France » constant.
+        location: resolveLocale(req) === 'de' ? 'Deutschland' : 'France',
+        rating: stars,
         verified: false,
         featured: false,
         isActive: false, // en attente de modération

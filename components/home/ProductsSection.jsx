@@ -3,11 +3,13 @@ import Link from 'next/link'
 import { Star, TrendingUp, Award, Eye } from 'lucide-react'
 
 import ProductCard from '../ui/ProductCard'
-import Button from '../ui/Button'
+import Button from '../ui/ActionButton'
 import { containerVariants, itemVariants } from '@/utils/animations'
 import { useSettings } from '@/hooks/useSettings'
+import { useT } from '@/lib/i18n'
 
 export default function ProductsSection({ products = [] }) {
+    const t = useT()
     const { siteName } = useSettings()
 
     const defaultProducts = [
@@ -185,11 +187,11 @@ export default function ProductsSection({ products = [] }) {
                         className="inline-flex items-center px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-medium mb-6"
                     >
                         <Star className="w-4 h-4 mr-2" />
-                        Nos Produits Populaires
+                        {t('home.featuredBadge')}
                     </motion.div>
 
                     <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                        Sélection Premium
+                        {t('home.featuredTitle')}
                     </h2>
                 </motion.div>
 

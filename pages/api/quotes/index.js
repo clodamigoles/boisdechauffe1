@@ -1,6 +1,7 @@
 import { withPublicAPI, createResponse } from '@/middleware/api'
 import { Quote } from '@/models'
 import Joi from 'joi'
+import { localizeDoc, resolveLocale } from '@/lib/localize-doc'
 
 // Schéma de validation pour les demandes de devis
 const quoteRequestSchema = Joi.object({
@@ -163,7 +164,7 @@ async function handleCreateQuote(req, res) {
         // Ajouter à la newsletter si accepté
         if (quoteData.acceptsMarketing) {
             try {
-                const { Newsletter } = await import('../../models')
+                const { Newsletter } = await import('@/models')
                 await Newsletter.findOneAndUpdate(
                     { email: quoteData.email },
                     {
@@ -231,7 +232,7 @@ async function generateQuoteNumber() {
 // Fonction utilitaire pour calculer l'estimation de prix
 async function calculatePriceEstimate(products) {
     try {
-        const { Product } = await import('../../models')
+        const { Product } = await import('@/models')
 
         let subtotal = 0
         const details = []
@@ -243,7 +244,7 @@ async function calculatePriceEstimate(products) {
                 subtotal += itemPrice
 
                 details.push({
-                    productName: product.name,
+                    productName: localizeDoc(product, resolveLocale(req)).name,
                     quantity: item.quantity,
                     unit: item.unit,
                     unitPrice: product.price,

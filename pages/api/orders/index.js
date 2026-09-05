@@ -4,12 +4,18 @@ import connectDB from "@/lib/mongoose"
 import { validateOrderData } from "@/lib/validation"
 import { sendOrderConfirmationEmail, sendAdminNewOrderNotification, sendEmail } from "@/lib/email"
 import { cardOrderPlacedEmail } from "@/lib/card-email-templates"
+import { localizeDoc, resolveLocale } from '@/lib/localize-doc'
 
 export default async function handler(req, res) {
     await connectDB()
 
     if (req.method === "POST") {
         try {
+            // La langue dans laquelle le client a passé sa commande : elle fige
+            // les noms de produits de la commande et sert l'e-mail de
+            // confirmation.
+            const orderLocale = resolveLocale(req)
+
             console.log("[v0] Received order data:", JSON.stringify(req.body, null, 2))
 
             // Validation des données
@@ -62,7 +68,7 @@ export default async function handler(req, res) {
                 if (product.stock < item.quantity) {
                     return res.status(400).json({
                         success: false,
-                        message: `Stock insuffisant pour ${product.name}`,
+                        message: `Stock insuffisant pour ${localizeDoc(product, orderLocale).name}`,
                     })
                 }
 
@@ -73,7 +79,10 @@ export default async function handler(req, res) {
                 orderItems.push({
                     product: product._id,
                     productSnapshot: {
-                        name: product.name,
+                        // Une capture, pas une référence : le nom est figé dans
+                        // la langue où le client a commandé, et une traduction
+                        // corrigée plus tard ne réécrit pas sa facture.
+                        name: localizeDoc(product, orderLocale).name,
                         price: unitPrice,
                         image: product.images[0]?.url || "/placeholder.svg",
                         slug: product.slug,

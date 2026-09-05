@@ -4,7 +4,7 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { ShoppingCart, Heart, Share2, Minus, Plus, Calculator } from "lucide-react"
 import { useCartStore } from "../../store/cartStore"
-import Button from "../ui/Button"
+import Button from "../ui/ActionButton"
 import CartToast from "../ui/CartToast"
 
 export default function ProductDetailActions({ product }) {

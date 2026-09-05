@@ -1,20 +1,22 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, Check } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 export default function ProductSort({ value, onChange }) {
+    const t = useT()
     const [isOpen, setIsOpen] = useState(false)
     const dropdownRef = useRef(null)
 
     const sortOptions = useMemo(() => [
         { value: 'name-asc', label: 'Nom A-Z' },
         { value: 'name-desc', label: 'Nom Z-A' },
-        { value: 'price-asc', label: 'Prix croissant' },
-        { value: 'price-desc', label: 'Prix décroissant' },
-        { value: 'rating-desc', label: 'Mieux notés' },
-        { value: 'sales-desc', label: 'Plus vendus' },
-        { value: 'created-desc', label: 'Plus récents' },
-        { value: 'created-asc', label: 'Plus anciens' }
+        { value: 'price-asc', label: t('shop.sortPriceAsc') },
+        { value: 'price-desc', label: t('shop.sortPriceDesc') },
+        { value: 'rating-desc', label: t('shop.sortRating') },
+        { value: 'sales-desc', label: t('shop.sortSalesDesc') },
+        { value: 'created-desc', label: t('shop.sortNewest') },
+        { value: 'created-asc', label: t('shop.sortOldest') }
     ], [])
 
     const selectedOption = useMemo(() => 

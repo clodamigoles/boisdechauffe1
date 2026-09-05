@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Head from "next/head"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import {
@@ -22,11 +21,14 @@ import {
 } from "lucide-react"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
-import Button from "../components/ui/Button"
+import Button from "../components/ui/ActionButton"
 import { containerVariants, itemVariants } from "../utils/animations"
 import { useSettings } from "@/hooks/useSettings"
+import SeoHead from "@/components/layout/SeoHead"
+import { useT } from "@/lib/i18n"
 
 export default function FAQPage() {
+    const t = useT()
     const { contactEmail, contactPhone } = useSettings()
     const [isLoading, setIsLoading] = useState(true)
     const [selectedCategory, setSelectedCategory] = useState("all")
@@ -248,42 +250,10 @@ export default function FAQPage() {
 
     return (
         <>
-            <Head>
-                <title>FAQ | BoisChauffage Pro - Questions Fréquentes</title>
-                <meta
-                    name="description"
-                    content="Trouvez les réponses à toutes vos questions sur le bois de chauffage, la livraison, le paiement et la qualité. Service client expert disponible."
-                />
-                <meta
-                    name="keywords"
-                    content="faq bois chauffage, questions fréquentes, aide, support, livraison, qualité, paiement"
-                />
-                <link rel="canonical" href="https://boischauffagepro.fr/faq" />
-
-                {/* Open Graph */}
-                <meta property="og:title" content="FAQ | BoisChauffage Pro" />
-                <meta property="og:description" content="Réponses à toutes vos questions sur le bois de chauffage" />
-                <meta property="og:url" content="https://boischauffagepro.fr/faq" />
-
-                {/* Schema.org FAQPage */}
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify({
-                            "@context": "https://schema.org",
-                            "@type": "FAQPage",
-                            mainEntity: faqData.map((item) => ({
-                                "@type": "Question",
-                                name: item.question,
-                                acceptedAnswer: {
-                                    "@type": "Answer",
-                                    text: item.answer,
-                                },
-                            })),
-                        }),
-                    }}
-                />
-            </Head>
+            <SeoHead
+                title={t('meta.faqTitle')}
+                description={t('meta.faqDescription')}
+            />
 
             <div className="min-h-screen bg-gray-50">
                 <Header />

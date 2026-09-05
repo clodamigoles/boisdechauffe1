@@ -8,7 +8,8 @@ import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, Heart, Truck } from "lucid
 import { useCartStore } from "../store/cartStore"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
-import Button from "../components/ui/Button"
+import Button from "../components/ui/ActionButton"
+import { useT } from "@/lib/i18n"
 
 const pageVariants = {
     initial: { opacity: 0, y: 20 },
@@ -23,6 +24,7 @@ const pageTransition = {
 }
 
 export default function CartPage() {
+    const t = useT()
     const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore()
     const [isLoading, setIsLoading] = useState(true)
 
@@ -41,7 +43,7 @@ export default function CartPage() {
     }
 
     const formatPrice = (price) => {
-        return new Intl.NumberFormat("fr-FR", {
+        return new Intl.NumberFormat(t.tag, {
             style: "currency",
             currency: "EUR",
         }).format(price)
@@ -82,7 +84,7 @@ export default function CartPage() {
                                     className="flex items-center space-x-2 text-gray-600 hover:text-amber-600 transition-colors"
                                 >
                                     <ArrowLeft className="w-5 h-5" />
-                                    <span>Continuer mes achats</span>
+                                    <span>{t('cart.continueShopping')}</span>
                                 </motion.button>
                             </Link>
                         </div>
@@ -92,7 +94,7 @@ export default function CartPage() {
                                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Mon Panier</h1>
                                 <p className="text-gray-600">
                                     {items.length === 0
-                                        ? "Votre panier est vide"
+                                        ? t('cart.empty')
                                         : `${items.length} article${items.length > 1 ? "s" : ""} dans votre panier`}
                                 </p>
                             </div>
@@ -104,7 +106,7 @@ export default function CartPage() {
                                     onClick={clearCart}
                                     className="text-red-600 hover:text-red-700 text-sm font-medium"
                                 >
-                                    Vider le panier
+                                    {t('cart.clear')}
                                 </motion.button>
                             )}
                         </div>
@@ -116,14 +118,14 @@ export default function CartPage() {
                             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <ShoppingBag className="w-12 h-12 text-gray-400" />
                             </div>
-                            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Votre panier est vide</h2>
+                            <h2 className="text-2xl font-semibold text-gray-900 mb-4">{t('cart.empty')}</h2>
                             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                                Découvrez notre sélection de bois de chauffage premium et commencez vos achats.
+                                {t('cart.emptyText')}
                             </p>
                             <Link href="/shop">
                                 <Button variant="primary" size="lg" className="flex items-center space-x-2">
                                     <ShoppingBag className="w-5 h-5" />
-                                    <span>Découvrir nos produits</span>
+                                    <span>{t('cart.emptyCta')}</span>
                                 </Button>
                             </Link>
                         </motion.div>
@@ -201,7 +203,7 @@ export default function CartPage() {
                                                                     whileHover={{ scale: 1.1 }}
                                                                     whileTap={{ scale: 0.9 }}
                                                                     className="text-gray-400 hover:text-amber-600 transition-colors"
-                                                                    aria-label="Ajouter aux favoris"
+                                                                    aria-label={t('cart.addToFavorites')}
                                                                 >
                                                                     <Heart className="w-4 h-4" />
                                                                 </motion.button>
@@ -210,7 +212,7 @@ export default function CartPage() {
                                                                     whileTap={{ scale: 0.9 }}
                                                                     onClick={() => removeItem(item.id)}
                                                                     className="text-gray-400 hover:text-red-600 transition-colors"
-                                                                    aria-label="Supprimer"
+                                                                    aria-label={t('cart.removeItem')}
                                                                 >
                                                                     <Trash2 className="w-4 h-4" />
                                                                 </motion.button>
@@ -232,16 +234,16 @@ export default function CartPage() {
                                     {/* Détails prix */}
                                     <div className="space-y-4 mb-6">
                                         <div className="flex justify-between text-gray-600">
-                                            <span>Sous-total</span>
+                                            <span>{t('cart.subtotal')}</span>
                                             <span>{formatPrice(getTotalPrice())}</span>
                                         </div>
                                         {/* <div className="flex justify-between text-gray-600">
-                                            <span>Livraison</span>
+                                            <span>{t('cart.shipping')}</span>
                                             <span className="text-green-600 font-medium">Gratuite</span>
                                         </div> */}
                                         <div className="border-t border-gray-100 pt-4">
                                             <div className="flex justify-between text-lg font-semibold text-gray-900">
-                                                <span>Total</span>
+                                                <span>{t('cart.total')}</span>
                                                 <span>{formatPrice(getTotalPrice())}</span>
                                             </div>
                                         </div>
@@ -260,12 +262,12 @@ export default function CartPage() {
                                     <div className="space-y-3">
                                         <Link href="/commander">
                                             <Button variant="primary" size="lg" className="w-full" style={{ marginBottom: 7  }}>
-                                                Passer la commande
+                                                {t('cart.checkout')}
                                             </Button>
                                         </Link>
                                         <Link href="/shop">
                                             <Button variant="outline" size="lg" className="w-full bg-transparent">
-                                                Continuer mes achats
+                                                {t('cart.continueShopping')}
                                             </Button>
                                         </Link>
                                     </div>
@@ -275,15 +277,15 @@ export default function CartPage() {
                                         <div className="space-y-3 text-sm text-gray-600">
                                             <div className="flex items-center space-x-2">
                                                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                                <span>Paiement sécurisé</span>
+                                                <span>{t('checkout.securePayment')}</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                                <span>Satisfaction garantie</span>
+                                                <span>{t('checkout.satisfaction')}</span>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                                <span>Service client 7j/7</span>
+                                                <span>{t('checkout.writtenSupport')}</span>
                                             </div>
                                         </div>
                                     </div>

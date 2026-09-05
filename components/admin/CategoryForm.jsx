@@ -8,20 +8,34 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Card } from "@/components/ui/card"
 import { Upload, X, Loader2 } from "lucide-react"
+import { slugify } from "@/lib/slugify"
+import { LOCALES, LOCALE_NAMES } from "@/lib/i18n"
+
+/** Un champ traduit vide. */
+const emptyLocalized = () => ({ de: "", fr: "" })
+
+/** Accepte l'ancien format (une chaîne) comme le nouveau. */
+const toLocalized = (value) => {
+    if (typeof value === "string") return { de: "", fr: value }
+    return { de: value?.de ?? "", fr: value?.fr ?? "" }
+}
 
 export default function CategoryForm({ category, onSuccess, onCancel }) {
+    // La langue en cours d'édition, comme dans le formulaire produit.
+    const [lang, setLang] = useState("de")
+
     const [formData, setFormData] = useState({
-        name: "",
+        name: emptyLocalized(),
         slug: "",
-        shortDescription: "",
-        description: "",
+        shortDescription: emptyLocalized(),
+        description: emptyLocalized(),
         image: "",
         featured: false,
         trending: false,
         isActive: true,
         order: 0,
-        seoTitle: "",
-        seoDescription: "",
+        seoTitle: emptyLocalized(),
+        seoDescription: emptyLocalized(),
         metadata: {
             color: "",
             icon: "",
@@ -33,17 +47,17 @@ export default function CategoryForm({ category, onSuccess, onCancel }) {
     useEffect(() => {
         if (category) {
             setFormData({
-                name: category.name || "",
+                name: toLocalized(category.name),
                 slug: category.slug || "",
-                shortDescription: category.shortDescription || "",
-                description: category.description || "",
+                shortDescription: toLocalized(category.shortDescription),
+                description: toLocalized(category.description),
                 image: category.image || "",
                 featured: category.featured || false,
                 trending: category.trending || false,
                 isActive: category.isActive !== undefined ? category.isActive : true,
                 order: category.order || 0,
-                seoTitle: category.seoTitle || "",
-                seoDescription: category.seoDescription || "",
+                seoTitle: toLocalized(category.seoTitle),
+                seoDescription: toLocalized(category.seoDescription),
                 metadata: {
                     color: category.metadata?.color || "",
                     icon: category.metadata?.icon || "",
@@ -57,17 +71,45 @@ export default function CategoryForm({ category, onSuccess, onCancel }) {
             ...prev,
             [field]: value,
         }))
+    }
 
-        // Auto-generate slug from name
-        if (field === "name" && !category) {
-            const slug = value
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, "-")
-                .replace(/-+/g, "-")
-                .replace(/^-|-$/g, "")
-            setFormData((prev) => ({ ...prev, slug }))
+    /** Un champ traduit : on ne modifie que la langue affichée. */
+    const handleLocalizedChange = (field, value) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: { ...prev[field], [lang]: value },
+        }))
+
+        // Le slug se dérive du nom allemand, et seulement à la création.
+        if (field === "name" && lang === "de" && !category) {
+            setFormData((prev) => ({ ...prev, slug: slugify(value) }))
         }
     }
+
+    const LanguageTabs = () => (
+        <div className="inline-flex rounded-lg border border-gray-200 p-0.5">
+            {LOCALES.map((code) => (
+                <button
+                    key={code}
+                    type="button"
+                    onClick={() => setLang(code)}
+                    aria-pressed={lang === code}
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${lang === code
+                        ? "bg-amber-50 text-amber-700"
+                        : "text-gray-500 hover:text-gray-900"
+                        }`}
+                >
+                    {LOCALE_NAMES[code]}
+                    {!formData.name?.[code] && (
+                        <span
+                            className="ml-1.5 inline-block size-1.5 rounded-full bg-amber-400 align-middle"
+                            title="Traduction manquante"
+                        />
+                    )}
+                </button>
+            ))}
+        </div>
+    )
 
     const handleMetadataChange = (field, value) => {
         setFormData((prev) => ({
@@ -143,12 +185,15 @@ export default function CategoryForm({ category, onSuccess, onCancel }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Informations de base */}
                 <div className="space-y-4">
+                    <div className="flex justify-end">
+                        <LanguageTabs />
+                    </div>
                     <div>
-                        <Label htmlFor="name">Nom *</Label>
+                        <Label htmlFor="name">Nom ({LOCALE_NAMES[lang]}) *</Label>
                         <Input
                             id="name"
-                            value={formData.name}
-                            onChange={(e) => handleInputChange("name", e.target.value)}
+                            value={formData.name?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("name", e.target.value)}
                             required
                         />
                     </div>
@@ -164,21 +209,21 @@ export default function CategoryForm({ category, onSuccess, onCancel }) {
                     </div>
 
                     <div>
-                        <Label htmlFor="shortDescription">Description courte</Label>
+                        <Label htmlFor="shortDescription">Description courte ({LOCALE_NAMES[lang]})</Label>
                         <Textarea
                             id="shortDescription"
-                            value={formData.shortDescription}
-                            onChange={(e) => handleInputChange("shortDescription", e.target.value)}
+                            value={formData.shortDescription?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("shortDescription", e.target.value)}
                             rows={2}
                         />
                     </div>
 
                     <div>
-                        <Label htmlFor="description">Description</Label>
+                        <Label htmlFor="description">Description ({LOCALE_NAMES[lang]})</Label>
                         <Textarea
                             id="description"
-                            value={formData.description}
-                            onChange={(e) => handleInputChange("description", e.target.value)}
+                            value={formData.description?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("description", e.target.value)}
                             rows={4}
                         />
                     </div>
@@ -294,22 +339,25 @@ export default function CategoryForm({ category, onSuccess, onCancel }) {
 
             {/* SEO */}
             <div className="space-y-4">
-                <h3 className="text-lg font-medium">SEO</h3>
+                <div className="flex items-center justify-between gap-4">
+                    <h3 className="text-lg font-medium">SEO</h3>
+                    <LanguageTabs />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <Label htmlFor="seoTitle">Titre SEO</Label>
+                        <Label htmlFor="seoTitle">Titre SEO ({LOCALE_NAMES[lang]})</Label>
                         <Input
                             id="seoTitle"
-                            value={formData.seoTitle}
-                            onChange={(e) => handleInputChange("seoTitle", e.target.value)}
+                            value={formData.seoTitle?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("seoTitle", e.target.value)}
                         />
                     </div>
                     <div>
-                        <Label htmlFor="seoDescription">Description SEO</Label>
+                        <Label htmlFor="seoDescription">Description SEO ({LOCALE_NAMES[lang]})</Label>
                         <Textarea
                             id="seoDescription"
-                            value={formData.seoDescription}
-                            onChange={(e) => handleInputChange("seoDescription", e.target.value)}
+                            value={formData.seoDescription?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("seoDescription", e.target.value)}
                             rows={2}
                         />
                     </div>

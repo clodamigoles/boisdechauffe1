@@ -50,7 +50,7 @@ export default function MentionsLegalesPage() {
 
 ## 1. Éditeur du site
 
-**Raison sociale :** ${settings?.companyName || settings?.siteName || "Mon bois de chauffe"}
+**Raison sociale :** ${settings?.companyName || settings?.siteName || "Mein Brennholz"}
 
 **Adresse :** ${settings?.address?.street || ""}, ${settings?.address?.postalCode || ""} ${settings?.address?.city || ""}, ${settings?.address?.country || ""}
 
@@ -114,7 +114,7 @@ Le présent site est soumis au droit français. Tout litige sera porté devant l
     return (
         <>
             <Head>
-                <title>Mentions Légales - {settings?.siteName || "Mon bois de chauffe"}</title>
+                <title>Mentions Légales - {settings?.siteName || "Mein Brennholz"}</title>
                 <meta
                     name="description"
                     content="Mentions légales et informations légales de notre site"

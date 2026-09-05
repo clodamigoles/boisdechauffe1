@@ -1,5 +1,6 @@
 import { withPublicAPI, createResponse } from '@/middleware/api'
 import { Product, Category } from '@/models'
+import { localizeDoc, resolveLocale } from '@/lib/localize-doc'
 
 async function handler(req, res) {
     try {
@@ -80,18 +81,20 @@ async function handler(req, res) {
             inStock: similarProduct.stock > 0
         }))
 
-        // Métadonnées SEO dynamiques
+        // Le titre et la description partent de la version traduite : composés
+        // sur le document brut, ils rendaient « [object Object] ».
+        //
+        // L'ancienne description ajoutait « Livraison 24-48h partout en France »
+        // à chaque fiche — un délai que le site ne tient pas, sur un pays qui
+        // n'est plus le marché visé. Une description tronquée vaut mieux qu'une
+        // promesse fausse : on s'en tient à ce que le produit dit de lui-même.
+        const translated = localizeDoc(product, resolveLocale(req))
+
         const seoMetadata = {
-            title: product.seoTitle || `${product.name} | BoisChauffage Pro`,
-            description: product.seoDescription || `${product.shortDescription}. Livraison 24-48h partout en France.`,
-            keywords: [
-                product.essence,
-                'bois de chauffage',
-                'livraison rapide',
-                product.categoryId?.name
-            ].filter(Boolean).join(', '),
+            title: translated.seoTitle || translated.name,
+            description: translated.seoDescription || translated.shortDescription,
             canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/produits/${product.slug}`,
-            ogImage: product.images?.[0]?.url || '/images/og-product-default.jpg'
+            ogImage: product.images?.[0]?.url || '/images/logo.svg'
         }
 
         return res.status(200).json(

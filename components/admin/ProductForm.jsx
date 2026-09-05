@@ -10,13 +10,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Upload, X, Loader2, Plus, Trash2 } from "lucide-react"
+import { BADGES, ESSENCES, UNITS } from "@/constants/catalog"
+import { slugify } from "@/lib/slugify"
+import { LOCALES, LOCALE_NAMES } from "@/lib/i18n"
+
+/** Un champ traduit vide, quelle que soit sa provenance. */
+const emptyLocalized = () => ({ de: "", fr: "" })
+
+/** Accepte l'ancien format (une chaîne) comme le nouveau. Les documents
+ *  d'avant la migration en portent encore, et un formulaire qui affiche
+ *  « [object Object] » est pire qu'un champ vide. */
+const toLocalized = (value) => {
+    if (typeof value === "string") return { de: "", fr: value }
+    return { de: value?.de ?? "", fr: value?.fr ?? "" }
+}
 
 export default function ProductForm({ product, categories, onSuccess, onCancel }) {
+    // La langue en cours d'édition. L'allemand d'abord : c'est la langue de
+    // référence du catalogue, celle dont le slug est dérivé.
+    const [lang, setLang] = useState("de")
+
     const [formData, setFormData] = useState({
-        name: "",
+        name: emptyLocalized(),
         slug: "",
-        shortDescription: "",
-        description: "",
+        shortDescription: emptyLocalized(),
+        description: emptyLocalized(),
         categoryId: "",
         essence: "",
         price: 0,
@@ -30,23 +48,25 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         bestseller: false,
         trending: false,
         isActive: true,
-        seoTitle: "",
-        seoDescription: "",
+        seoTitle: emptyLocalized(),
+        seoDescription: emptyLocalized(),
     })
     const [loading, setLoading] = useState(false)
     const [uploading, setUploading] = useState(false)
 
-    const essences = ["chêne", "hêtre", "charme", "mix", "granulés", "compressé", "allume-feu"]
-    const units = ["stère", "tonne", "pack", "kg", "sac"]
-    const availableBadges = ["premium", "bestseller", "nouveau", "populaire", "offre", "écologique", "innovation"]
+    // Recopiées ici et dans le filtre de la boutique, elles avaient déjà
+    // divergé une fois. Elles vivent maintenant à un seul endroit.
+    const essences = ESSENCES
+    const units = UNITS
+    const availableBadges = BADGES
 
     useEffect(() => {
         if (product) {
             setFormData({
-                name: product.name || "",
+                name: toLocalized(product.name),
                 slug: product.slug || "",
-                shortDescription: product.shortDescription || "",
-                description: product.description || "",
+                shortDescription: toLocalized(product.shortDescription),
+                description: toLocalized(product.description),
                 categoryId: product.categoryId?._id || product.categoryId || "",
                 essence: product.essence || "",
                 price: product.price || 0,
@@ -60,8 +80,8 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
                 bestseller: product.bestseller || false,
                 trending: product.trending || false,
                 isActive: product.isActive !== undefined ? product.isActive : true,
-                seoTitle: product.seoTitle || "",
-                seoDescription: product.seoDescription || "",
+                seoTitle: toLocalized(product.seoTitle),
+                seoDescription: toLocalized(product.seoDescription),
             })
         }
     }, [product])
@@ -71,17 +91,60 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
             ...prev,
             [field]: value,
         }))
+    }
 
-        // Auto-generate slug from name
-        if (field === "name" && !product) {
-            const slug = value
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, "-")
-                .replace(/-+/g, "-")
-                .replace(/^-|-$/g, "")
-            setFormData((prev) => ({ ...prev, slug }))
+    /** Un champ traduit : on ne modifie que la langue affichée. */
+    const handleLocalizedChange = (field, value) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: { ...prev[field], [lang]: value },
+        }))
+
+        // Le slug se dérive du nom allemand, et seulement à la création : le
+        // changer sur un produit existant casserait son URL et les liens qui
+        // pointent dessus.
+        if (field === "name" && lang === "de" && !product) {
+            setFormData((prev) => ({ ...prev, slug: slugify(value) }))
         }
     }
+
+    /**
+     * Le sélecteur de langue du formulaire.
+     *
+     * Les deux versions sont éditées dans le même écran plutôt que dans deux
+     * formulaires : un produit dont seule la moitié allemande serait
+     * enregistrée s'afficherait à moitié en français sur le site allemand.
+     */
+    const LanguageTabs = () => (
+        <div className="inline-flex rounded-lg border border-gray-200 p-0.5">
+            {LOCALES.map((code) => {
+                const filled = Boolean(formData.name?.[code])
+                return (
+                    <button
+                        key={code}
+                        type="button"
+                        onClick={() => setLang(code)}
+                        aria-pressed={lang === code}
+                        className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${lang === code
+                            ? "bg-amber-50 text-amber-700"
+                            : "text-gray-500 hover:text-gray-900"
+                            }`}
+                    >
+                        {LOCALE_NAMES[code]}
+                        {/* Une pastille signale la langue encore vide : sans
+                            elle, on enregistre un produit à moitié traduit
+                            sans s'en apercevoir. */}
+                        {!filled && (
+                            <span
+                                className="ml-1.5 inline-block size-1.5 rounded-full bg-amber-400 align-middle"
+                                title="Traduction manquante"
+                            />
+                        )}
+                    </button>
+                )
+            })}
+        </div>
+    )
 
     const handleImageUpload = async (event) => {
         const file = event.target.files[0]
@@ -101,7 +164,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
             if (data.success) {
                 const newImage = {
                     url: data.data.url,
-                    alt: formData.name,
+                    alt: formData.name?.de || formData.name?.fr || "",
                     isPrimary: formData.images.length === 0,
                 }
                 setFormData((prev) => ({
@@ -201,17 +264,18 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
                 {/* Informations de base */}
                 <div className="space-y-4">
                     <Card>
-                        <CardHeader>
+                        <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0">
                             <CardTitle>Informations générales</CardTitle>
+                            <LanguageTabs />
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
-                                <Label htmlFor="name">Nom *</Label>
+                                <Label htmlFor="name">Nom ({LOCALE_NAMES[lang]}) *</Label>
                                 <Input
                                     id="name"
-                                    value={formData.name}
-                                    onChange={(e) => handleInputChange("name", e.target.value)}
-                                    required
+                                    value={formData.name?.[lang] ?? ""}
+                                    onChange={(e) => handleLocalizedChange("name", e.target.value)}
+                                    required={lang === "de"}
                                 />
                             </div>
 
@@ -226,22 +290,22 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
                             </div>
 
                             <div>
-                                <Label htmlFor="shortDescription">Description courte *</Label>
+                                <Label htmlFor="shortDescription">Description courte ({LOCALE_NAMES[lang]}) *</Label>
                                 <Textarea
                                     id="shortDescription"
-                                    value={formData.shortDescription}
-                                    onChange={(e) => handleInputChange("shortDescription", e.target.value)}
+                                    value={formData.shortDescription?.[lang] ?? ""}
+                                    onChange={(e) => handleLocalizedChange("shortDescription", e.target.value)}
                                     rows={2}
-                                    required
+                                    required={lang === "de"}
                                 />
                             </div>
 
                             <div>
-                                <Label htmlFor="description">Description détaillée</Label>
+                                <Label htmlFor="description">Description détaillée ({LOCALE_NAMES[lang]})</Label>
                                 <Textarea
                                     id="description"
-                                    value={formData.description}
-                                    onChange={(e) => handleInputChange("description", e.target.value)}
+                                    value={formData.description?.[lang] ?? ""}
+                                    onChange={(e) => handleLocalizedChange("description", e.target.value)}
                                     rows={4}
                                 />
                             </div>
@@ -527,24 +591,25 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
 
             {/* SEO */}
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0">
                     <CardTitle>SEO</CardTitle>
+                    <LanguageTabs />
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <Label htmlFor="seoTitle">Titre SEO</Label>
+                        <Label htmlFor="seoTitle">Titre SEO ({LOCALE_NAMES[lang]})</Label>
                         <Input
                             id="seoTitle"
-                            value={formData.seoTitle}
-                            onChange={(e) => handleInputChange("seoTitle", e.target.value)}
+                            value={formData.seoTitle?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("seoTitle", e.target.value)}
                         />
                     </div>
                     <div>
-                        <Label htmlFor="seoDescription">Description SEO</Label>
+                        <Label htmlFor="seoDescription">Description SEO ({LOCALE_NAMES[lang]})</Label>
                         <Textarea
                             id="seoDescription"
-                            value={formData.seoDescription}
-                            onChange={(e) => handleInputChange("seoDescription", e.target.value)}
+                            value={formData.seoDescription?.[lang] ?? ""}
+                            onChange={(e) => handleLocalizedChange("seoDescription", e.target.value)}
                             rows={2}
                         />
                     </div>

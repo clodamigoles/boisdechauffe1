@@ -3,8 +3,10 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, TrendingUp } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 export default function CategoryCard({ category }) {
+    const t = useT()
     const [isImageLoading, setIsImageLoading] = useState(true)
     const [imageError, setImageError] = useState(false)
     const IconComponent = category.icon
@@ -51,7 +53,7 @@ export default function CategoryCard({ category }) {
                             className="absolute top-3 right-3 bg-amber-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1"
                         >
                             <TrendingUp className="w-3 h-3" />
-                            <span>Tendance</span>
+                            <span>{t('shop.trending')}</span>
                         </motion.div>
                     )}
 
@@ -97,7 +99,7 @@ export default function CategoryCard({ category }) {
                                 className="flex items-center justify-between"
                             >
                                 <span className="text-white font-medium group-hover:text-amber-200 transition-colors flex items-center space-x-2">
-                                    <span>Découvrir</span>
+                                    <span>{t('shop.discover')}</span>
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </span>
                             </motion.div>

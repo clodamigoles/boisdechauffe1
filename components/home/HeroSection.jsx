@@ -1,33 +1,86 @@
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
-import { ArrowRight, Clock, Shield } from 'lucide-react'
+import { ArrowRight, Clock, Droplets } from 'lucide-react'
 
-import Button from '../ui/Button'
+import Button from '../ui/ActionButton'
 import { heroVariants } from '@/utils/animations'
-import { useSettings } from '@/hooks/useSettings'
+import { cloudinaryUrl } from '@/lib/cloudinary-url'
+import { HERO_SLIDES } from '@/constants/media'
+import { localized, useT } from '@/lib/i18n'
+
+/** Durée d'affichage d'une photo avant la suivante. */
+const SLIDE_MS = 6000
 
 export default function HeroSection() {
-    const { siteName } = useSettings()
+    const t = useT()
+    const { locale } = useRouter()
+    const [index, setIndex] = useState(0)
+    const [isStill, setIsStill] = useState(false)
+
+    // Un visiteur qui a demandé moins d'animations à son système ne veut pas
+    // d'un fond qui change tout seul toutes les six secondes.
+    useEffect(() => {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+        const sync = () => setIsStill(reduced.matches)
+        sync()
+        reduced.addEventListener('change', sync)
+        return () => reduced.removeEventListener('change', sync)
+    }, [])
+
+    useEffect(() => {
+        if (isStill || HERO_SLIDES.length < 2) return
+        const timer = window.setTimeout(
+            () => setIndex((current) => (current + 1) % HERO_SLIDES.length),
+            SLIDE_MS,
+        )
+        return () => window.clearTimeout(timer)
+    }, [index, isStill])
 
     const stats = [
-        { value: '5j', label: 'Livraison express', icon: Clock },
-        { value: '99%', label: 'Qualité garantie', icon: Shield }
+        { value: t('home.heroStatMoistureValue'), label: t('home.heroStatMoisture'), icon: Droplets },
+        { value: t('home.heroStatLeadTimeValue'), label: t('home.heroStatLeadTime'), icon: Clock },
+    ]
+
+    const reasons = [
+        { title: t('home.trustDry'), desc: t('home.trustDryText') },
+        { title: t('home.trustOrigin'), desc: t('home.trustOriginText') },
+        { title: t('home.trustDelivery'), desc: t('home.trustDeliveryText') },
+        { title: t('home.trustService'), desc: t('home.trustServiceText') },
     ]
 
     return (
         <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gray-900">
-            {/* Image Background */}
+            {/* Fond photographique.
+                Le fond était une seule image générique. Ce sont maintenant de
+                vraies photos du dépôt qui se succèdent — la première est
+                prioritaire, c'est elle qui compte pour le LCP ; les suivantes
+                ne se chargent qu'après. */}
             <div className="absolute inset-0 z-0">
-                <img
-                    src="/images/hero-poster.png"
-                    alt=""
-                    className="w-full h-full object-cover opacity-60"
-                />
+                {HERO_SLIDES.map((slide, position) => (
+                    <div
+                        key={slide.publicId}
+                        aria-hidden={position !== index}
+                        className={`absolute inset-0 transition-opacity duration-1000 motion-reduce:transition-none ${position === index ? 'opacity-60' : 'opacity-0'
+                            }`}
+                    >
+                        <Image
+                            src={cloudinaryUrl(slide.publicId, { width: 1920, height: 1080 })}
+                            alt={position === index ? localized(slide.alt, locale) : ''}
+                            fill
+                            priority={position === 0}
+                            loading={position === 0 ? undefined : 'lazy'}
+                            sizes="100vw"
+                            className="object-cover"
+                        />
+                    </div>
+                ))}
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-transparent" />
             </div>
 
-            {/* Contenu Principal */}
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <motion.div
                         variants={heroVariants}
@@ -35,7 +88,6 @@ export default function HeroSection() {
                         animate="enter"
                         className="text-center lg:text-left"
                     >
-                        {/* Badge */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -43,96 +95,79 @@ export default function HeroSection() {
                             className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-6"
                         >
                             <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse" />
-                            Livraison 4/5j partout
+                            {t('home.heroBadge')}
                         </motion.div>
 
-                        {/* Titre Principal */}
                         <motion.h1
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.8 }}
                             className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
                         >
-                            {siteName}
-                            <span className="block text-amber-400">
-                                Premium
-                            </span>
+                            {t('home.heroTitle')}
+                            <span className="block text-amber-400">{t('home.heroTitleAccent')}</span>
                         </motion.h1>
 
-                        {/* Sous-titre */}
                         <motion.p
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.8 }}
                             className="text-xl text-gray-300 mb-8 max-w-lg leading-relaxed"
                         >
-                            Découvrez notre sélection exclusive de bois séché premium.
-                            Chêne, Hêtre, Charme - Livraison rapide, qualité garantie
+                            {t('home.heroSubtitle')}
                         </motion.p>
 
-                        {/* Boutons d'Action */}
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.8, duration: 0.8 }}
-                            className="flex flex-col sm:flex-row gap-4 mb-12"
+                            className="flex flex-col sm:flex-row items-center gap-4 mb-12 lg:justify-start justify-center"
                         >
                             <Link href="/shop">
-                                <Button
-                                    variant="primary"
-                                    size="lg"
-                                    className="flex items-center justify-center space-x-2"
-                                >
-                                    <span>Commander Maintenant</span>
+                                <Button variant="primary" size="lg" className="flex items-center justify-center space-x-2">
+                                    <span>{t('home.heroCta')}</span>
                                     <ArrowRight className="w-5 h-5" />
                                 </Button>
                             </Link>
-                            {/* <Button
-                                variant="secondary"
-                                size="lg"
-                                className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20"
+                            {/* Un lien d'ancre vers la galerie : la preuve est
+                                plus bas sur la page, autant y conduire. */}
+                            <a
+                                href="#depot"
+                                className="text-white font-semibold underline underline-offset-8 decoration-white/40 hover:decoration-white transition-colors"
                             >
-                                <Play className="w-5 h-5" />
-                                <span>Voir la Vidéo</span>
-                            </Button> */}
+                                {t('home.heroSecondary')}
+                            </a>
                         </motion.div>
 
-                        {/* Statistiques */}
                         <motion.div
                             initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 1, duration: 0.8 }}
-                            className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+                            className="grid grid-cols-2 gap-6 max-w-sm mx-auto lg:mx-0"
                         >
-                            {stats.map((stat, index) => {
+                            {stats.map((stat, position) => {
                                 const IconComponent = stat.icon
                                 return (
                                     <motion.div
                                         key={stat.label}
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: 1.2 + index * 0.1 }}
-                                        whileHover={{ scale: 1.05, y: -2 }}
-                                        className="text-center"
+                                        transition={{ delay: 1.2 + position * 0.1 }}
+                                        className="text-center lg:text-left"
                                     >
-                                        <div className="flex justify-center mb-2">
+                                        <div className="flex justify-center lg:justify-start mb-2">
                                             <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center">
                                                 <IconComponent className="w-6 h-6 text-amber-400" />
                                             </div>
                                         </div>
-                                        <div className="text-2xl font-bold text-white mb-1">
-                                            {stat.value}
-                                        </div>
-                                        <div className="text-sm text-gray-300 font-medium">
-                                            {stat.label}
-                                        </div>
+                                        <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                                        <div className="text-sm text-gray-300 font-medium">{stat.label}</div>
                                     </motion.div>
                                 )
                             })}
                         </motion.div>
                     </motion.div>
 
-                    {/* Section Droite - Contenu Supplémentaire */}
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -140,21 +175,14 @@ export default function HeroSection() {
                         className="hidden lg:block"
                     >
                         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
-                            <h3 className="text-2xl font-bold text-white mb-6">
-                                Pourquoi nous choisir ?
-                            </h3>
+                            <h2 className="text-2xl font-bold text-white mb-6">{t('home.trustTitle')}</h2>
                             <div className="space-y-4">
-                                {[
-                                    { title: 'Qualité Premium', desc: 'Bois séché < 18% d\'humidité' },
-                                    { title: 'Livraison Rapide', desc: '24-48h partout en France' },
-                                    { title: 'Prix Transparents', desc: 'Devis gratuit, sans surprise' },
-                                    { title: 'Service Client', desc: 'Équipe d\'experts à votre écoute' }
-                                ].map((item, index) => (
+                                {reasons.map((item, position) => (
                                     <motion.div
                                         key={item.title}
                                         initial={{ opacity: 0, x: 20 }}
                                         animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 1.4 + index * 0.1 }}
+                                        transition={{ delay: 1.4 + position * 0.1 }}
                                         className="flex items-start space-x-3"
                                     >
                                         <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 flex-shrink-0" />
@@ -168,29 +196,6 @@ export default function HeroSection() {
                         </div>
                     </motion.div>
                 </div>
-
-                {/* Indicateur de défilement */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2 }}
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden lg:block"
-                >
-                    <motion.div
-                        animate={{ y: [0, 10, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="flex flex-col items-center space-y-2 text-white/60"
-                    >
-                        <span className="text-sm font-medium">Découvrir</span>
-                        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-                            <motion.div
-                                animate={{ y: [0, 12, 0] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                                className="w-1 h-1 bg-white/60 rounded-full mt-2"
-                            />
-                        </div>
-                    </motion.div>
-                </motion.div>
             </div>
         </section>
     )

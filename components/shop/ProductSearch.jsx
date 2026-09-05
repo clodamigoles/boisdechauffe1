@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
+import { useT } from '@/lib/i18n'
 
 export default function ProductSearch({ value, onChange, placeholder = "Rechercher..." }) {
+    const t = useT()
     const [searchTerm, setSearchTerm] = useState(value || '')
     const timeoutRef = useRef(null)
 
@@ -59,7 +61,7 @@ export default function ProductSearch({ value, onChange, placeholder = "Recherch
                 <button
                     onClick={handleClear}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                    aria-label="Effacer la recherche"
+                    aria-label={t('shop.clearSearch')}
                 >
                     <X className="w-4 h-4" />
                 </button>

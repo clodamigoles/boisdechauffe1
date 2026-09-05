@@ -2,16 +2,35 @@ import mongoose from "mongoose"
 import { Contact as ContactModel } from "./Contact.js"
 import PaymentModel from "./Payment.js"
 import OtpSessionModel from "./OtpSession.js"
+import { slugify } from "@/lib/slugify"
+
+/**
+ * Un champ rédactionnel traduit.
+ *
+ * Le catalogue portait des chaînes simples, écrites en français, et le site
+ * allemand les affichait telles quelles sous une traduction automatique posée
+ * par-dessus. Ils sont maintenant des objets `{ de, fr }` : l'allemand est la
+ * langue de référence — c'est le marché du site — et le français reste écrit à
+ * côté, pas dérivé.
+ *
+ * `required` porte donc sur `de` seul. Exiger les deux bloquerait la création
+ * d'un produit tant que sa traduction n'est pas écrite ; à l'affichage,
+ * `localized()` retombe de toute façon sur la langue renseignée.
+ */
+function localizedField({ required = false, maxlength, label = "Ce champ" } = {}) {
+    const base = { type: String, trim: true }
+    if (maxlength) base.maxlength = [maxlength, `${label} ne peut dépasser ${maxlength} caractères`]
+
+    return {
+        de: { ...base, ...(required ? { required: [true, `${label} est requis en allemand`] } : {}) },
+        fr: { ...base },
+    }
+}
 
 // Schéma Catégorie
 const categorySchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: [true, "Le nom de la catégorie est requis"],
-            trim: true,
-            maxlength: [100, "Le nom ne peut dépasser 100 caractères"],
-        },
+        name: localizedField({ required: true, maxlength: 100, label: "Le nom de la catégorie" }),
         slug: {
             type: String,
             required: [true, "Le slug est requis"],
@@ -20,14 +39,8 @@ const categorySchema = new mongoose.Schema(
             trim: true,
             match: [/^[a-z0-9-]+$/, "Le slug ne peut contenir que des lettres minuscules, chiffres et tirets"],
         },
-        shortDescription: {
-            type: String,
-            maxlength: [200, "La description courte ne peut dépasser 200 caractères"],
-        },
-        description: {
-            type: String,
-            maxlength: [1000, "La description ne peut dépasser 1000 caractères"],
-        },
+        shortDescription: localizedField({ maxlength: 200, label: "La description courte" }),
+        description: localizedField({ maxlength: 1000, label: "La description" }),
         image: {
             type: String,
             validate: {
@@ -51,8 +64,8 @@ const categorySchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        seoTitle: String,
-        seoDescription: String,
+        seoTitle: localizedField({ label: "Le titre SEO" }),
+        seoDescription: localizedField({ label: "La description SEO" }),
         metadata: {
             color: String,
             icon: String,
@@ -77,12 +90,7 @@ categorySchema.virtual("productCount", {
 // Schéma Produit
 const productSchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: [true, "Le nom du produit est requis"],
-            trim: true,
-            maxlength: [150, "Le nom ne peut dépasser 150 caractères"],
-        },
+        name: localizedField({ required: true, maxlength: 150, label: "Le nom du produit" }),
         slug: {
             type: String,
             required: [true, "Le slug est requis"],
@@ -90,15 +98,8 @@ const productSchema = new mongoose.Schema(
             lowercase: true,
             trim: true,
         },
-        shortDescription: {
-            type: String,
-            required: [true, "La description courte est requise"],
-            maxlength: [5300, "La description courte ne peut dépasser 5300 caractères"],
-        },
-        description: {
-            type: String,
-            maxlength: [2000, "La description ne peut dépasser 2000 caractères"],
-        },
+        shortDescription: localizedField({ required: true, maxlength: 5300, label: "La description courte" }),
+        description: localizedField({ maxlength: 5300, label: "La description" }),
         categoryId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
@@ -207,8 +208,8 @@ const productSchema = new mongoose.Schema(
             min: 0,
             default: 0,
         },
-        seoTitle: String,
-        seoDescription: String,
+        seoTitle: localizedField({ label: "Le titre SEO" }),
+        seoDescription: localizedField({ label: "La description SEO" }),
         metadata: mongoose.Schema.Types.Mixed,
     },
     {
@@ -234,11 +235,7 @@ productSchema.virtual("inStock").get(function () {
 // Middleware pre-save pour générer le slug
 productSchema.pre("save", function (next) {
     if (this.isModified("name") && !this.slug) {
-        this.slug = this.name
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "")
+        this.slug = slugify(this.name)
     }
     next()
 })
@@ -317,11 +314,22 @@ const testimonialSchema = new mongoose.Schema(
             min: [1, "La note minimum est 1"],
             max: [5, "La note maximum est 5"],
         },
+        /** Titre facultatif — « Rien à redire », « Bois d'excellence ».
+         *  Tous les avis n'en portent pas, et c'est voulu : un client qui
+         *  n'en écrit pas ne doit pas s'en voir attribuer un. */
+        title: {
+            type: String,
+            trim: true,
+            maxlength: [120, "Le titre ne peut dépasser 120 caractères"],
+        },
         comment: {
             type: String,
             required: [true, "Le commentaire est requis"],
             maxlength: [1000, "Le commentaire ne peut dépasser 1000 caractères"],
         },
+        /** Date de l'achat, distincte de la publication : « à la suite d'une
+         *  commande du 27 juin » situe l'avis mieux que sa seule date. */
+        purchasedAt: Date,
         shortComment: {
             type: String,
             maxlength: [200, "Le commentaire court ne peut dépasser 200 caractères"],

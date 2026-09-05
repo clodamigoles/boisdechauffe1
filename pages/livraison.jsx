@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Head from "next/head"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import {
@@ -20,9 +19,12 @@ import {
 } from "lucide-react"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
-import Button from "../components/ui/Button"
+import Button from "../components/ui/ActionButton"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
 import { useSettings } from "@/hooks/useSettings"
+import { cloudinaryVideoPosterUrl, cloudinaryVideoUrl } from "@/lib/cloudinary-url"
+import SeoHead from "@/components/layout/SeoHead"
+import { useT } from "@/lib/i18n"
 
 const pageTransition = {
     type: "tween",
@@ -30,7 +32,12 @@ const pageTransition = {
     duration: 0.5,
 }
 
+/** Fond décoratif de l'en-tête. Sur Cloudinary, jamais dans `public/` : les
+ *  29 Mo d'origine repartaient en entier à chaque point de présence du CDN. */
+const HERO_VIDEO = "mbdc/videos/hero-background"
+
 export default function LivraisonPage() {
+    const t = useT()
     const { contactPhone, whatsappLink } = useSettings()
     const [selectedRegion, setSelectedRegion] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -181,24 +188,10 @@ export default function LivraisonPage() {
 
     return (
         <>
-            <Head>
-                <title>Livraison | BoisChauffage Pro - Service de Livraison Rapide</title>
-                <meta
-                    name="description"
-                    content="Découvrez nos zones de livraison et tarifs. Livraison rapide 24-48h en région lyonnaise, partout en France. Déchargement inclus, suivi personnalisé."
-                />
-                <meta
-                    name="keywords"
-                    content="livraison bois chauffage, transport bois, déchargement, Lyon, France, délai livraison"
-                />
-                <link rel="canonical" href="https://boischauffagepro.fr/livraison" />
-
-                {/* Open Graph */}
-                <meta property="og:title" content="Livraison | BoisChauffage Pro" />
-                <meta property="og:description" content="Service de livraison rapide pour votre bois de chauffage. Déchargement inclus, suivi personnalisé." />
-                <meta property="og:url" content="https://boischauffagepro.fr/livraison" />
-                <meta property="og:image" content="https://boischauffagepro.fr/images/og-livraison.jpg" />
-            </Head>
+            <SeoHead
+                title={t('meta.deliveryTitle')}
+                description={t('meta.deliveryDescription')}
+            />
 
             <div className="min-h-screen bg-gray-50">
                 <Header />
@@ -210,11 +203,11 @@ export default function LivraisonPage() {
                             muted
                             loop
                             playsInline
+                            preload="none"
                             className="w-full h-full object-cover opacity-60"
-                            poster="/images/hero-poster.jpg"
-                        >
-                            <source src="/videos/hero-background.mp4" type="video/mp4" />
-                        </video>
+                            poster={cloudinaryVideoPosterUrl(HERO_VIDEO, { width: 1600, height: 900 })}
+                            src={cloudinaryVideoUrl(HERO_VIDEO, { width: 1280, maxBitrate: "700k" })}
+                        />
 
                         {/* Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-transparent" />

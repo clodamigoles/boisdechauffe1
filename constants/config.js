@@ -1,4 +1,4 @@
-export const APP_NAME = `Mon bois de chauffe`
+export const APP_NAME = `Mein Brennholz`
 export const PHONE = `+33 6 44 65 18 73`
 export const WA_LINK = `https://wa.me/33644651873`
 export const EMAIL = `support@monboisdechauffe.fr`

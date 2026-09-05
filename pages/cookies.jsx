@@ -213,7 +213,7 @@ En continuant à naviguer sur ce site, vous acceptez l'utilisation des cookies s
     return (
         <>
             <Head>
-                <title>Politique de Cookies - {settings?.siteName || "Mon bois de chauffe"}</title>
+                <title>Politique de Cookies - {settings?.siteName || "Mein Brennholz"}</title>
                 <meta
                     name="description"
                     content="Notre politique d'utilisation des cookies et traceurs"

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Plus, Search, Edit, Trash2, Package } from "lucide-react"
 import ProductForm from "@/components/admin/ProductForm"
+import { adminLabel } from "@/lib/admin-label"
 
 export default function ProductsPage() {
     const [products, setProducts] = useState([])
@@ -170,7 +171,7 @@ export default function ProductsPage() {
                             <SelectItem value="all">Toutes les catégories</SelectItem>
                             {categories.map((category) => (
                                 <SelectItem key={category._id} value={category._id}>
-                                    {category.name}
+                                    {adminLabel(category.name)}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -213,19 +214,19 @@ export default function ProductsPage() {
                                         <div className="flex items-center space-x-4">
                                             <img
                                                 src={product.images?.[0]?.url || "/placeholder.svg"}
-                                                alt={product.name}
+                                                alt={adminLabel(product.name)}
                                                 className="w-16 h-16 rounded-lg object-cover"
                                             />
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="font-medium">{product.name}</h3>
+                                                    <h3 className="font-medium">{adminLabel(product.name)}</h3>
                                                     {product.featured && <Badge variant="secondary">Mise en avant</Badge>}
                                                     {product.bestseller && <Badge variant="default">Bestseller</Badge>}
                                                     {!product.isActive && <Badge variant="destructive">Inactif</Badge>}
                                                 </div>
                                                 <p className="text-sm text-muted-foreground mb-1">{product.shortDescription}</p>
                                                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                                    <span>Catégorie: {product.categoryId?.name}</span>
+                                                    <span>Catégorie : {adminLabel(product.categoryId?.name)}</span>
                                                     <span>Essence: {product.essence}</span>
                                                     <span>
                                                         Prix: {product.price}€/{product.unit}
@@ -256,7 +257,7 @@ export default function ProductsPage() {
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>Supprimer le produit</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                Êtes-vous sûr de vouloir supprimer "{product.name}" ? Cette action est irréversible.
+                                                                Êtes-vous sûr de vouloir supprimer "{adminLabel(product.name)}" ? Cette action est irréversible.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>

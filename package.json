@@ -18,7 +18,9 @@
     "settings:init": "node scripts/init-settings.js",
     "seed": "node scripts/seed",
     "prices:up": "node scripts/update-prices.js --percent=25",
-    "prices:dry": "node scripts/update-prices.js --percent=25 --dry-run"
+    "prices:dry": "node scripts/update-prices.js --percent=25 --dry-run",
+    "catalog:translate": "node scripts/translate-catalog.js",
+    "reviews:import": "node scripts/import-reviews.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",

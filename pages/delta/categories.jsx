@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Plus, Search, Edit, Trash2 } from "lucide-react"
 import CategoryForm from "@/components/admin/CategoryForm"
+import { adminLabel } from "@/lib/admin-label"
 
 export default function CategoriesPage() {
     const [categories, setCategories] = useState([])
@@ -154,13 +155,13 @@ export default function CategoriesPage() {
                                             {category.image && (
                                                 <img
                                                     src={category.image || "/placeholder.svg"}
-                                                    alt={category.name}
+                                                    alt={adminLabel(category.name)}
                                                     className="w-12 h-12 rounded-lg object-cover"
                                                 />
                                             )}
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <h3 className="font-medium">{category.name}</h3>
+                                                    <h3 className="font-medium">{adminLabel(category.name)}</h3>
                                                     {category.featured && <Badge variant="secondary">Mise en avant</Badge>}
                                                     {!category.isActive && <Badge variant="destructive">Inactif</Badge>}
                                                 </div>
@@ -188,7 +189,7 @@ export default function CategoriesPage() {
                                                     <AlertDialogHeader>
                                                         <AlertDialogTitle>Supprimer la catégorie</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Êtes-vous sûr de vouloir supprimer "{category.name}" ? Cette action est irréversible.
+                                                            Êtes-vous sûr de vouloir supprimer "{adminLabel(category.name)}" ? Cette action est irréversible.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>

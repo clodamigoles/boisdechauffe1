@@ -7,7 +7,7 @@ import Link from "next/link"
 import { CheckCircle, Clock, MapPin, Mail, Phone, FileText, Download, ArrowLeft } from "lucide-react"
 import Header from "../../components/layout/Header"
 import Footer from "../../components/layout/Footer"
-import Button from "../../components/ui/Button"
+import Button from "../../components/ui/ActionButton"
 import PaymentReceiptUpload from "../../components/ui/PaymentReceiptUpload"
 
 const pageVariants = {

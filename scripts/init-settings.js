@@ -60,7 +60,7 @@ async function initSettings() {
 
         const defaultSettings = {
             // Informations de base
-            siteName: "Mon bois de chauffe",
+            siteName: "Mein Brennholz",
             siteDescription:
                 "Découvrez notre sélection premium de bois de chauffage : chêne, hêtre, charme séchés < 18% d'humidité. Qualité garantie, livraison 24-48h partout en France.",
             siteKeywords: "bois de chauffage, chêne, hêtre, charme, granulés, livraison rapide, premium, qualité, sec, france",
@@ -79,7 +79,7 @@ async function initSettings() {
             },
 
             // Informations légales
-            companyName: "Mon bois de chauffe",
+            companyName: "Mein Brennholz",
             siren: "941350159",
             siret: "94135015900013",
 
@@ -133,7 +133,7 @@ async function initSettings() {
 
             // Email
             emailSettings: {
-                fromName: "Mon bois de chauffe",
+                fromName: "Mein Brennholz",
                 fromEmail: "support@monboisdechauffe.fr",
             },
 

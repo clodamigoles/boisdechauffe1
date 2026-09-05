@@ -136,7 +136,7 @@ async function handler(req, res) {
 
         // Métadonnées SEO dynamiques
         const seoMetadata = {
-            title: category.seoTitle || `${category.name} | BoisChauffage Pro`,
+            title: category.seoTitle || category.name,
             description: category.seoDescription || `${category.shortDescription}. ${totalProducts} produits disponibles, livraison 24-48h.`,
             keywords: [
                 category.name,

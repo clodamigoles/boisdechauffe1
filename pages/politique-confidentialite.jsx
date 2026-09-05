@@ -50,7 +50,7 @@ export default function PolitiqueConfidentialitePage() {
 
 ## 1. Introduction
 
-${settings?.companyName || settings?.siteName || "Mon bois de chauffe"} s'engage à protéger la confidentialité et la sécurité de vos données personnelles. Cette politique décrit comment nous collectons, utilisons et protégeons vos informations.
+${settings?.companyName || settings?.siteName || "Mein Brennholz"} s'engage à protéger la confidentialité et la sécurité de vos données personnelles. Cette politique décrit comment nous collectons, utilisons et protégeons vos informations.
 
 ## 2. Données collectées
 
@@ -178,7 +178,7 @@ Site web : [www.cnil.fr](https://www.cnil.fr)
         <>
             <Head>
                 <title>
-                    Politique de Confidentialité - {settings?.siteName || "Mon bois de chauffe"}
+                    Politique de Confidentialité - {settings?.siteName || "Mein Brennholz"}
                 </title>
                 <meta
                     name="description"

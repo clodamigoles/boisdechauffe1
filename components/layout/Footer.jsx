@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/router'
 import {
     MapPin,
     Phone,
@@ -11,18 +12,30 @@ import {
     Youtube,
     Linkedin,
     Send,
-    Award,
+    Droplets,
     Leaf,
     CheckCircle,
     Truck,
-    Star,
     ArrowRight
 } from 'lucide-react'
 
 import { useSettings } from "@/hooks/useSettings"
+import { useCategories } from "@/hooks/useCategories"
+import { localized, useT } from "@/lib/i18n"
+
+/** Les réseaux qu'on sait afficher, si les paramètres en donnent l'adresse. */
+const SOCIAL_ICONS = {
+    facebook: Facebook,
+    instagram: Instagram,
+    youtube: Youtube,
+    linkedin: Linkedin,
+}
 
 export default function Footer() {
-    const { contactEmail, fullAddress, contactPhone, whatsappLink, siteName } = useSettings()
+    const t = useT()
+    const { locale } = useRouter()
+    const categories = useCategories()
+    const { contactEmail, fullAddress, contactPhone, whatsappLink, siteName, companyName, socialMedia } = useSettings()
     const [newsletterEmail, setNewsletterEmail] = useState('')
     const [isNewsletterLoading, setIsNewsletterLoading] = useState(false)
     const [newsletterSuccess, setNewsletterSuccess] = useState(false)
@@ -53,80 +66,46 @@ export default function Footer() {
         }
     }
 
+    // Les catégories viennent de la base : la liste codée en dur contenait
+    // « Bûches compressées » deux fois et ignorait toute création ou
+    // désactivation faite depuis l'administration.
     const footerSections = [
         {
-            title: 'Produits',
-            links: [
-                { name: 'Bois de chauffage', href: '/shop?category=bois-de-chauffage' },
-                { name: 'Granulés et pellets', href: '/shop?category=granules-et-pellets' },
-                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' },
-                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' }
-                // { name: 'Tous les Produits', href: '/shop' }
-            ]
+            title: t('footer.products'),
+            links: categories.map((category) => ({
+                name: localized(category.name, locale),
+                href: `/shop?category=${category.slug}`
+            }))
         },
-        // {
-        //     title: 'Services',
-        //     links: [
-        //         { name: 'Livraison Express', href: '/livraison' },
-        //         { name: 'Devis Gratuit', href: '/devis' },
-        //         { name: 'Conseils Expert', href: '/conseils' },
-        //         { name: 'Service Client', href: '/contact' },
-        //         { name: 'Suivi Commande', href: '/suivi' }
-        //     ]
-        // },
-        // {
-        //     title: 'Informations',
-        //     links: [
-        //         { name: 'À Propos', href: '/a-propos' },
-        //         { name: 'Nos Engagements', href: '/engagements' },
-        //         { name: 'Qualité & Certifications', href: '/qualite' },
-        //         { name: 'Zone de Livraison', href: '/zones-livraison' },
-        //         { name: 'Témoignages', href: '/temoignages' }
-        //     ]
-        // },
         {
-            title: 'Support & services',
+            title: t('footer.support'),
             links: [
-                { name: 'FAQ', href: '/faq' },
-                { name: 'Contact', href: '/contact' },
-                { name: 'Livraison Express', href: '/livraison' },
-                { name: 'Suivi Commande', href: '/suivi' }
+                { name: t('nav.faq'), href: '/faq' },
+                { name: t('nav.contact'), href: '/contact' },
+                { name: t('nav.delivery'), href: '/livraison' },
+                { name: t('nav.tracking'), href: '/suivi' }
             ]
         }
     ]
 
-    const socialLinks = [
-        {
-            name: 'Facebook',
-            href: 'https://facebook.com/boischauffagepro',
-            icon: Facebook,
-            color: 'hover:text-blue-600'
-        },
-        {
-            name: 'Instagram',
-            href: 'https://instagram.com/boischauffagepro',
-            icon: Instagram,
-            color: 'hover:text-pink-600'
-        },
-        {
-            name: 'YouTube',
-            href: 'https://youtube.com/boischauffagepro',
-            icon: Youtube,
-            color: 'hover:text-red-600'
-        },
-        {
-            name: 'LinkedIn',
-            href: 'https://linkedin.com/company/boischauffagepro',
-            icon: Linkedin,
-            color: 'hover:text-blue-700'
-        }
-    ]
+    // Les quatre liens qui étaient ici pointaient vers des comptes
+    // « boischauffagepro » — une marque qui n'est pas celle de ce site, et
+    // dont rien ne dit qu'elle existe. Un lien social ne se remet qu'avec une
+    // adresse réelle : `socialMedia` dans les paramètres, renseigné depuis
+    // l'administration. Tant qu'il est vide, la rangée ne s'affiche pas.
+    const socialLinks = Object.entries(socialMedia || {})
+        .filter(([, url]) => Boolean(url))
+        .map(([name, url]) => ({ name, href: url, icon: SOCIAL_ICONS[name] }))
+        .filter((link) => Boolean(link.icon))
 
+    // « Certifié PEFC » a disparu : c'est une certification qu'il faut détenir
+    // pour l'afficher. « Livraison 24-48h » aussi : elle contredisait le délai
+    // de 4 à 5 jours annoncé partout ailleurs sur le site.
     const certifications = [
-        { icon: Award, label: 'Certifié PEFC' },
-        { icon: Leaf, label: 'Origine France' },
-        { icon: CheckCircle, label: 'Qualité Contrôlée' },
-        { icon: Truck, label: 'Livraison 24-48h' }
+        { icon: Droplets, label: t('footer.certifiedDry') },
+        { icon: Leaf, label: t('footer.certifiedOrigin') },
+        { icon: CheckCircle, label: t('footer.certifiedQuality') },
+        { icon: Truck, label: t('footer.certifiedDelivery') }
     ]
 
     return (
@@ -156,14 +135,12 @@ export default function Footer() {
                                     <span className="text-xl font-bold text-white">
                                         {siteName}
                                     </span>
-                                    <p className="text-sm text-gray-400">Qualité Premium</p>
+                                    <p className="text-sm text-gray-400">{t('common.tagline')}</p>
                                 </div>
                             </Link>
 
                             <p className="text-gray-300 mb-6 leading-relaxed">
-                                Spécialiste du bois de chauffage premium depuis 15 ans.
-                                Nous sélectionnons rigoureusement nos essences pour vous garantir
-                                un chauffage optimal et durable.
+                                {t('footer.about')}
                             </p>
 
                             {/* Coordonnées */}
@@ -246,10 +223,10 @@ export default function Footer() {
                             transition={{ duration: 0.6, delay: 0.4 }}
                         >
                             <h3 className="text-lg font-semibold text-white mb-4">
-                                Newsletter
+{t('footer.newsletterTitle')}
                             </h3>
                             <p className="text-gray-400 text-sm mb-4">
-                                Recevez nos offres exclusives et conseils d'experts
+                                {t('footer.newsletterText')}
                             </p>
 
                             {newsletterSuccess ? (
@@ -259,14 +236,14 @@ export default function Footer() {
                                     className="bg-green-600 rounded-lg p-4 text-center"
                                 >
                                     <CheckCircle className="w-6 h-6 mx-auto mb-2" />
-                                    <div className="text-sm">Inscrit avec succès !</div>
+                                    <div className="text-sm">{t('footer.newsletterDone')}</div>
                                 </motion.div>
                             ) : (
                                 <form onSubmit={handleNewsletterSubmit} className="space-y-3">
                                     <div className="relative">
                                         <input
                                             type="email"
-                                            placeholder="Votre email"
+                                            placeholder={t('footer.newsletterPlaceholder')}
                                             value={newsletterEmail}
                                             onChange={(e) => setNewsletterEmail(e.target.value)}
                                             required
@@ -286,7 +263,7 @@ export default function Footer() {
                                         ) : (
                                             <>
                                                 <Send className="w-4 h-4" />
-                                                <span>S'inscrire</span>
+                                                <span>{t('footer.newsletterCta')}</span>
                                             </>
                                         )}
                                     </motion.button>
@@ -331,23 +308,23 @@ export default function Footer() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                         <div className="flex flex-wrap items-center justify-center md:justify-start space-x-6 text-sm text-gray-400">
-                            <span>© 2025 BoisChauffage Pro. Tous droits réservés.</span>
+                            <span>{t('footer.copyright', { year: new Date().getFullYear(), company: companyName })}</span>
                             <Link href="/mentions-legales" className="hover:text-white transition-colors">
-                                Mentions Légales
+                                {t('footer.legalNotice')}
                             </Link>
                             <Link href="/politique-confidentialite" className="hover:text-white transition-colors">
-                                Confidentialité
+                                {t('footer.privacy')}
                             </Link>
                             <Link href="/cgv" className="hover:text-white transition-colors">
-                                CGV
+                                {t('footer.terms')}
                             </Link>
                             <Link href="/cookies" className="hover:text-white transition-colors">
-                                Cookies
+                                {t('footer.cookies')}
                             </Link>
                         </div>
 
                         <div className="flex items-center space-x-4 text-sm text-gray-400">
-                            <span>Paiement sécurisé</span>
+                            <span>{t('footer.securePayment')}</span>
                             <div className="flex space-x-2">
                                 <div className="w-8 h-5 bg-blue-600 rounded flex items-center justify-center text-xs text-white font-bold">CB</div>
                                 <div className="w-8 h-5 bg-yellow-500 rounded flex items-center justify-center text-xs text-white font-bold">V</div>

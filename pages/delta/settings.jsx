@@ -207,7 +207,7 @@ export default function SettingsPage() {
                                     id="siteName"
                                     value={settings.siteName || ""}
                                     onChange={(e) => handleInputChange("siteName", e.target.value)}
-                                    placeholder="Mon bois de chauffe"
+                                    placeholder="Mein Brennholz"
                                 />
                             </div>
 

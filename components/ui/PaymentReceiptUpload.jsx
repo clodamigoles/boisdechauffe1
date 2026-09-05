@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Upload, FileText, CheckCircle, AlertCircle, X } from "lucide-react"
-import Button from "./Button"
+import Button from "./ActionButton"
 
 export default function PaymentReceiptUpload({ orderNumber, onUploadSuccess }) {
     const [isUploading, setIsUploading] = useState(false)

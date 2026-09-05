@@ -29,7 +29,7 @@ const siteSettingsSchema = new mongoose.Schema(
             type: String,
             required: [true, "Le nom du site est requis"],
             trim: true,
-            default: "Mon bois de chauffe",
+            default: "Mein Brennholz",
         },
         siteDescription: {
             type: String,
@@ -179,7 +179,7 @@ const siteSettingsSchema = new mongoose.Schema(
         emailSettings: {
             fromName: {
                 type: String,
-                default: "Mon bois de chauffe",
+                default: "Mein Brennholz",
             },
             fromEmail: {
                 type: String,

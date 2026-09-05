@@ -5,11 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
 import { Menu, X, Search, ShoppingCart, Phone, ChevronDown, ShoppingBag, ShoppingBagIcon } from 'lucide-react'
 import { useCartStore } from '../../store/cartStore'
-import Button from '../ui/Button'
+import Button from '../ui/ActionButton'
+import LocaleSwitcher from './LocaleSwitcher'
 import { useSettings } from '@/hooks/useSettings'
+import { useCategories } from '@/hooks/useCategories'
+import { localized, useT } from '@/lib/i18n'
 
 export default function Header() {
     const { siteName } = useSettings()
+    const t = useT()
+    const categories = useCategories()
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -25,22 +30,23 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
+    // Les noms de catégories viennent de la base, traduits comme le reste du
+    // catalogue ; le sous-menu se contente de les afficher. Coder ici quatre
+    // libellés français revenait à en avoir deux sources qui divergent.
     const navigation = [
-        { name: 'Accueil', href: '/', current: router.pathname === '/' },
+        { name: t('nav.home'), href: '/', current: router.pathname === '/' },
         {
-            name: 'Catalogue',
+            name: t('nav.shop'),
             href: '/shop',
             current: router.pathname.startsWith('/shop'),
-            submenu: [
-                { name: 'Bois de chauffage', href: '/shop?category=bois-de-chauffage' },
-                { name: 'Granulés et pellets', href: '/shop?category=granules-et-pellets' },
-                { name: 'Bûches compressées', href: '/shop?category=buches-compressees' },
-                { name: 'Chaudières, cuisinières et poêles', href: '/shop?category=chaudieres-cuisinieres-et-poeles' }
-            ]
+            submenu: categories.map((category) => ({
+                name: localized(category.name, router.locale),
+                href: `/shop?category=${category.slug}`
+            }))
         },
-        { name: 'FAQ', href: '/faq', current: router.pathname === '/faq' },
-        // { name: 'Livraison', href: '/livraison', current: router.pathname === '/livraison' },
-        { name: 'Contact', href: '/contact', current: router.pathname === '/contact' }
+        { name: t('nav.faq'), href: '/faq', current: router.pathname === '/faq' },
+        { name: t('nav.delivery'), href: '/livraison', current: router.pathname === '/livraison' },
+        { name: t('nav.contact'), href: '/contact', current: router.pathname === '/contact' }
     ]
 
     return (
@@ -79,7 +85,7 @@ export default function Header() {
                                     </span>
                                     <p className={`text-sm ${!isScrolled && router.pathname === '/' ? 'text-white/80' : 'text-gray-500'
                                         }`}>
-                                        Qualité Premium
+                                        {t('common.tagline')}
                                     </p>
                                 </div>
                             </Link>
@@ -164,6 +170,13 @@ export default function Header() {
                                 </motion.div>
                             </Link>
 
+                            {/* Langue — en-tête clair sur la page d'accueil, où
+                                l'en-tête est posé sur la photo. */}
+                            <LocaleSwitcher
+                                className="hidden sm:inline-flex"
+                                tone={!isScrolled && router.pathname === '/' ? 'light' : 'dark'}
+                            />
+
                             {/* CTA Button */}
                             <div className="hidden md:block">
                                 <Link href="/shop">
@@ -173,7 +186,7 @@ export default function Header() {
                                         className="flex items-center space-x-2"
                                     >
                                         <ShoppingBagIcon className="w-4 h-4" />
-                                        <span>Boutique</span>
+                                        <span>{t('nav.shopCta')}</span>
                                     </Button>
                                 </Link>
                             </div>
@@ -243,13 +256,19 @@ export default function Header() {
                                         </div>
                                     ))}
 
-                                    <div className="pt-4 border-t border-gray-200">
+                                    <div className="pt-4 border-t border-gray-200 space-y-4">
                                         <Link href="/shop">
                                             <Button variant="primary" className="w-full flex items-center justify-center space-x-2">
                                                 <ShoppingBag className="w-4 h-4" />
-                                                <span>Boutique</span>
+                                                <span>{t('nav.shopCta')}</span>
                                             </Button>
                                         </Link>
+                                        {/* Sur mobile le sélecteur est ici : la
+                                            barre du haut n'a pas la place. */}
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm text-gray-500">{t('nav.language')}</span>
+                                            <LocaleSwitcher />
+                                        </div>
                                     </div>
                                 </nav>
                             </div>
@@ -280,7 +299,7 @@ export default function Header() {
                                     <Search className="w-6 h-6 text-gray-400" />
                                     <input
                                         type="text"
-                                        placeholder="Rechercher des produits..."
+                                        placeholder={t('nav.searchPlaceholder')}
                                         autoFocus
                                         className="flex-1 text-lg border-none outline-none placeholder-gray-400"
                                     />

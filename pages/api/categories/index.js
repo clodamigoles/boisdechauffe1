@@ -1,5 +1,6 @@
 import connectDB, { handleDBErrors } from '@/lib/mongoose'
 import { Category } from '@/models'
+import { localizeDocs, resolveLocale } from '@/lib/localize-doc'
 
 export default async function handler(req, res) {
     if (req.method !== 'GET') {
@@ -50,12 +51,14 @@ export default async function handler(req, res) {
             })
         )
 
-        // Cache headers
+        // Deux langues, deux réponses pour la même URL : sans `Vary`, un
+        // intermédiaire servirait l'allemand à un visiteur français.
         res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400')
+        res.setHeader('Vary', 'Cookie')
 
         return res.status(200).json({
             success: true,
-            data: enrichedCategories,
+            data: localizeDocs(enrichedCategories, resolveLocale(req)),
             count: enrichedCategories.length,
             message: 'Catégories récupérées avec succès'
         })

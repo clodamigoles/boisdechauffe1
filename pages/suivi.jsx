@@ -2,16 +2,18 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import Head from "next/head"
 import { useRouter } from "next/router"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
-import Input from "../components/ui/Input"
-import Button from "../components/ui/Button"
+import Input from "../components/ui/FormField"
+import Button from "../components/ui/ActionButton"
+import { useT } from "@/lib/i18n"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
 import { Search, Package, AlertCircle, Loader } from "lucide-react"
+import SeoHead from "@/components/layout/SeoHead"
 
 export default function SuiviPage() {
+    const t = useT()
     const router = useRouter()
     const [orderNumber, setOrderNumber] = useState("")
     const [email, setEmail] = useState("")
@@ -52,10 +54,10 @@ export default function SuiviPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head>
-                <title>Suivi de Commande - BoisChauffage Pro</title>
-                <meta name="description" content="Suivez votre commande de bois de chauffage en temps réel" />
-            </Head>
+            <SeoHead
+                title={t('meta.trackingTitle')}
+                description={t('tracking.subtitle')}
+            />
 
             <Header />
 
@@ -91,35 +93,35 @@ export default function SuiviPage() {
                                 <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
                                     <Search className="w-5 h-5 text-amber-600" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-900">Rechercher votre commande</h2>
+                                <h2 className="text-2xl font-bold text-gray-900">{t('tracking.searchTitle')}</h2>
                             </div>
 
                             <p className="text-gray-600 mb-8">
-                                Entrez votre numéro de commande et votre adresse email pour accéder aux détails de votre commande.
+                                {t('tracking.searchIntro')}
                             </p>
                         </motion.div>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <motion.div variants={itemVariants} custom={1}>
                                 <Input
-                                    label="Numéro de commande"
+                                    label={t('tracking.orderNumber')}
                                     type="text"
-                                    placeholder="Ex: CMD250105001"
+                                    placeholder={t('tracking.orderNumberPlaceholder')}
                                     value={orderNumber}
                                     onChange={(e) => setOrderNumber(e.target.value.toUpperCase())}
                                     required
                                     disabled={isLoading}
                                 />
                                 <p className="text-sm text-gray-500 mt-2">
-                                    Vous trouverez votre numéro de commande dans l'email de confirmation
+                                    {t('tracking.orderNumberHint')}
                                 </p>
                             </motion.div>
 
                             <motion.div variants={itemVariants} custom={2}>
                                 <Input
-                                    label="Adresse email"
+                                    label={t('tracking.email')}
                                     type="email"
-                                    placeholder="votre@email.com"
+                                    placeholder={t('tracking.emailPlaceholder')}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -146,12 +148,12 @@ export default function SuiviPage() {
                                     {isLoading ? (
                                         <>
                                             <Loader className="w-5 h-5 mr-2 animate-spin" />
-                                            Recherche en cours...
+                                            {t('tracking.searching')}
                                         </>
                                     ) : (
                                         <>
                                             <Search className="w-5 h-5 mr-2" />
-                                            Suivre ma commande
+                                            {t('tracking.submit')}
                                         </>
                                     )}
                                 </Button>
@@ -211,17 +213,16 @@ export default function SuiviPage() {
                         transition={{ duration: 0.6 }}
                         className="bg-amber-50 border border-amber-200 rounded-xl p-8"
                     >
-                        <h3 className="text-xl font-semibold text-gray-900 mb-4">Besoin d'aide ?</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-4">{t('tracking.helpTitle')}</h3>
                         <p className="text-gray-700 mb-4">
-                            Si vous ne trouvez pas votre commande ou si vous rencontrez un problème, notre équipe est là pour vous
-                            aider.
+                            {t('tracking.helpText')}
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Button variant="primary" onClick={() => router.push("/contact")}>
-                                Nous contacter
+                                {t('tracking.helpContact')}
                             </Button>
                             <Button variant="outline" onClick={() => router.push("/faq")}>
-                                Consulter la FAQ
+                                {t('tracking.helpFaq')}
                             </Button>
                         </div>
                     </motion.div>

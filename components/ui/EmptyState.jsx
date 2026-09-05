@@ -1,5 +1,5 @@
 import { Search, Package, Filter } from 'lucide-react'
-import Button from './Button'
+import Button from './ActionButton'
 
 export default function EmptyState({
     type = 'search',

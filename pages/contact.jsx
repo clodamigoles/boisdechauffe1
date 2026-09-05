@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Head from "next/head"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import {
@@ -21,10 +20,12 @@ import {
 } from "lucide-react"
 import Header from "../components/layout/Header"
 import Footer from "../components/layout/Footer"
-import Button from "../components/ui/Button"
-import Input from "../components/ui/Input"
+import Button from "../components/ui/ActionButton"
+import Input from "../components/ui/FormField"
 import { pageVariants, containerVariants, itemVariants } from "../utils/animations"
 import { useSettings } from "@/hooks/useSettings"
+import SeoHead from "@/components/layout/SeoHead"
+import { useT } from "@/lib/i18n"
 
 const pageTransition = {
     type: "tween",
@@ -33,6 +34,7 @@ const pageTransition = {
 }
 
 export default function ContactPage() {
+    const t = useT()
     const { contactEmail, fullAddress, contactPhone, whatsappLink } = useSettings()
     const [isLoading, setIsLoading] = useState(true)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -240,32 +242,12 @@ export default function ContactPage() {
         }
     }
 
-    const teamMembers = [
-        {
-            name: "Jean-Pierre Dubois",
-            role: "Responsable Commercial",
-            phone: "01 23 45 67 90",
-            email: "commercial@boischauffagepro.fr",
-            speciality: "Devis et grands comptes",
-            avatar: "/images/team/jean-pierre.jpg"
-        },
-        {
-            name: "Marie Lefebvre",
-            role: "Service Client",
-            phone: "01 23 45 67 91",
-            email: "service@boischauffagepro.fr",
-            speciality: "Suivi commandes et SAV",
-            avatar: "/images/team/marie.jpg"
-        },
-        {
-            name: "Thomas Martin",
-            role: "Responsable Livraisons",
-            phone: "01 23 45 67 92",
-            email: "livraison@boischauffagepro.fr",
-            speciality: "Logistique et planning",
-            avatar: "/images/team/thomas.jpg"
-        }
-    ]
+    // Ici vivaient trois « membres de l'équipe » — nom, rôle, numéro direct,
+    // adresse @boischauffagepro.fr et photo dans `/images/team/`. Aucune de ces
+    // personnes n'est nommée ailleurs sur le site, aucun de ces numéros ne
+    // figure dans les paramètres, et le dossier de photos n'existe pas. Le
+    // bloc n'était d'ailleurs rendu nulle part. Les vraies coordonnées, celles
+    // de l'administration, sont plus bas.
 
     if (isLoading) {
         return (
@@ -281,24 +263,10 @@ export default function ContactPage() {
 
     return (
         <>
-            <Head>
-                <title>Contact | BoisChauffage Pro - Contactez Nos Experts</title>
-                <meta
-                    name="description"
-                    content="Contactez BoisChauffage Pro pour vos questions, devis personnalisés et conseils d'experts. Réponse rapide garantie. Téléphone, email, chat en ligne."
-                />
-                <meta
-                    name="keywords"
-                    content="contact bois chauffage, devis gratuit, conseil expert, service client, téléphone, email"
-                />
-                <link rel="canonical" href="https://boischauffagepro.fr/contact" />
-
-                {/* Open Graph */}
-                <meta property="og:title" content="Contact | BoisChauffage Pro" />
-                <meta property="og:description" content="Contactez nos experts pour vos questions sur le bois de chauffage. Réponse rapide garantie." />
-                <meta property="og:url" content="https://boischauffagepro.fr/contact" />
-
-            </Head>
+            <SeoHead
+                title={t('meta.contactTitle')}
+                description={t('meta.contactDescription')}
+            />
 
             <div className="min-h-screen bg-gray-50">
                 <Header />
@@ -482,8 +450,8 @@ export default function ContactPage() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <Input
                                                         type="text"
-                                                        label="Prénom"
-                                                        placeholder="Jean"
+                                                        label={t('contact.firstName')}
+                                                        placeholder={t('contact.firstNamePlaceholder')}
                                                         value={formData.firstName}
                                                         onChange={(e) => handleInputChange("firstName", e.target.value)}
                                                         error={errors.firstName}
@@ -491,8 +459,8 @@ export default function ContactPage() {
                                                     />
                                                     <Input
                                                         type="text"
-                                                        label="Nom"
-                                                        placeholder="Dupont"
+                                                        label={t('contact.lastName')}
+                                                        placeholder={t('contact.lastNamePlaceholder')}
                                                         value={formData.lastName}
                                                         onChange={(e) => handleInputChange("lastName", e.target.value)}
                                                         error={errors.lastName}
@@ -503,8 +471,8 @@ export default function ContactPage() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <Input
                                                         type="email"
-                                                        label="Email"
-                                                        placeholder="jean@exemple.com"
+                                                        label={t('contact.email')}
+                                                        placeholder={t('contact.emailPlaceholder')}
                                                         value={formData.email}
                                                         onChange={(e) => handleInputChange("email", e.target.value)}
                                                         error={errors.email}
@@ -512,7 +480,7 @@ export default function ContactPage() {
                                                     />
                                                     <Input
                                                         type="tel"
-                                                        label="Téléphone"
+                                                        label={t('contact.phone')}
                                                         placeholder="06 12 34 56 78"
                                                         value={formData.phone}
                                                         onChange={(e) => handleInputChange("phone", e.target.value)}
@@ -523,8 +491,8 @@ export default function ContactPage() {
 
                                                 <Input
                                                     type="text"
-                                                    label="Entreprise (optionnel)"
-                                                    placeholder="Nom de votre entreprise"
+                                                    label={`${t('contact.company')} (${t('common.optional')})`}
+                                                    placeholder={t('contact.companyPlaceholder')}
                                                     value={formData.company}
                                                     onChange={(e) => handleInputChange("company", e.target.value)}
                                                 />
@@ -583,7 +551,7 @@ export default function ContactPage() {
                                                     </label>
                                                     <textarea
                                                         rows={5}
-                                                        placeholder="Décrivez votre demande en détail..."
+                                                        placeholder={t('contact.messagePlaceholder')}
                                                         value={formData.message}
                                                         onChange={(e) => handleInputChange("message", e.target.value)}
                                                         className={`w-full px-4 py-3 border rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-amber-200 ${errors.message
@@ -605,32 +573,23 @@ export default function ContactPage() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                            Moyen de contact préféré
+                                                            {t('contact.preferredContact')}
                                                         </label>
                                                         <select
                                                             value={formData.preferredContact}
                                                             onChange={(e) => handleInputChange("preferredContact", e.target.value)}
                                                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
                                                         >
-                                                            <option value="email">Email</option>
-                                                            <option value="phone">Téléphone</option>
-                                                            <option value="both">Les deux</option>
+                                                            <option value="email">{t('contact.contactByEmail')}</option>
+                                                            <option value="phone">{t('contact.contactByPhone')}</option>
+                                                            <option value="both">{t('contact.contactByBoth')}</option>
                                                         </select>
                                                     </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                            Urgence
-                                                        </label>
-                                                        <select
-                                                            value={formData.urgency}
-                                                            onChange={(e) => handleInputChange("urgency", e.target.value)}
-                                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-500"
-                                                        >
-                                                            <option value="normal">Normal (2-4h)</option>
-                                                            <option value="urgent">Urgent (1h)</option>
-                                                            <option value="low">Pas urgent (24h)</option>
-                                                        </select>
-                                                    </div>
+                                                    {/* Un sélecteur d'urgence occupait cette colonne : il
+                                                        promettait une réponse « en 1 h », « en 2-4 h » ou
+                                                        « en 24 h ». Aucun de ces délais n'est tenable, et le
+                                                        champ n'était lu nulle part côté traitement. Le délai
+                                                        réel est annoncé sous le formulaire. */}
                                                 </div>
 
                                                 {/* Conditions */}
@@ -687,12 +646,12 @@ export default function ContactPage() {
                                                     {isSubmitting ? (
                                                         <div className="flex items-center space-x-2">
                                                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                            <span>Envoi en cours...</span>
+                                                            <span>{t('contact.sending')}</span>
                                                         </div>
                                                     ) : (
                                                         <div className="flex items-center space-x-2">
                                                             <Send className="w-5 h-5" />
-                                                            <span>Envoyer le message</span>
+                                                            <span>{t('contact.submit')}</span>
                                                         </div>
                                                     )}
                                                 </Button>
@@ -732,11 +691,14 @@ export default function ContactPage() {
                                                     <Clock className="w-5 h-5 text-green-600" />
                                                 </div>
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-900 mb-1">Horaires</h4>
+                                                    <h4 className="font-semibold text-gray-900 mb-1">{t('contact.hours')}</h4>
                                                     <div className="text-gray-600 text-sm space-y-1">
-                                                        <p>Lundi - Vendredi : 8h00 - 19h00</p>
-                                                        <p>Samedi : 8h00 - 12h00</p>
-                                                        <p>Dimanche : Fermé</p>
+                                                        {/* 8h-19h était annoncé ici, 7j/7 dans le tunnel de
+                                                            commande, et 8h-17h nulle part alors que c'est
+                                                            l'horaire réel. Un seul horaire, celui qu'on tient. */}
+                                                        <p>{t('contact.hoursWeekdays')}</p>
+                                                        <p>{t('contact.hoursSaturday')}</p>
+                                                        <p>{t('contact.hoursSunday')}</p>
                                                     </div>
                                                 </div>
                                             </div>

@@ -1,4 +1,5 @@
 import connectDB, { handleDBErrors } from '@/lib/mongoose'
+import { localizeDoc, localizeDocs, resolveLocale } from '@/lib/localize-doc'
 import rateLimit from 'express-rate-limit'
 import cors from 'cors'
 
@@ -159,6 +160,43 @@ export const withSecurity = (cacheSeconds = 0) => (handler) => (req, res) => {
     return handler(req, res)
 }
 
+/**
+ * Traduit la charge utile d'une réponse publique avant qu'elle ne parte.
+ *
+ * Les champs rédactionnels du catalogue sont des objets `{ de, fr }` en base.
+ * Les rendre tels quels obligerait chaque composant qui affiche un nom de
+ * produit à résoudre la langue lui-même — une quinzaine d'endroits, dont
+ * l'oubli ne se verrait qu'en allemand.
+ *
+ * L'interception se fait ici, sur `res.json`, plutôt que dans chaque
+ * `return res.status(200)` : les endpoints publics répondent à plus d'un
+ * endroit chacun — succès, repli, liste vide — et il en aurait manqué un.
+ *
+ * Le cache HTTP doit suivre : deux langues, deux réponses pour la même URL.
+ * Sans `Vary`, un intermédiaire servirait la version allemande à un visiteur
+ * français, ou l'inverse.
+ */
+const withLocalizedPayload = (handler) => async (req, res) => {
+    const locale = resolveLocale(req)
+    const json = res.json.bind(res)
+
+    res.setHeader('Vary', [res.getHeader('Vary'), 'Cookie'].filter(Boolean).join(', '))
+
+    res.json = (payload) => {
+        if (payload && typeof payload === 'object' && 'data' in payload) {
+            payload = {
+                ...payload,
+                data: Array.isArray(payload.data)
+                    ? localizeDocs(payload.data, locale)
+                    : localizeDoc(payload.data, locale),
+            }
+        }
+        return json(payload)
+    }
+
+    return handler(req, res)
+}
+
 // Middleware composé pour les routes API publiques
 export const withPublicAPI = (options = {}) => {
     const {
@@ -171,7 +209,9 @@ export const withPublicAPI = (options = {}) => {
         withMethods(methods)(
             withDB(
                 withSecurity(cacheSeconds)(
-                    withErrorHandling(handler)
+                    withLocalizedPayload(
+                        withErrorHandling(handler)
+                    )
                 )
             )
         )

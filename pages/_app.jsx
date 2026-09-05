@@ -3,8 +3,6 @@ import Head from "next/head"
 import "@/styles/Tailwind.css"
 import "@/styles/Global.css"
 
-import GT from "@/components/ui/GT"
-
 export default function App({ Component, pageProps }) {
     return (
         <>
@@ -16,7 +14,6 @@ export default function App({ Component, pageProps }) {
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:image" content="/images/logo.svg" />
             </Head>
-            <GT />
             <Component {...pageProps} />
         </>
     )

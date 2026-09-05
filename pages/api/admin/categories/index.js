@@ -1,5 +1,6 @@
 import connectDB, { handleDBErrors } from "@/lib/mongoose"
 import { Category, Product } from "@/models"
+import { slugify } from '@/lib/slugify'
 
 export default async function handler(req, res) {
     await connectDB()
@@ -74,11 +75,7 @@ async function createCategory(req, res) {
 
         // Générer le slug si non fourni
         if (!categoryData.slug && categoryData.name) {
-            categoryData.slug = categoryData.name
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, "-")
-                .replace(/-+/g, "-")
-                .replace(/^-|-$/g, "")
+            categoryData.slug = slugify(categoryData.name)
         }
 
         const category = new Category(categoryData)
